@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heart beats, keep alives &amp; Rx — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="This one has come up 3 or 4 times this year, so I thought it was about time I blogged about it.">
+  <meta name="article:date" content="2010-10-19">
+  <meta property="og:title" content="Heart beats, keep alives &amp; Rx">
+  <meta property="og:description" content="This one has come up 3 or 4 times this year, so I thought it was about time I blogged about it.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Heart beats, keep alives &amp; Rx</h1>
+      <div class="article-meta">
+        <time datetime="2010-10-19">October 19, 2010</time>
+        <span class="tag">reactive-extensions</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>This one has come up 3 or 4 times this year, so I thought it was about time I blogged about it.</p>
+<p>Heart beats or keep alives are used in all shapes &amp; forms of software development, from inter-process communications in UNIX systems programming to session keep alives in web development. It's an old, simple approach that has been tried and tested. This pattern is amazingly beautiful in Rx.</p>
+<p>Lets start with a server, keeping a client session alive.</p>
+<pre><code>// For this scenario we can simply model the heart beat with a Unit (kind of like void, we have no payload)
+var source = Observable.Return(new Unit()).Delay(TimeSpan.FromSeconds(1)).Repeat();
+
+// Query converts this stream into a true/false switch.
+var query = Observable.Switch
+(
+    from hb in source
+    select Observable.Return(true)
+        .Concat(Observable.Return(false).Delay((TimeSpan.FromSeconds(2))))
+).DistinctUntilChanged();</code></pre>
+<p>I'll break this into its components.</p>
+<pre><code>// Ensures that our timeout timer is cancels when a new heart beat arrives.
+Observable.Switch
+
+// Tells the consumer of the query that we are now connected / alive.
+Observable.Return(true)
+
+// Once we've told the consumer that we are connected, we will start a timer that will yield false if it ever expires.
+.Concat(Observable.Return(false).Delay((TimeSpan.FromSeconds(2))))
+
+// we don't want to yield, true, true, true to the consumer, they only need to be told once.
+.DistinctUntilChanged()</code></pre>
+<p>If you'd like to test this query, play around with the event source. Here is one that goes up &amp; down every few seconds.</p>
+<pre><code>var source = Observable.Concat
+(
+    Observable.Return(new Unit()).Delay(TimeSpan.FromSeconds(1)).Repeat(3),
+    Observable.Empty&lt;Unit&gt;().Delay(TimeSpan.FromSeconds(3))
+).Repeat();</code></pre>
+<p>If you found this interesting stay tuned for some more scenarios.</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

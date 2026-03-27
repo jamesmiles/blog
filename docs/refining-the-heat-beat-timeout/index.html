@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refining the heat beat timeout — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="I’ve been playing around with different ways of expressing the timeout described in my last post. To refresh your memory, I originally defined it like this;">
+  <meta name="article:date" content="2010-10-21">
+  <meta property="og:title" content="Refining the heat beat timeout">
+  <meta property="og:description" content="I’ve been playing around with different ways of expressing the timeout described in my last post. To refresh your memory, I originally defined it like this;">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Refining the heat beat timeout</h1>
+      <div class="article-meta">
+        <time datetime="2010-10-21">October 21, 2010</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>I've been playing around with different ways of expressing the timeout described in my last post. To refresh your memory, I originally defined it like this;</p>
+<pre><code>// Once we've told the consumer that we are connected, we will start a timer that will yield false if it ever expires.
+Observable.Timer(TimeSpan.FromSeconds(2).Select(_ =&gt; false)</code></pre>
+<p>There are lots of way you can define this behaviour in Rx, for example;</p>
+<pre><code>Observable.Never&lt;bool&gt;().Timeout(TimeSpan.FromSeconds(2), Observable.Return(false))
+
+Observable.Return(false).Delay(TimeSpan.FromSeconds(2))</code></pre>
+<p>I'm settling on the latter in this case. Less characters is better :)</p>
+<p>To recap, I've now generalized the solution described in the last post into the following method.</p>
+<pre><code>private IObservable&lt;bool&gt; IsConnected&lt;T&gt;(IObservable&lt;T&gt; heartbeats, TimeSpan timeout)
+{
+    var connected = Observable.Return(true);
+    var disconnected = Observable.Return(false).Delay(timeout);
+
+    return Observable.Switch
+        (
+            from hb in heartbeats
+            select connected.Concat(disconnected)
+        ).DistinctUntilChanged();
+}</code></pre>
+<p>It takes a stream of heartbeats for a session &amp; introduces a true/false switch, telling you if the session is active or not.</p>
+<p>This will be useful in my next post, "Monitoring cluster nodes using Rx".</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

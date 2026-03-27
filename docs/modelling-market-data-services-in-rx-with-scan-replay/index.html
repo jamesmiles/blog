@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelling Market Data Services in Rx with Scan + Replay — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="In my last post I defined a new type of subject that is useful for modelling snapshot/update style Publish/Subscribe communications. An alternative to building your own subject is to create an enve...">
+  <meta name="article:date" content="2011-03-26">
+  <meta property="og:title" content="Modelling Market Data Services in Rx with Scan + Replay">
+  <meta property="og:description" content="In my last post I defined a new type of subject that is useful for modelling snapshot/update style Publish/Subscribe communications. An alternative to building your own subject is to create an enve...">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Modelling Market Data Services in Rx with Scan + Replay</h1>
+      <div class="article-meta">
+        <time datetime="2011-03-26">March 26, 2011</time>
+        <span class="tag">reactive-extensions</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>In my <a href="http://enumeratethis.com/2011/03/26/modelling-market-data-services-in-rx-with-mergesubjectt/">last post</a> I defined a new type of subject that is useful for modelling snapshot/update style Publish/Subscribe communications. An alternative to building your own subject is to create an envelope type that represents an update delta &amp; the current state of the world.</p>
+<pre><code>    // Envelope
+    public class Update
+    {
+        public StockTick Delta { get; set; }
+        public StockTick Image { get; set; }
+
+        public Update Create(StockTick delta)
+        {
+            return new Update
+            {
+                Delta = delta,
+                Image = Image == null ? delta : StockTick.Merge(Image, delta)
+            };
+        }
+
+        public override string ToString()
+        {
+            return string.Format("\nDELTA: {0}\nIMAGE: {1}", Delta, Image);
+        }
+    }
+
+    public class StockTick
+    {
+        public string Symbol { get; set; }
+
+        public decimal? Bid { get; set; }
+        public decimal? Ask { get; set; }
+        public decimal? Last { get; set; }
+
+        public long? BidSize { get; set; }
+        public long? AskSize { get; set; }
+        public long? LastSize { get; set; }
+        public long? Volume { get; set; }
+
+        public DateTime? QuoteTime { get; set; }
+        public DateTime? TradeTime { get; set; }
+
+        public override string ToString()
+        {
+            return new { Symbol, Bid, Ask, Last, BidSize, AskSize, LastSize, Volume, QuoteTime, TradeTime }.ToString();
+        }
+
+        public static StockTick Merge(StockTick a, StockTick b)
+        {
+            return new StockTick
+            {
+                Bid = b.Bid ?? a.Bid,
+                Ask = b.Ask ?? a.Ask,
+                Last = b.Last ?? a.Last,
+                BidSize = b.BidSize ?? a.BidSize,
+                AskSize = b.AskSize ?? a.AskSize,
+                LastSize = b.LastSize ?? a.LastSize,
+                Volume = b.Volume ?? a.Volume,
+                QuoteTime = b.QuoteTime ?? a.QuoteTime,
+                TradeTime = b.TradeTime ?? a.TradeTime,
+            };
+        }
+    }</code></pre>
+<p>You can then use Scan + Replay to achieve similar behaviour.</p>
+<pre><code>    source
+    .Scan(new Update(), (a, v) => a.Create(v))
+    .Replay(1);</code></pre>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image13.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image_thumb13.png?w=737&#038;h=617" width="737" height="617" /></a> </p>
+<p>Sample program;</p>
+<pre><code>        public static void Main()
+        {
+            // underlying source
+            var ibm = new Subject<StockTick>();
+
+            // Scan into Update<T> & then Replay(1)
+            var published = ibm
+                .Scan(new Update(), (a, v) => a.Create(v))
+                .Replay(1);
+            published.Connect();
+
+            // start Foo
+            published.Subscribe(x => Console.WriteLine("FOO {0}\n", x));
+
+            // publish initial state of the world 
+            ibm.OnNext(new StockTick
+            {
+                Symbol = "IBM",
+                Bid = 89.02m,
+                Ask = 89.08m,
+                Last = 89.06m,
+                BidSize = 300,
+                AskSize = 1000,
+                LastSize = 200,
+                Volume = 7808,
+                QuoteTime = DateTime.Now,
+                TradeTime = DateTime.Now,
+            });
+
+            // and then publish a single update
+            ibm.OnNext(new StockTick { Symbol = "IBM", BidSize = 400 });
+
+            // start Bar (will receive state of the world automatically
+            published.Subscribe(x => Console.WriteLine("BAR {0}\n", x));
+
+            // publish some more updates
+            ibm.OnNext(new StockTick { Symbol = "IBM", Bid = 89.00m, Ask = 89.06m, BidSize = 500, AskSize = 600 });
+            ibm.OnNext(new StockTick { Symbol = "IBM", AskSize = 400 });
+        }</code></pre>
+<p><u>OUTPUT</u></p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image14.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image_thumb14.png?w=882&#038;h=647" width="882" height="647" /></a> </p>
+<p>In some ways I prefer this approach. It is a more flexible API in that the observer can choose between an update delta or the fully hydrated object. Interested to here what you think.</p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>“Warm” observables with Publish().RefCount() — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="So in the observable extensions class there is a nice little extension method that stands out from the rest. RefCount() is different from all the other kids in the class  in that it’s for IConnecta...">
+  <meta name="article:date" content="2010-04-17">
+  <meta property="og:title" content="“Warm” observables with Publish().RefCount()">
+  <meta property="og:description" content="So in the observable extensions class there is a nice little extension method that stands out from the rest. RefCount() is different from all the other kids in the class  in that it’s for IConnecta...">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">“Warm” observables with Publish().RefCount()</h1>
+      <div class="article-meta">
+        <time datetime="2010-04-17">April 17, 2010</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>So in the observable extensions class there is a nice little extension method that stands out from the rest. RefCount() is different from all the other kids in the class <img src="https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/72x72/1f609.png" alt="&#x1f609;" class="wp-smiley" /> in that it's for IConnectableObservable&lt;T&gt; rather than IObservable&lt;T&gt;.</p>
+<p>RefCount, "Returns an observable sequence that stays connected to the source as long as there is at least one subscription to the observable sequence."</p>
+<p>This is particularly useful in the real world, when combined with the publish extension method.</p>
+<p>Publish, "Returns a connectable observable sequence that shares a single subscription to the underlying source."</p>
+<p>Lets say we have an observable that does something like this;</p>
+<pre><code>var priceUpdates = Observable.Create&lt;PriceUpdate&gt;(o =&gt;
+    {
+        // Connect to server &amp; subscribe to stream
+        Subscribe(raceId);
+
+        // mechanism for receiving push notifications -&gt; o.OnNext(..)
+
+        () =&gt; Unsubscribe(raceId); // when disposed tell the server we don't care anymore
+    });</code></pre>
+<p>Now if you have multiple consumers of this observable in the client you have a problem. For example;</p>
+<pre><code>var priceUpdates = Observable.Create&lt;int&gt;(o =&gt;
+{
+    Console.WriteLine("Connect to server &amp; subscribe to stream");
+    // mechanism for recieving push notifications -&gt; o.OnNext(..)
+    return () =&gt; Console.WriteLine("when disposed tell the server we don't care anymore");
+});
+
+Console.WriteLine("+ first");
+using (priceUpdates.Subscribe(u =&gt; { }))
+{
+    Console.WriteLine("+ second");
+    using (priceUpdates.Subscribe(u =&gt; { }))
+    {
+        Console.WriteLine("- second");
+    }
+    Console.WriteLine("- first");
+}</code></pre>
+<p><u>OUTPUT</u></p>
+<pre><code>+ first
+Connect to server &amp; subscribe to stream
++ second
+Connect to server &amp; subscribe to stream
+- second
+when disposed tell the server we don't care anymore
+- first
+when disposed tell the server we don't care anymore</code></pre>
+<p>In fact there are a variety of problems here.</p>
+<ol>
+<li>We sent a second (pointless) subscription request to the server. </li>
+<li>We told the server we didn't care anymore when we still had an outstanding subscription on the client. </li>
+<li>We sent a second (pointless) subscription request to the server. </li>
+</ol>
+<p>Luckily the Rx framework has us covered here.</p>
+<pre><code>var priceUpdates = Observable.Create&lt;int&gt;(o =&gt;
+{
+    Console.WriteLine("Connect to server &amp; subscribe to stream");
+    // mechanism for recieving push notifications -&gt; o.OnNext(..)
+    return () =&gt; Console.WriteLine("when disposed tell the server we don't care anymore");
+});
+
+// just add this!
+priceUpdates = priceUpdates.Publish().RefCount();
+
+Console.WriteLine("+ first");
+using (priceUpdates.Subscribe(u =&gt; { }))
+{
+    Console.WriteLine("+ second");
+    using (priceUpdates.Subscribe(u =&gt; { }))
+    {
+        Console.WriteLine("- second");
+    }
+    Console.WriteLine("- first");
+}</code></pre>
+<p><u>OUTPUT</u></p>
+<pre><code>+ first
+Connect to server &amp; subscribe to stream
++ second
+- second
+- first
+when disposed tell the server we don't care anymore</code></pre>
+<p>I think will become a really common pattern for reactive client server communications. I hope you find this as useful as I did.</p>
+<p>James</p>
+<p>First post!</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

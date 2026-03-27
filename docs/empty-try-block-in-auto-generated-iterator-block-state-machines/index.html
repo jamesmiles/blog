@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empty try block in auto-generated iterator block state machines — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="I’m sure this has already been pointed out, but I couldn’t find it anywhere.">
+  <meta name="article:date" content="2010-06-06">
+  <meta property="og:title" content="Empty try block in auto-generated iterator block state machines">
+  <meta property="og:description" content="I’m sure this has already been pointed out, but I couldn’t find it anywhere.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Empty try block in auto-generated iterator block state machines</h1>
+      <div class="article-meta">
+        <time datetime="2010-06-06">June 6, 2010</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>I'm sure this has already been pointed out, but I couldn't find it anywhere.</p>
+<p>I recently ran into an article by Jon Skeet, <a href="http://csharpindepth.com/Articles/Chapter6/IteratorBlockImplementation.aspx" target="_blank">C# in Depth - Iterator block implementation details: auto-generated state machine</a>.</p>
+<p>He points out that if your iterator has a disposal routine, the auto-generated code contains an empty try block, followed by a finally block. Here is an excerpt from his article.</p>
+<pre><code>void IDisposable.Dispose()
+{
+    switch (this.&lt;&gt;1__state)
+    {
+        case 1:
+        case 2:
+            break;
+
+        // Very strange! Reflector bug? See below.
+        default:
+            break;
+            try
+            {
+            }
+            finally
+            {
+                this.&lt;&gt;m__Finally6();
+            }
+            break;
+    }
+}</code></pre>
+<p>This is actually by design. The C# compiler team have done this to ensure that thread aborts don't interrupt the disposal routine. Here is the MSDN documentation on the Thread.Abort method.</p>
+<p>"When this method is invoked on a thread, the system throws a ThreadAbortException  in the thread to abort it. ThreadAbortException  is a special exception that can be caught by application code, but is re-thrown at the end of the catch  block unless ResetAbort  is called. ResetAbort cancels the request to abort, and prevents the ThreadAbortException  from terminating the thread. Unexecuted finally  blocks are executed before the thread is aborted."</p>
+<p>If you'd like to experiment, this little program demonstrates the behaviour quite nicely.</p>
+<pre><code>static void Main(string[] args)
+{
+    var t = new Thread(() =&gt;
+        {
+            //try { }
+            //finally
+            //{
+                Thread.Sleep(1000);
+                Console.WriteLine("finished");
+            //}
+        });
+
+    t.Start();
+    Thread.Sleep(1);
+    t.Abort();
+    Console.WriteLine("thread aborted");
+    Console.ReadLine();
+}</code></pre>
+<p>Enjoy!</p>
+<p>By the way. If you don't know the in depth workings of iterator blocks, Jon's article is a great read.</p>
+<p>More soon,<br />
+James</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

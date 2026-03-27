@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Structs that implement IEnumerator — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="OK. Lets just revise the query we had in the previous post. I’m going to change it so that is finds enumerators that are also value types;">
+  <meta name="article:date" content="2011-11-30">
+  <meta property="og:title" content="Structs that implement IEnumerator">
+  <meta property="og:description" content="OK. Lets just revise the query we had in the previous post. I’m going to change it so that is finds enumerators that are also value types;">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Structs that implement IEnumerator</h1>
+      <div class="article-meta">
+        <time datetime="2011-11-30">November 30, 2011</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>OK. Lets just revise the query we had in the <a href="http://enumeratethis.com/2011/11/22/structs-that-implement-idisposable/">previous post</a>. I’m going to change it so that is finds enumerators that are also value types;</p>
+<pre><code>from f in Directory.GetFiles (
+       Path.Combine (
+             Environment.GetFolderPath (System.Environment.SpecialFolder.ProgramFilesX86),
+             @"Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0"),
+       "*.dll")
+where !f.ToLowerInvariant().Contains ("thunk")
+where !f.ToLowerInvariant().Contains ("wrapper")
+select Assembly.LoadFrom (f) into a
+from t in a.GetExportedTypes()
+where t.IsValueType && typeof(IEnumerator).IsAssignableFrom (t)
+select new { a.GetName().Name, t.FullName }</code></pre>
+<p>Running the query in LINQPad will yield the following results.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/11/image1.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/11/image_thumb1.png?w=400&#038;h=478" width="400" height="478" /></a></p>
+<p>It would seem like a CRAZY! thing to do given that an enumerator, is by its very nature, mutable… I’ll try to reason why this might be beneficial; then we will look at why it sucks.</p>
+<p><strong>Possible Reasoning</strong></p>
+<p>I can think of two possible reasons why they might have chosen to do this.</p>
+<p>1. It could be considered a “feature” in that if you ever wanted to remember or save the current state of a collection’s enumerator, you could just copy it to another field. I’m going to rule this out, the behaviour isn’t consistent with other enumerators (arrays, non-generic collections and then later, iterator blocks).</p>
+<p>2. Another possibility is performance. Perhaps the BCL team were looking to avoid the heap allocation caused by calling GetEnumerator.</p>
+<p>It would seem like a “micro optimisation”; does that tiny heap allocation really cause an issue? I’m going to look at a popular design pattern that I think might expose the problem they were trying to solve. </p>
+<p><strong>The Composite Design Pattern</strong></p>
+<p>Consider a C# implementation of the Composite pattern;</p>
+<pre><code>// Composite design pattern
+class Node
+{
+    public readonly ArrayList Children = new ArrayList();
+
+    public void Recurse()
+    {
+        foreach(Node child in Children)
+        {
+            child.Recurse();
+        }
+    }
+}</code></pre>
+<p>Now lets consider a simple usage (1000 nodes with 1000 children).</p>
+<pre><code>var root = new Node();
+for (int i = 0; i < 1000; i++)
+{
+    var child = new Node();
+    for (int j = 0; j < 1000; j++)
+    {
+        child.Children.Add(new Node());
+    }
+    root.Children.Add(child);
+}
+
+var before = GC.CollectionCount(0);
+root.Recurse();
+var after = GC.CollectionCount(0);
+Console.WriteLine("Collection Count: " + (after - before));</code></pre>
+<p><u>OUTPUT</u></p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/11/image2.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/11/image_thumb2.png?w=244&#038;h=86" width="244" height="86" /></a></p>
+<p>That’s right 7 GCs just to recurse our composite tree structure! Yikes!</p>
+<p>If we change from ArrayList to List&lt;object&gt;, you can see the difference.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/11/image3.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/11/image_thumb3.png?w=244&#038;h=77" width="244" height="77" /></a></p>
+<p>Is this a realistic scenario? Can anyone think of a LARGE instance of the composite design pattern present in many of today’s .NET applications? I’ll give you a clue, it starts with W… and ends in PF.</p>
+<p>WPF &amp; Silverlight are text book implementations of the composite design pattern; can you imagine how many times the tree is traversed in this manner? Can you imagine how deep the tree is for a complex user interface? In my mind, this is a good theory for explaining why, at the very least the “presentation core” enumerators have been implemented in this manner. I think most developers would have implemented a composite design pattern using List&lt;T&gt; at some stage or another.</p>
+<p><strong>Possible Problems</strong></p>
+<p>So is it likely that someone would trip over this optimisation? Lets start with the obvious ones before moving to hell.</p>
+<pre><code>List<int>.Enumerator e1 = new List<int>{1,2,3,4,5}.GetEnumerator();
+List<int>.Enumerator e2 = e1;
+e1.MoveNext();
+Console.WriteLine(e1.Current);
+Console.WriteLine(e2.Current);</code></pre>
+<p>This will output 1 &amp; 0. The team probably decided to take this hit, after all any normal person would write this.</p>
+<pre><code>IEnumerator<int> e1 = new List<int>{1,2,3,4,5}.GetEnumerator();
+IEnumerator<int> e2 = e1;
+e1.MoveNext();
+Console.WriteLine(e1.Current);
+Console.WriteLine(e2.Current);</code></pre>
+<p>This causes the value type to be boxed, meaning the “copy by value” semantics disappear and we get two references to the same enumerator, giving us the expected output of 1 &amp; 1. But wait a second, most developers in .NET 3.5 / C# 3.0 will write this;</p>
+<pre><code>var e1 = new List<int>{1,2,3,4,5}.GetEnumerator();
+var e2 = e1;
+e1.MoveNext();
+Console.WriteLine(e1.Current);
+Console.WriteLine(e2.Current);</code></pre>
+<p>Uh oh! GetEnumerator returns List&lt;int&gt;.Enumerator meaning the inferred type is the value type, we’re back to square one!</p>
+<p>I guess you could argue, well at least the problem is localised to this statement; it isn’t like people are passing these around from one method to another.</p>
+<p>Oh wait, but what about the interference of generic type parameters! This is heavily leveraged by technologies like LINQ &amp; Rx (NOTE: This is how I came up with <a href="http://enumeratethis.com/2011/10/26/observable-generate-pop-quiz/">my recent pop quiz</a>!).</p>
+<p>Consider the following;</p>
+<pre><code>    public class Wrapper<T> where T : IEnumerator
+    {
+        private readonly T enumerator;
+
+        public Wrapper(T enumerator)
+        {
+            this.enumerator = enumerator;
+        }
+
+        public object Current
+        {
+            get { return enumerator.Current; }
+        }
+
+        public bool MoveNext()
+        {
+            return enumerator.MoveNext();
+        }
+    }</code></pre>
+<p> </p>
+<p><strong>Impromptu Pop Quiz</strong></p>
+<p>I don’t want to box the enumerator… we only have one storage location. </p>
+<p><span class="kwrd">private</span> <span class="kwrd">readonly</span> T enumerator; </p>
+<p>Will this wrapper work for enumerators that are value types?</p>
+<p>Here is a complete program for you to play with.</p>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Collections;
+
+namespace ConsoleApplication30
+{
+    class Program
+    {
+        private static void Main()
+        {
+            var w = Wrapper.Create(new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }.GetEnumerator());
+            w.MoveNext();
+            Console.WriteLine("Expected value: 1");
+            Console.WriteLine("Actual value: " + w.Current);
+        }
+    }
+
+    public static class Wrapper
+    {
+        public static Wrapper<T> Create<T>(T enumerator)
+            where T : IEnumerator
+        {
+            return new Wrapper<T>(enumerator);
+        }
+    }
+
+    public class Wrapper<T> where T : IEnumerator
+    {
+        private readonly T enumerator;
+
+        public Wrapper(T enumerator)
+        {
+            this.enumerator = enumerator;
+        }
+
+        public object Current
+        {
+            get { return enumerator.Current; }
+        }
+
+        public bool MoveNext()
+        {
+            return enumerator.MoveNext();
+        }
+    }
+}</code></pre>
+<p>Look forward to your replies!</p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

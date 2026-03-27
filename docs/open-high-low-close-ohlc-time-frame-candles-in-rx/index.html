@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Observable Open-high-low-close (OHLC) time frame candles — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="Wikipedia – &#8220;An open-high-low-close chart (also OHLC chart, or simply bar chart) is a type of chart typically used to illustrate movements in the price of a financial instrument over time.&#8...">
+  <meta name="article:date" content="2010-08-29">
+  <meta property="og:title" content="Observable Open-high-low-close (OHLC) time frame candles">
+  <meta property="og:description" content="Wikipedia – &#8220;An open-high-low-close chart (also OHLC chart, or simply bar chart) is a type of chart typically used to illustrate movements in the price of a financial instrument over time.&#8...">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Observable Open-high-low-close (OHLC) time frame candles</h1>
+      <div class="article-meta">
+        <time datetime="2010-08-29">August 29, 2010</time>
+        <span class="tag">reactive-extensions</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p><strong>Wikipedia –</strong> "An open-high-low-close chart (also OHLC chart, or simply bar chart) is a type of <a title="Chart" href="/wiki/Chart">chart</a> typically used to illustrate movements in the price of a <a title="Financial instrument" href="/wiki/Financial_instrument">financial instrument</a> over time."</p>
+<p>Sombody on the forums recently asked how the data for these charts could be calculated. Rx handles this type of problem perfectly via the "BufferWithTime" operator.</p>
+<pre><code>from window in prices
+	.Timestamp()
+	.BufferWithTime(TimeSpan.FromSeconds(1))
+select new
+{
+	Start = window.First().Timestamp.DateTime,
+	Open = window.First().Value,
+	High = window.Max(ts => ts.Value),
+	Low = window.Min(ts => ts.Value),
+	Close = window.Last().Value
+}
+</code></pre>
+<p>We are currently building charting functionality into our SDP. This could be useful! Here is a program that uses the query with a simulated price tick source.</p>
+<div>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ConsoleApplication21
+{
+  class Program
+  {
+    static void Main(string[] args)
+    {
+      var interval = TimeSpan.FromSeconds(0.1);
+      var rand = new Random();
+      var prices = Observable.GenerateWithTime(100, _ => true, i => i, _ => interval, i => rand.Next(i - i/10, i + i/10));
+
+      var query =
+        from window in prices
+          .Timestamp()
+          .BufferWithTime(TimeSpan.FromSeconds(1))
+        select new
+        {
+          Start = window.First().Timestamp.DateTime,
+          Open = window.First().Value,
+          High = window.Max(ts => ts.Value),
+          Low = window.Min(ts => ts.Value),
+          Close = window.Last().Value
+        };
+
+      query.Subscribe(Console.WriteLine);
+      Console.ReadKey();
+    }
+  }
+}
+</code></pre>
+</div>
+<p>Enjoy!</p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

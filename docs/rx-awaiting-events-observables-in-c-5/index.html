@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rx – Awaiting events &amp; observables in C# 5 — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="So everyone is now using C# 5 to write asynchronous methods to await tasks right 😉">
+  <meta name="article:date" content="2012-02-17">
+  <meta property="og:title" content="Rx – Awaiting events &amp; observables in C# 5">
+  <meta property="og:description" content="So everyone is now using C# 5 to write asynchronous methods to await tasks right 😉">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Rx – Awaiting events &amp; observables in C# 5</h1>
+      <div class="article-meta">
+        <time datetime="2012-02-17">February 17, 2012</time>
+        <span class="tag">reactive-extensions</span>
+        <span class="tag">c#</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>So everyone is now using C# 5 to write asynchronous methods to await tasks right 😉</p>
+<p>Did you know you can also await other things? Like events &amp; observables!?</p>
+<p>The following code demonstrates how you can “await” items being added to an observable collection.</p>
+<pre><code>using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Reactive;
+using System.Reactive.Linq;
+
+namespace ConsoleApplication11
+{
+    class Program
+    {
+        private static readonly ObservableCollection<int> Collection = new ObservableCollection<int>();
+
+        static void Main()
+        {
+            Test();
+            Collection.Add(42);
+        }
+
+        public static async void Test()
+        {
+            Console.WriteLine("awaiting event...");
+            var itemsAdded = await 
+                (
+                    from collectionChanged in Collection.ToNotifyCollectionChangedObservable()
+                    where collectionChanged.EventArgs.Action == NotifyCollectionChangedAction.Add
+                    select collectionChanged.EventArgs.NewItems
+                )
+                .Take(1);
+
+            Console.WriteLine("items added;");
+            foreach (var item in itemsAdded)
+                Console.WriteLine(item);
+        }
+    }
+
+    public static class Extensions
+    {
+        public static IObservable<EventPattern<NotifyCollectionChangedEventArgs>> 
+            ToNotifyCollectionChangedObservable(this INotifyCollectionChanged source)
+        {
+            return Observable.FromEventPattern<NotifyCollectionChangedEventHandler, NotifyCollectionChangedEventArgs>
+                (h => source.CollectionChanged += h,
+                h => source.CollectionChanged -= h);
+        }
+    }
+}
+</code></pre>
+<p>Enjoy!</p>
+<p>*UPDATE* make sure you have Rx-experimental release. The GetAwaiter method is not in the stable release yet!</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

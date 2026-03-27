@@ -252,6 +252,27 @@ img {
   font-weight: var(--font-weight-medium);
 }
 
+/* Load more button */
+.load-more {
+  display: block;
+  margin: var(--space-8) auto;
+  padding: var(--space-3) var(--space-8);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.load-more:hover {
+  background-color: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+  border-color: var(--color-brand-primary);
+}
+
 /* Single article page */
 .article-header {
   margin-bottom: var(--space-8);

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reactive Extensions 2.0 Beta: Assembly References — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="Before you jump into Rx 2.0 Beta you should know about some of the changes to the hierarchy of assemblies.">
+  <meta name="article:date" content="2012-03-07">
+  <meta property="og:title" content="Reactive Extensions 2.0 Beta: Assembly References">
+  <meta property="og:description" content="Before you jump into Rx 2.0 Beta you should know about some of the changes to the hierarchy of assemblies.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Reactive Extensions 2.0 Beta: Assembly References</h1>
+      <div class="article-meta">
+        <time datetime="2012-03-07">March 7, 2012</time>
+        <span class="tag">reactive-extensions</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>Before you jump into Rx 2.0 Beta you should know about some of the changes to the hierarchy of assemblies.</p>
+<p>Rx 1.0 assemblies were structured like this;</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2012/03/image4.png"><img title="image" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2012/03/image_thumb4.png?w=500&#038;h=88" width="500" height="88" /></a></p>
+<p> </p>
+<p>Rx 2.0 assemblies are structured like this;</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2012/03/image5.png"><img title="image" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2012/03/image_thumb5.png?w=500&#038;h=169" width="500" height="169" /></a></p>
+<p>The big change here is the addition of the System.Reactive.Interfaces &amp; System.Reactive.PlatformServices.</p>
+<p>I’m guessing that the thinking behind this change but;</p>
+<p><strong>System.Reactive.Interfaces</strong> </p>
+<p>This will allow people to define “service contracts” without bringing in the entire Rx stack.</p>
+<p><strong>System.Reactive.PlatformServices</strong></p>
+<p>This eliminates a hard dependency on platform specific scheduling, concurrency &amp; timing including low level components such as the thread pool &amp; high resolution timers.</p>
+<p>More soon   <br />James</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

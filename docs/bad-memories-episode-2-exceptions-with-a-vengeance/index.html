@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bad Memories – Episode 2 (exceptions with a vengeance) — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="Refresher…">
+  <meta name="article:date" content="2010-05-26">
+  <meta property="og:title" content="Bad Memories – Episode 2 (exceptions with a vengeance)">
+  <meta property="og:description" content="Refresher…">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Bad Memories – Episode 2 (exceptions with a vengeance)</h1>
+      <div class="article-meta">
+        <time datetime="2010-05-26">May 26, 2010</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>Refresher...</p>
+<p>In the last post I enhanced my .Memoize() extension so that it supported exceptions. It now caches resulting exceptions and re-throws them for subsequent callers  however there is still a problem.</p>
+<pre><code>public static Func&lt;T&gt; Memoize&lt;T&gt;(this Func&lt;T&gt; f)
+{
+    var gate = new object();
+    var set = false;
+    T result = default(T);
+    Exception error = null;
+    return () =&gt;
+    {
+        if (!set)
+        {
+            lock (gate)
+            {
+                if (!set)
+                {
+                    try
+                    {
+                        result = f();
+                    }
+                    catch(Exception ex)
+                    {
+                        error = ex;
+                    }
+                    set = true;
+                }
+            }
+        }
+        if(error != null) throw error;
+        return result;
+    };
+}</code></pre>
+<p>The function produced by .Memoize() is <em>supposed</em> to be thread safe (hence the locking). Looking closely though, multiple threads could be throwing the same exception object at the same time! You need to be careful with exceptions as they are mutable objects and throwing them tells the CLR to record stack trace information as it bubbles up the call stack. This could result in exceptions being logged with a corrupt stack trace, making it difficult to debug application errors. Take a look at the following example.</p>
+<pre><code>static void MethodA(Exception ex)
+{
+    throw ex;
+}
+
+static void MethodB(Exception ex)
+{
+    throw ex;
+}
+
+static void Main()
+{
+    // exception that we are going to throw multiple times
+    var test = new Exception("testing");
+
+    // schedule execution of method A
+    Scheduler.NewThread.Schedule(() =&gt;
+    {
+        try { MethodA(test); }
+        catch (Exception ex)
+        { // thread sleep is here to allow other method time to also throw the exception
+            Thread.Sleep(10);
+            Console.WriteLine("Error from MethodA: " + ex.ToString());
+        }
+    });
+
+    // schedule execution of method B
+    Scheduler.NewThread.Schedule(() =&gt;
+    {
+        try { MethodB(test); }
+        catch (Exception ex)
+        {
+            Thread.Sleep(10);
+            Console.WriteLine("Error from MethodB: " + ex.ToString());
+        }
+    });
+
+    Console.ReadLine();
+}</code></pre>
+<p>The output will vary but when I ran it, it looked like this;</p>
+<pre><code>Error from MethodB: System.Exception: testing
+   at Program.MethodB(Exception ex) in *snip*
+
+Error from MethodA: System.Exception: testing
+   at Program.MethodB(Exception ex) in *snip*</code></pre>
+<p>"That's weird. How come an exception thrown from MethodA has MethodB in it's stack trace?"</p>
+<p>The solution is to simply wrap the original exception in a new exception each time it's thrown. This ensures each caller will get a clean stack trace. Here is an updated version.</p>
+<pre><code>public class MemoizeException : Exception
+{
+    public MemoizeException(Exception innerException)
+        : base("see inner exception", innerException) { }
+}
+
+public static Func&lt;T&gt; Memoize&lt;T&gt;(this Func&lt;T&gt; f)
+{
+    var gate = new object();
+    var set = false;
+    T result = default(T);
+    Exception error = null;
+    return () =&gt;
+    {
+        if (!set)
+        {
+            lock (gate)
+            {
+                if (!set)
+                {
+                    try
+                    {
+                        result = f();
+                    }
+                    catch (Exception ex)
+                    {
+                        error = ex;
+                    }
+                    set = true;
+                }
+            }
+        }
+        if (error != null) throw new MemoizeException(error);
+        return result;
+    };
+}</code></pre>
+<p>That's it for now - don't worry more excitement coming soon!</p>
+<p>James</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

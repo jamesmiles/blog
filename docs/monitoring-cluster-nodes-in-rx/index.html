@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoring cluster nodes in Rx — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="Ok. So we’ve now defined an observable query that tells us the connectivity of a heart beat / keep alive stream, based on some timeout interval.">
+  <meta name="article:date" content="2010-10-22">
+  <meta property="og:title" content="Monitoring cluster nodes in Rx">
+  <meta property="og:description" content="Ok. So we’ve now defined an observable query that tells us the connectivity of a heart beat / keep alive stream, based on some timeout interval.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Monitoring cluster nodes in Rx</h1>
+      <div class="article-meta">
+        <time datetime="2010-10-22">October 22, 2010</time>
+        <span class="tag">reactive-extensions</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>Ok. So we've now defined an observable query that tells us the connectivity of a heart beat / keep alive stream, based on some timeout interval. </p>
+<pre><code>IObservable&lt;bool&gt; IsConnected&lt;T&gt;(IObservable&lt;T&gt; heartbeats, TimeSpan timeout)</code></pre>
+<p>This allows us to monitor a single point of failure, or in the context of a client session, connectivity to the client. This is useful, but what if we are in a clustered environment, where 5 different servers are publishing their heart beats to the same channel. </p>
+<p>Over time our event stream might look something like this; </p>
+<pre><code>TIME            Event (node id)
+04:49:53       ponting
+04:49:53       hayden
+04:49:53       martyn
+04:49:53       gilchrist
+04:49:53       warne
+04:49:54       ponting
+04:49:54       gilchrist
+04:49:54       hayden
+04:49:54       martyn
+04:49:54       warne</code></pre>
+<p>What would be useful is if we could separate this into connectivity status for each server. We already have a query for a single point of failure, so let's focus on breaking this stream into notifications for each node. </p>
+<p>Ultimately we need a keyed observable for each unique node id. This is exactly what group by does, returning an observable of grouped observables. </p>
+<pre><code>IObservable&lt;IGroupedObservable&lt;TKey, TSource&gt;&gt; GroupBy&lt;TSource, TKey&gt;(...)</code></pre>
+<p>We can "compose" the grouped observable with the query we've already defined and it will give us the connectivity status for that node! </p>
+<pre><code>from nodeId in source
+group nodeId by nodeId into grp
+from isConnected in IsConnected(grp, timeout)
+select new { nodeId = grp.Key, isConnected }</code></pre>
+<p>Outputting something like this; </p>
+<pre><code>{ nodeId = hayden, isConnected = True }
+{ nodeId = martyn, isConnected = True }
+{ nodeId = ponting, isConnected = True }
+{ nodeId = warne, isConnected = True }
+{ nodeId = gilchrist, isConnected = True }
+*warne crashes + time passes*
+{ nodeId = warne, isConnected = False }</code></pre>
+<p>I think this is a great example of composition in Rx. </p>
+<p>Next up "Does my cluster have Quorum?"</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

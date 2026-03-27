@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Does my cluster have quorum — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="I’m finally returning to my blog after a 2 month hiatus. In a previous series of posts, I was looking into various heart beating patterns in Rx. I generally don’t like “multi part blog series” as t...">
+  <meta name="article:date" content="2011-02-02">
+  <meta property="og:title" content="Does my cluster have quorum">
+  <meta property="og:description" content="I’m finally returning to my blog after a 2 month hiatus. In a previous series of posts, I was looking into various heart beating patterns in Rx. I generally don’t like “multi part blog series” as t...">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Does my cluster have quorum</h1>
+      <div class="article-meta">
+        <time datetime="2011-02-02">February 2, 2011</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>I’m finally returning to my blog after a 2 month hiatus. In a previous series of posts, I was looking into various heart beating patterns in Rx. I generally don’t like “multi part blog series” as there is a pressure to finish them off and I have a tendency to get distracted.</p>
+<p>1. <a href="http://enumeratethis.com/2010/10/19/heart-beats-keep-alives-rx/">http://enumeratethis.com/2010/10/19/heart-beats-keep-alives-rx/</a><br />
+2. <a title="http://enumeratethis.com/2010/10/21/refining-the-heat-beat-timeout/" href="http://enumeratethis.com/2010/10/21/refining-the-heat-beat-timeout/">http://enumeratethis.com/2010/10/21/refining-the-heat-beat-timeout/</a><br />
+3. <a title="http://enumeratethis.com/2010/10/22/monitoring-cluster-nodes-in-rx/" href="http://enumeratethis.com/2010/10/22/monitoring-cluster-nodes-in-rx/">http://enumeratethis.com/2010/10/22/monitoring-cluster-nodes-in-rx/</a><br />
+4. Does my cluster have quorum. (You’re looking at it)</p>
+<p>Last time we ended up with a query that tells us which nodes in a cluster are currently sending us heart beats;</p>
+<p>&nbsp;</p>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main()
+        {
+            //..
+
+            // query tells us which nodes are up or down.
+            var query =
+                from nodeId in source
+                group nodeId by nodeId into grp
+                from isConnected in IsConnected(grp, timeout)
+                select new { nodeId = grp.Key, isConnected };
+
+            //...
+        }
+
+        // takes a stream of heart beats & a timeout period.
+        // transforms into an observable bool that tells us if we are connected or not.
+        static IObservable<bool> IsConnected<T>(IObservable<T> heartbeats, TimeSpan timeout)
+        {
+            var connected = Observable.Return(true);
+            var disconnected = Observable.Return(false).Delay(timeout);
+
+            return Observable.Switch
+            (
+                from hb in heartbeats
+                select connected.Concat(disconnected)
+            ).DistinctUntilChanged();
+        }
+    }
+}</code></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>However in my case, what I’m actually interested in is the clusters “quorum”;</p>
+<p>Quorum – “The minimal number of officers and members of a committee or organization, usually a majority, who must be present for valid transaction of business.”</p>
+<p>Let us assume that quorum &gt;= 1/2 the nodes in the cluster. Really, we just need a reactive “counter”, that is incremented &amp; decremented as nodes go on &amp; offline. Scan is perfect for reactive counters.</p>
+<pre><code>query.Scan(0, (a, v) => v.isConnected ? a + 1 : a - 1)</code></pre>
+<p>&nbsp;</p>
+<p>We can then transform this into a reactive Boolean telling us if the cluster has quorum or not.</p>
+<pre><code>var hasQuorum =
+    from count in query.Scan(0, (a, v) => v.isConnected ? a + 1 : a - 1)
+    select count >= 2;</code></pre>
+<p>I hope you find this useful. Here is a complete sample program that covers everything discussed in this series. As a TODO I’d like to revisit all of this with the new join/group join/window operators in Rx, it’s possible they could be applied here.</p>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main()
+        {
+            // timeout period
+            var timeout = TimeSpan.FromSeconds(1);
+            // test source
+            var source = new Subject<string>();
+
+            // query tells us which nodes are up or down.
+            var query =
+                from nodeId in source
+                group nodeId by nodeId into grp
+                from isConnected in IsConnected(grp, timeout)
+                select new { nodeId = grp.Key, isConnected };
+
+            query.Subscribe(Console.WriteLine);
+
+            // query tells us if the cluster has quorum.
+            var hasQuorum =
+                from count in query.Scan(0, (a, v) => v.isConnected ? a + 1 : a - 1)
+                select count >= 2;
+
+            hasQuorum
+                .DistinctUntilChanged()
+                .Subscribe(b => Console.WriteLine("has quorum: " + b));
+
+            source.OnNext("martyn");
+            source.OnNext("warne");
+            source.OnNext("ponting");
+
+            Console.ReadLine();
+        }
+
+        // takes a stream of heart beats & a timeout period.
+        // transforms into an observable bool that tells us if we are connected or not.
+        static IObservable<bool> IsConnected<T>(IObservable<T> heartbeats, TimeSpan timeout)
+        {
+            var connected = Observable.Return(true);
+            var disconnected = Observable.Return(false).Delay(timeout);
+
+            return Observable.Switch
+            (
+                from hb in heartbeats
+                select connected.Concat(disconnected)
+            ).DistinctUntilChanged();
+        }
+    }
+}</code></pre>
+<p>&nbsp;</p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

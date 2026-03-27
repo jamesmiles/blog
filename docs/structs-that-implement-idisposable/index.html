@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Structs that implement IDisposable — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="A few weeks ago some friends and I were at the pub discussing value types that implement IDisposable. Consider the IObservable interface.">
+  <meta name="article:date" content="2011-11-22">
+  <meta property="og:title" content="Structs that implement IDisposable">
+  <meta property="og:description" content="A few weeks ago some friends and I were at the pub discussing value types that implement IDisposable. Consider the IObservable interface.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Structs that implement IDisposable</h1>
+      <div class="article-meta">
+        <time datetime="2011-11-22">November 22, 2011</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>A few weeks ago some friends and I were at the pub discussing value types that implement IDisposable. Consider the IObservable interface.</p>
+<pre><code>interface IObservable<T>
+{
+    IDisposable Subscribe(IObserver<T> observer);
+}</code></pre>
+<p>One *might* consider using a disposable value type to take some pressure off the GC.</p>
+<pre><code>struct SlimDisposable : IDisposable
+{
+  // ....    
+}</code></pre>
+<p>Unfortunately this line of thinking is flawed. The value type will be boxed as an IDisposable, resulting in the heap allocation we were trying to avoid. Lets pretend our interface looked more like this;</p>
+<pre><code>interface IObservable<T>
+{
+    SlimDisposable Subscribe(IObserver<T> observer);
+}</code></pre>
+<p>Or maybe;</p>
+<pre><code>interface IObservable<TValue,TDisposable> where TDisposable : IDisposable
+{
+    TDisposable Subscribe(IObserver<TValue> observer);
+}</code></pre>
+<p>Now we could reference SlimDisposable without it being boxed! But is this a good thing? Unfortunately creating disposable value types is fraught with danger!</p>
+<p>Eric Lippert has a great post on the subject here; <a href="http://blogs.msdn.com/b/ericlippert/archive/2011/03/14/10138840.aspx">To box or not to box, that is the question</a></p>
+<p>To quote <a href="http://msdn.microsoft.com/en-us/library/fs2xkftw.aspx">MSDN</a>: “To help ensure that resources are always cleaned up appropriately, a Dispose method should be callable multiple times without throwing an exception.”</p>
+<p>This means that a disposable object usually needs to mutate &amp; track some state to determine if it has been disposed or not. But we are using a value type this state will be copied whenever we do an assignment. Consider the following;</p>
+<pre><code>public struct Disposable : IDisposable
+{
+    public bool IsDisposed;
+
+    public void Dispose()
+    {
+        if(!IsDisposed)
+        {
+            Console.WriteLine("Disposing Resources");
+            IsDisposed = true;
+        }
+    }
+}</code></pre>
+<p>Now lets say you did something like this;</p>
+<pre><code>var d1 = new Disposable(); 
+var d2 = d1; 
+d1.Dispose(); 
+Console.WriteLine("d1 == {0}, d2 == {1}", d1.IsDisposed, d2.IsDisposed);</code></pre>
+<p><u>OUTPUT</u></p>
+<pre><code>Disposing Resources
+d1 == True, d2 == False</code></pre>
+<p>We now have two states &amp; only 1 underlying resource!</p>
+<p>Purely as an educational exercise, we decided to write a query that would find all the value types in the .NET framework that implement IDisposable. It turns out there are in fact quite a few</p>
+<p>See for yourself;</p>
+<pre><code>from f in Directory.GetFiles (
+       Path.Combine (
+             Environment.GetFolderPath (System.Environment.SpecialFolder.ProgramFilesX86), 
+             @"Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0"),
+       "*.dll")
+where !f.ToLowerInvariant().Contains ("thunk")
+where !f.ToLowerInvariant().Contains ("wrapper")
+select Assembly.LoadFrom (f) into a
+from t in a.GetExportedTypes()
+where t.IsValueType && typeof(IDisposable).IsAssignableFrom (t)
+select new { a.GetName().Name, t.FullName }</code></pre>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/11/capture.jpg"><img loading="lazy" title="Capture" border="0" alt="Capture" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/11/capture_thumb.jpg?w=400&#038;h=490" width="400" height="490" /></a></p>
+<p>We’ve got some interesting types here;</p>
+<p>System.Thread.AsyncFlowControl<br />
+System.Thread.CancellationTokenRegistration<br />
+System.Windows.Threading.DispatchProcessingDisabled</p>
+<p>Both CancallationTokenRegistration &amp; DispatchProcessingDisabled get around the mutable state problem; they are in fact immutable value types. They use the state of a parent object (a reference type) to determine if they have been disposed or not. This means they can be assigned/copied safely.</p>
+<p>AsyncFlowControl is in fact a mutable value type! It does however use some state on the tread that is references to determine if the control flow is suppressed or not. However it does mean you can do weird things like this;</p>
+<pre><code>var afc1 = ExecutionContext.SuppressFlow();
+var afc2 = afc1;
+afc1.Dispose();
+var afc3 = ExecutionContext.SuppressFlow();
+afc2.Dispose();</code></pre>
+<p>This will result in the flow being restored, even though we never disposed of afc3. The BCL developers may have decided that in this case, the performance and pressure on the GC was so critical, that they’d commit this sin. Transferring ExecutionContext information from one thread to another is probably considered somewhat of a performance hotspot. I suspect it is also the case that very few developers have ever used this API let alone know what an ExecutionContext is!</p>
+<p>Anyway, the real point of interest here is, <strong>“oh my god, what are all these enumerators!”</strong></p>
+<p>Next time – Structs that implement IEnumerator.</p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

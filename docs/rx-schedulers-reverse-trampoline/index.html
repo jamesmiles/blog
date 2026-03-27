@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rx Schedulers – Reverse Trampoline — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="Recently I've been playing around with some *crazy* IScheduler implementations. I'm going to do a series of posts outlining some of my ideas. I've not had time to test or meditate on some of these ...">
+  <meta name="article:date" content="2011-02-11">
+  <meta property="og:title" content="Rx Schedulers – Reverse Trampoline">
+  <meta property="og:description" content="Recently I've been playing around with some *crazy* IScheduler implementations. I'm going to do a series of posts outlining some of my ideas. I've not had time to test or meditate on some of these ...">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Rx Schedulers – Reverse Trampoline</h1>
+      <div class="article-meta">
+        <time datetime="2011-02-11">February 11, 2011</time>
+        <span class="tag">reactive-extensions</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>Recently I've been playing around with some *crazy* IScheduler implementations. I'm going to do a series of posts outlining some of my ideas. I've not had time to test or meditate on some of these concepts. If they turn out to be poorly conceived hair brained ideas – I’m sorry!</p>
+<p> </p>
+<h1>Some background first</h1>
+<p>If you are not familiar with the concept of a trampoline (aka message loop), it is a pattern where rather than functions being executed immediately, they are placed onto a queue and executed by another piece of code. In case you were not aware the “CurrentThreadScheduler” in the Reactive Framework uses this pattern. This post does a good job of summarizing it’s usefulness &amp; role in Rx.</p>
+<p><a title="http://social.msdn.microsoft.com/Forums/en-US/rx/thread/7f75482f-eff2-4938-9491-47fe870989e8" href="http://social.msdn.microsoft.com/Forums/en-US/rx/thread/7f75482f-eff2-4938-9491-47fe870989e8">http://social.msdn.microsoft.com/Forums/en-US/rx/thread/7f75482f-eff2-4938-9491-47fe870989e8</a></p>
+<p>Bart has a great post on “Stack Friendly Recursion”.</p>
+<p><a title="http://community.bartdesmet.net/blogs/bart/archive/2009/11/08/jumping-the-trampoline-in-c-stack-friendly-recursion.aspx" href="http://community.bartdesmet.net/blogs/bart/archive/2009/11/08/jumping-the-trampoline-in-c-stack-friendly-recursion.aspx">http://community.bartdesmet.net/blogs/bart/archive/2009/11/08/jumping-the-trampoline-in-c-stack-friendly-recursion.aspx</a></p>
+<p>If you don’t yet “get it” just spend sometime trying to get your head around this mind bending code. The correct &amp; expected output is;</p>
+<pre><code>A
+C
+B</code></pre>
+<p> </p>
+<pre><code>class Program
+{
+    static void Main()
+    {
+        var tramp = new Trampoline();
+        tramp.Invoke(() =>
+        {
+            Console.WriteLine("A");
+            tramp.Invoke(() => Console.WriteLine("B"));
+        });
+        tramp.Invoke(() => Console.WriteLine("C"));
+        tramp.Run();
+    }
+}
+
+class Trampoline
+{
+    private readonly Queue<Action> queue = new Queue<Action>();
+
+    public void Invoke(Action action)
+    {
+        queue.Enqueue(action);
+    }
+
+    public void Run()
+    {
+        while (queue.Count > 0)
+        {
+            queue.Dequeue()();
+        }
+    }
+}</code></pre>
+<p> </p>
+<h1>The problem</h1>
+<p>A very important part and and source of confusion for new comers to Rx, is that all notifications in the query pipeline are serialized. Events must occur in the correct order. This makes sense if you think about it, an enumerable must enumerate over elements in order as well. For the most part, this is not a concern to developers using Rx, however it definitely something you need to understand and be aware of. The complication comes arises however, when writing subjects or operators that allow scheduler injection. Consider this partial implementation of ISubject.</p>
+<p> </p>
+<pre><code>public class MySubject<T> : ISubject<T>
+{
+    private readonly IScheduler scheduler;
+    private readonly List<IObserver<T>> observers = new List<IObserver<T>>();
+
+    public MySubject(IScheduler scheduler)
+    {
+        this.scheduler = scheduler;
+    }
+
+    public void OnNext(T value)
+    {
+        lock(observers)
+        {
+            foreach(var o in observers)
+            {
+                scheduler.Schedule(() => o.OnNext(value)); // problem here
+            }
+        }
+    }
+}</code></pre>
+<p> </p>
+<p>The problem here is that when used with concurrent schedulers like the thread or task pool, events will be subtly reordered as pre-emptive multitasking suspends and resumes parallel threads execution. This defect might go completely unnoticed, and is difficult to test. It would be good if we have a testing strategy that would weed out these sorts of scheduler based race conditions.</p>
+<p> </p>
+<h1>The experiment</h1>
+<p>I don’t like writing multi-threaded unit tests. They are harder to write &amp; difficult to understand. I avoid them where ever possible. This led me to design a single threaded scheduler, that deliberately processes it’s queue of work  out of order, allowing easy detection of these types of errors. Here are my “single threaded test schedulers”.</p>
+<p> </p>
+<pre><code>public interface ITestScheduler : IScheduler
+{
+    void Run();
+}
+
+public static class TestSchedulers
+{
+    public static ITestScheduler Trampoline = new NormalTrampoline();
+    public static ITestScheduler Reverse = new ReverseTrampoline();
+    public static IEnumerable<ITestScheduler> All
+    {
+        get
+        {
+            yield return Trampoline;
+            yield return Reverse;
+        }
+    }
+
+    private class NormalTrampoline : ITestScheduler
+    {
+        private readonly Queue<Action> queue = new Queue<Action>();
+
+        public void Run()
+        {
+            while (queue.Count > 0)
+            {
+                queue.Dequeue()();
+            }
+        }
+
+        public DateTimeOffset Now
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        public IDisposable Schedule(Action action, TimeSpan dueTime)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IDisposable Schedule(Action action)
+        {
+            var disposable = new BooleanDisposable();
+            queue.Enqueue(() =>
+            {
+                if (!disposable.IsDisposed) action();
+            });
+            return disposable;
+        }
+    }
+
+    private class ReverseTrampoline : ITestScheduler
+    {
+        private readonly Stack<Action> stack = new Stack<Action>();
+
+        public void Run()
+        {
+            while (stack.Count > 0)
+            {
+                stack.Pop()();
+            }
+        }
+
+        public DateTimeOffset Now
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public IDisposable Schedule(Action action, TimeSpan dueTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable Schedule(Action action)
+        {
+            var disposable = new BooleanDisposable();
+            stack.Push(() =>
+            {
+                if (!disposable.IsDisposed) action();
+            });
+            return disposable;
+        }
+    }
+}</code></pre>
+<p> </p>
+<p>Take note of the reverse (stack based) trampoline scheduler. I would have liked to base these test schedulers on the TestScheduler &amp; VirtualScheduler in the Rx framework, however VirtualScheduler is built on top of a queue, so I don’t think it would be possible to alter the order like this.</p>
+<p>If we go back to our Subject example, we could now write a unit test like this;</p>
+<p> </p>
+<pre><code>void Test()
+{
+    foreach(var scheduler in TestSchedulers.All)
+    {
+        var subject = new Subject<int>(scheduler);
+        var expected = Enumerable.Range(0, 10);
+        var results = new List<int>();
+        subject.Subscribe(results.Add);
+
+        expected.Run(subject.OnNext);
+
+        Assert.IsTrue(results.SequenceEqual(expected));
+    }
+}</code></pre>
+<p>This test would fail given our buggy naive subject implementation of that we defined earlier.</p>
+<p> </p>
+<h1>Conclusion / Coming up</h1>
+<p>I’ve not given this a good road test yet. I’d be very interested to  spark a discussion about this, especially if you can see problems with this approach.</p>
+<p>Coming up, we will look at an easy way to build a subject so that it passes this test.</p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

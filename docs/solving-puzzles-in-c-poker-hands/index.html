@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solving Puzzles in C#: Poker Hands — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="A brute force C# and LINQ solution to computing poker hands from a standard 52-card deck.">
+  <meta name="article:date" content="2014-08-13">
+  <meta property="og:title" content="Solving Puzzles in C#: Poker Hands">
+  <meta property="og:description" content="A brute force C# and LINQ solution to computing poker hands from a standard 52-card deck.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Solving Puzzles in C#: Poker Hands</h1>
+      <div class="article-meta">
+        <time datetime="2014-08-13">August 13, 2014</time>
+        <span class="tag">c#</span>
+        <span class="tag">linq</span>
+        <span class="tag">puzzles</span>
+        <span class="tag">linqpad</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>I particularly like the solution to this puzzle as it can be easily adapted to any problem involving a deck of cards &amp; the probability of being dealt a particular hand.</p>
+      <p>In this post I'll be linking each code snippet to <strong><a href="http://forum.linqpad.net/discussion/146/how-is-upload-to-instant-share-used">"LINQPad instant share"</a></strong> so you can literally execute the code as we go!</p>
+
+      <h2>The Question</h2>
+      <p>(courtesy of Mitch Wheat)</p>
+      <p>"How many five-card hands from a standard (52 card) deck of cards contain at least one card in each suit?"</p>
+
+      <h2>LINQPad Solution</h2>
+      <p>So as you might have guessed, we're going to use a brute force approach. Before we can tackle the specific problem, we need to come up with a way of generating all possible hands. I figured the simplest (and reasonably efficient) way to represent a deck of cards is with a sequence of integers, each representing a card in the deck.</p>
+
+<pre><code>Enumerable.Range(0,52)</code></pre>
+
+      <p>What's nice about this, is we can quickly assign each integer a suit &amp; the respective card values using the following query.</p>
+      <p><strong>Generating Cards</strong> (<a href="http://share.linqpad.net/rkqnan.linq">http://share.linqpad.net/rkqnan.linq</a>)</p>
+
+<pre><code>from i in Enumerable.Range(0,52)
+let suit = i / 13
+let card = (i % 13)
+select new { card, suit }</code></pre>
+
+      <p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2014/08/image.png"><img src="https://jamesmiles.wordpress.com/wp-content/uploads/2014/08/image_thumb.png" alt="query results: my 4 suits" width="554" height="210" /></a></p>
+      <p>This step is not necessary, but you might want to assign each card &amp; suit an enum value. I didn't actually do this, but if you don't understand what's going on here, it might help!</p>
+      <p><strong>Generating Gold Plated Cards</strong> (<a href="http://share.linqpad.net/5usvcx.linq">http://share.linqpad.net/5usvcx.linq</a>)</p>
+
+<pre><code>enum Suit { Hearts, Clubs, Diamonds, Spades }
+
+enum Card { Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace }
+
+void Main()
+{
+    var query =
+        from i in Enumerable.Range(0,52)
+        let suit = (Suit)(i / 13)
+        let card = (Card)(i % 13)
+        select new { card, suit };
+
+    query.Dump();
+}</code></pre>
+
+      <p>OK, now that we have a deck of cards, let's see how we can generate all possible 5 card hands. This is probably the crux of the puzzle &amp; it is a little bit tricky: ordering is not important with a hand of cards &amp; in addition to this, we're "sampling with out replacement"; a card can only appear in a hand once.</p>
+      <p>First step is to decide on a method name, I'm going with GetAllHands.</p>
+      <p>Next we should nail down the interface (I've opted for a recursive solution). Remember our deck of cards will be represented as a sequence of integers, so our method will need to accept an IEnumerable&lt;int&gt;. Likewise, each hand can also be represented in this manner (as a sequence of integers) except this method will generate all possible (many) hands, so we can return an IEnumerable&lt;IEnumerable&lt;int&gt;&gt;.</p>
+      <p><strong>Method Signature</strong></p>
+
+<pre><code>IEnumerable&lt;IEnumerable&lt;int&gt;&gt; GetAllHands(IEnumerable&lt;int&gt; deck)</code></pre>
+
+      <p>The only thing I'd like to add here, is a parameter that tells our function the size of the hand.</p>
+
+<pre><code>IEnumerable&lt;IEnumerable&lt;int&gt;&gt; GetAllHands(IEnumerable&lt;int&gt; deck, int handSize)</code></pre>
+
+      <p>With these types of problems, I generally find it easiest to work on the non-recursive (first level of depth) solution first. Imagine we just need to return all possible 1 card hands.</p>
+      <p><strong>Generate All One Card Hands</strong> (<a href="http://share.linqpad.net/ebh299.linq">http://share.linqpad.net/ebh299.linq</a>)</p>
+
+<pre><code>void Main()
+{
+    var deck = Enumerable.Range(0,52);
+    GetAllHands(deck,1).Dump();
+}
+
+IEnumerable&lt;IEnumerable&lt;int&gt;&gt; GetAllHands(IEnumerable&lt;int&gt; deck, int handSize)
+{
+    foreach(var card in deck)
+    {
+        if(handSize == 1) yield return new[]{card};
+    }
+}</code></pre>
+
+      <p>Easy right? OK, it's now time to add a sprinkling of recursion!</p>
+      <p><strong>Adding Recursion</strong> (<a href="http://share.linqpad.net/fii9wv.linq">http://share.linqpad.net/fii9wv.linq</a>)</p>
+
+<pre><code>IEnumerable&lt;IEnumerable&lt;int&gt;&gt; GetAllHands(IEnumerable&lt;int&gt; deck, int handSize)
+{
+    foreach(var card in deck)
+    {
+        if(handSize == 1) yield return new[]{card};
+        else foreach(var hand in GetAllHands(deck, handSize-1))
+            yield return new[]{card}.Concat(hand);
+    }
+}</code></pre>
+
+      <p>Looking at our output, there are two problems.</p>
+      <ol>
+        <li>We are producing the same hand in different orders: {1,0} &amp; {0,1}</li>
+        <li>We are sampling with replacement, we can't have the same card in the hand twice: {0, 0}</li>
+      </ol>
+      <p>To solve this problem, we just need to remove a card from the deck once we've generated all the hands it's involved in.</p>
+      <p><strong>Killing Two Birds With One Stone</strong> (<a href="http://share.linqpad.net/futqdc.linq">http://share.linqpad.net/futqdc.linq</a>)</p>
+
+<pre><code>IEnumerable&lt;IEnumerable&lt;int&gt;&gt; GetAllHands(IEnumerable&lt;int&gt; deck, int handSize)
+{
+    var count = 0;
+    foreach(var card in deck)
+    {
+        if(handSize == 1) yield return new[]{card};
+        else foreach(var hand in GetAllHands(deck.Skip(++count), handSize-1))
+            yield return new[]{card}.Concat(hand);
+    }
+}</code></pre>
+
+      <p>OK, so now this is where this solution really comes into its own. Not only can we compute <em>how many</em> 5 card hands there are, we have a sequence of <em>all</em> 2598960 hands meaning we can query it with LINQ!</p>
+      <p><strong>The Solution</strong> (<a href="http://share.linqpad.net/u9q7aq.linq">http://share.linqpad.net/u9q7aq.linq</a>)</p>
+
+<pre><code>from hand in GetAllHands(deck, 5)
+let suits = hand.Select(x =&gt; (Suit)(x / 13))
+where suits.Contains(Suit.Hearts)
+where suits.Contains(Suit.Clubs)
+where suits.Contains(Suit.Diamonds)
+where suits.Contains(Suit.Spades)
+select hand</code></pre>
+
+      <p>What's interesting is how easy it is to adapt this to other poker hands. Here are some examples:</p>
+      <p><strong>All Flushes</strong> (<a href="http://share.linqpad.net/349fer.linq">http://share.linqpad.net/349fer.linq</a>)</p>
+
+<pre><code>from hand in GetAllHands(deck, 5)
+let suits = hand.Select(x =&gt; (Suit)(x / 13))
+where suits.All(x =&gt; x == Suit.Hearts)
+    || suits.All(x =&gt; x == Suit.Clubs)
+    || suits.All(x =&gt; x == Suit.Diamonds)
+    || suits.All(x =&gt; x == Suit.Spades)
+select hand</code></pre>
+
+      <p>PS. When verifying this answer I found some poker websites incorrectly compute this one! They should have used LINQPad.</p>
+      <p><strong>Three Fours</strong> (<a href="http://share.linqpad.net/n63fsf.linq">http://share.linqpad.net/n63fsf.linq</a>)</p>
+
+<pre><code>from hand in GetAllHands(deck, 5)
+let cards = hand.Select(x =&gt; (Card)(x % 13))
+where cards.Count(x =&gt; x == Card.Four) == 3
+select hand</code></pre>
+
+      <p>Pretty cool huh?! I think that just about wraps it up: Another puzzle solved in C#!</p>
+      <p>Stay tuned for an interesting alternative solution.</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

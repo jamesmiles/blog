@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C# 5.0 &amp; Rx Schedulers — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="It’s been a pretty exciting week in the C# world. I initially had mixed feelings.">
+  <meta name="article:date" content="2010-11-03">
+  <meta property="og:title" content="C# 5.0 &amp; Rx Schedulers">
+  <meta property="og:description" content="It’s been a pretty exciting week in the C# world. I initially had mixed feelings.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">C# 5.0 &amp; Rx Schedulers</h1>
+      <div class="article-meta">
+        <time datetime="2010-11-03">November 3, 2010</time>
+        <span class="tag">reactive-extensions</span>
+        <span class="tag">c#</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>It’s been a pretty exciting week in the C# world. I initially had mixed feelings.</p>
+
+      <ol>
+        <li>I think this will really help Silverlight developers needing to make network IO calls. If you didn’t realise all network IO in Silverlight uses the Asynchronous Programming Model.</li>
+        <li>However at the same time there is all this negative, “Silverlight is dead hype”.</li>
+        <li>I’d really prefer an ITask interface. I’m not a fan of baking Task into my class interfaces. It means I’ll need special testing infrastructure to mock these things.</li>
+      </ol>
+
+      <p>The obvious use case is we can now perform some network operation, and continue running our code when it’s done. Great useful feature but nothing we couldn’t already do. The excitement died pretty quickly for me on this one.</p>
+
+      <p>I’m now exploring this stuff a little more, and I’ve stumbled across an interesting use pattern that was not immediately obvious to me. With a few simple extension methods, we can now write code like this!</p>
+
+<pre><code>static async void RunWorker()
+{
+    await Scheduler.ThreadPool.SwitchTo();
+    // do some work
+    await Scheduler.Dispatcher.SwitchTo();
+    // update the ui
+    await Scheduler.NewThread.SwitchTo();
+    // perform blocking operation
+    await Scheduler.TaskPool.SwitchTo();
+    // crunch some numbers
+    await Scheduler.Dispatcher.SwitchTo();
+    // display some results &amp; return
+}</code></pre>
+
+      <p>Let me explain…</p>
+
+      <p>We require an extension method for IScheduler. This extension method will return a scheduler task, allowing the await keyword to place a callback on the specified scheduler. That task will look like this.</p>
+
+<pre><code>public interface ITask
+{
+    IAwaiter GetAwaiter();
+}
+
+public interface IAwaiter
+{
+    bool BeginAwait(Action callback);
+    void EndAwait();
+}</code></pre>
+
+      <p>Extension method signature will look like this.</p>
+
+<pre><code>public static ITask SwitchTo(this IScheduler scheduler)</code></pre>
+
+      <p>I think it will also be useful to have an overload that yields control for the current thread and calls back after a given time interval.</p>
+
+<pre><code>public static ITask SwitchTo(this IScheduler scheduler, IScheduler interval)</code></pre>
+
+      <p>Here is the implementation.</p>
+
+<pre><code>public static class SchedulerEx
+{
+    public static ITask SwitchTo(this IScheduler scheduler)
+    {
+        return new AnonymousTask(() =&gt; new ScheduledAwaiter(callback =&gt; scheduler.Schedule(callback)));
+    }
+
+    public static ITask SwitchTo(this IScheduler scheduler, TimeSpan interval)
+    {
+        return new AnonymousTask(() =&gt; new ScheduledAwaiter(callback =&gt; scheduler.Schedule(callback, interval)));
+    }
+
+    private class AnonymousTask : ITask
+    {
+        private readonly Func&lt;IAwaiter&gt; _getAwaiter;
+
+        public AnonymousTask(Func&lt;IAwaiter&gt; getAwaiter)
+        {
+            _getAwaiter = getAwaiter;
+        }
+
+        public IAwaiter GetAwaiter()
+        {
+            return _getAwaiter();
+        }
+    }
+
+    private class ScheduledAwaiter : IAwaiter
+    {
+        private readonly Action&lt;Action&gt; _scheduleCallback;
+
+        internal ScheduledAwaiter(Action&lt;Action&gt; scheduleCallback)
+        {
+            _scheduleCallback = scheduleCallback;
+        }
+
+        public bool BeginAwait(Action callback)
+        {
+            _scheduleCallback(callback);
+            return true;
+        }
+
+        public void EndAwait()
+        {
+        }
+    }
+}</code></pre>
+
+      <p>A simple test application;</p>
+
+<pre><code>class Program
+{
+    static EventLoopScheduler _kitchen = new EventLoopScheduler(“Kitchen Thread”);
+    static EventLoopScheduler _diningRoom = new EventLoopScheduler(“Dining Room”);
+
+    static void Main()
+    {
+        Enumerable.Range(1, 5).Run(CreateWaiter);
+        Console.ReadLine();
+    }
+
+    static async void CreateWaiter(int id)
+    {
+        while (true)
+        {
+            await _kitchen.SwitchTo();
+            Console.WriteLine(“{0}: {1} (I should be in the kitchen)”, id, Thread.CurrentThread.Name);
+
+            await _diningRoom.SwitchTo();
+            Console.WriteLine(“{0}: {1} (I should be in the dining room)”, id, Thread.CurrentThread.Name);
+
+            await Scheduler.TaskPool.SwitchTo();
+            Console.WriteLine(“{0}: {1} (I should be in the pool)”, id, Thread.CurrentThread.Name == null ? “Pool” : Thread.CurrentThread.Name);
+        }
+    }
+}</code></pre>
+
+      <p>I’d imagine this will become quite a popular pattern. It looks like they are planning to add a method just like this to the ThreadPool. Perhaps it will become the norm on all scheduling constructs.</p>
+
+      <p>Going to sleep on it – More soon!</p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Record Types &amp; Pattern-Matching Coming in C# 6? — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="A look at the draft specification for Records and Pattern-Matching in C#, borrowed from F# and Haskell.">
+  <meta name="article:date" content="2014-08-11">
+  <meta property="og:title" content="Record Types &amp; Pattern-Matching Coming in C# 6?">
+  <meta property="og:description" content="A look at the draft specification for Records and Pattern-Matching in C#.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Record Types &amp; Pattern-Matching Coming in C# 6?</h1>
+      <div class="article-meta">
+        <time datetime="2014-08-11">August 11, 2014</time>
+        <span class="tag">c#</span>
+        <span class="tag">language-design</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>A developer from the Roslyn (.NET Compiler Platform) team recently published a *draft* specification for Records &amp; Pattern-Matching in C#. It seems that the proposed language specification is an attempt to neatly integrate these two concepts (borrowed from F#, Haskell and friends) into the C# language. For some background see:</p>
+      <p><a href="http://msdn.microsoft.com/en-us/library/dd547125.aspx">Pattern Matching in F#</a><br /><a href="http://msdn.microsoft.com/en-us/library/dd233184.aspx">Records in F#</a><br /><a href="http://en.wikibooks.org/wiki/Haskell/Pattern_matching">Pattern Matching in Haskell</a></p>
+
+      <p><strong>Record Types</strong></p>
+      <p>Similar to records in F#, the proposed record type (referred to as a record class) is a new type of class that makes it easier to define &amp; maintain read-only (immutable by default) POCOs, with the compiler handling generation of:</p>
+      <ol>
+        <li>Private Backing Fields</li>
+        <li>Properties (field accessors)</li>
+        <li>Equals (override equality operator)</li>
+        <li>Is (required by the new pattern-matching operator)</li>
+        <li>GetHashCode</li>
+        <li>ToString</li>
+      </ol>
+      <p>As an example, a record type defined as follows:</p>
+
+<pre><code>public record class Student(int age: Age, string name: Name);</code></pre>
+
+      <p>Would instruct the compiler to generate the following:</p>
+
+<pre><code>public class Student
+{
+    private readonly int _age;
+    private readonly string _name;
+
+    public Student(int age, string name)
+    {
+        _age = age;
+        _name = name;
+    }
+
+    public int Age { get { return _age; } }
+    public string Name { get { return _name; } }
+
+    // new "is" operator required for "pattern-matching"
+    public static bool operator is( Student student, out int age, out string name)
+    {
+        age = student.Age;
+        name = student.Name;
+        return true;
+    }
+
+    public override bool Equals(object obj)
+    {
+        var o = obj as Student;
+        return !ReferenceEquals(o, null)
+            &amp;&amp; object.Equals(_age, o.Age)
+            &amp;&amp; object.Equals(_name, o.Name);
+    }
+
+    public override int GetHashCode()
+    {
+        int v = 1203787;
+        v = (v * 28341) + Age?.GetHashCode().GetValueOrDefault();
+        v = (v * 28341) + Name?.GetHashCode().GetValueOrDefault();
+        return v;
+    }
+
+    public override string ToString()
+    {
+        return new System.Text.StringBuilder()
+            .Append("Student(Age: ")
+            .Append(_age)
+            .Append(", Name: ")
+            .Append(_name)
+            .Append(")")
+            .ToString();
+    }
+}</code></pre>
+
+      <p>While all of this code generation and syntactic sugar will no doubt make our lives easier, the really interesting thing here is the new "is" operator.</p>
+
+      <p><strong>Patterns</strong></p>
+      <p>This part of the proposed feature will allow developers to control program flow using familiar if-is or switch statements by expressing the "shape" data must be matched to including:</p>
+      <ul>
+        <li>Types</li>
+        <li>Constants</li>
+        <li>Variables</li>
+        <li>Wildcards</li>
+        <li>Recursive Patterns</li>
+      </ul>
+      <p>As an example, consider how we'd currently control program flow based on the type of a variable.</p>
+
+<pre><code>var button = control as Button;
+if(button != null) button.Click();</code></pre>
+
+      <p>Using a "Type Pattern" we'd be able to simplify this:</p>
+
+<pre><code>if(control is Button button) button.Click();</code></pre>
+
+      <p>While this is a fairly trivial example, complex pattern matching, including switch statements &amp; recursive patterns <em>may</em> revolutionize the way we write some C# programs. I understand the team is planning to publish a prototype "in a few weeks", so I'll post some real world examples of how the different types of patterns might be used.</p>
+      <p>In the meantime, if you're interested in learning more, <a href="https://onedrive.live.com/view.aspx?resid=4558A04E77D0CF5!5396&amp;app=Word">the draft specification is available here.</a></p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

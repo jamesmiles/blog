@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Charts &amp; Reactive Extensions — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="The price of a financial instrument is not a fixed value. It is something that changes over time, driven by market forces. It’s quite common to view this as a chart that is updated as the price cha...">
+  <meta name="article:date" content="2011-07-26">
+  <meta property="og:title" content="Financial Charts &amp; Reactive Extensions">
+  <meta property="og:description" content="The price of a financial instrument is not a fixed value. It is something that changes over time, driven by market forces. It’s quite common to view this as a chart that is updated as the price cha...">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Financial Charts &amp; Reactive Extensions</h1>
+      <div class="article-meta">
+        <time datetime="2011-07-26">July 26, 2011</time>
+        <span class="tag">reactive-extensions</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <h1> </h1>
+<h1>Introduction</h1>
+<p>The price of a financial instrument is not a fixed value. It is something that changes over time, driven by market forces. It’s quite common to view this as a chart that is updated as the price changes. In this post I will demonstrate how to sample an observable stream of prices and display the results in a real-time charting application.</p>
+<p>To start with, lets consider a basic chart (aka tick chart), where we simply plot each movement in the underlying instrument.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb.png?w=400&#038;h=382" width="400" height="382" /></a></p>
+<p>This is fine when looking at small samples of data, but for volatile instruments, we might receive many prices per second. This can quickly become unwieldy. The computer might not have enough memory to plot days, months or years of prices. This will also show too much noise to the user, with constant price fluctuations that do not represent the sentiment of the market.</p>
+<p>We need to sample the data in some way. The simplest approach is just to take the latest price at regular intervals. Rx has an operator that behaves in the exact manner – Sample.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image1.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb1.png?w=400&#038;h=385" width="400" height="385" /></a></p>
+<p>This solution isn’t really suitable for <a href="http://en.wikipedia.org/wiki/Technical_analysis">technical analysis</a> as we are diluting the information to an extent that it is difficult to deduce the overall market trend. Unfortunately analysts and traders are quite fussy! What they need is a chart that represents price performance for a specific period in a single point on the x-axis.</p>
+<h1> </h1>
+<h1>OHLC Charts</h1>
+<p>I’ve chosen this particular type of chart as it relatively simple. All we need to do is partition our data into regular time periods and determine four values;</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image2.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb2.png?w=400&#038;h=403" width="400" height="403" /></a></p>
+<p>We can then plot these quadruples as a <a href="http://en.wikipedia.org/wiki/OHLC">price bar</a> or <a href="http://en.wikipedia.org/wiki/Candlestick_chart">candlestick</a>. A “price bar” is a line representing the highest &amp; lowest prices over a period of time, with “tick marks” showing the opening and closing price.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image3.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb3.png?w=300&#038;h=236" width="300" height="236" /></a></p>
+<p>The <a href="http://en.wikipedia.org/wiki/Technical_analysis">candlesticks</a> I mentioned are very similar, however the body is shaded to signify a positive/negative movement.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image4.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb4.png?w=300&#038;h=242" width="300" height="242" /></a></p>
+<p>Lets see what our original chart would like like using price bars.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image5.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb5.png?w=400&#038;h=400" width="400" height="400" /></a></p>
+<p>And now we can remove the original points…</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image6.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb6.png?w=400&#038;h=400" width="400" height="400" /></a></p>
+<p>I hope it’s clear how that was done. Additionally, it’s quite common to colour the bars so that a negative movements, between the open and close, are in red and positive movements are in a happy colour like blue or green. As I mentioned earlier this is essential for the <a href="http://en.wikipedia.org/wiki/Candlestick_chart">candlestick</a> variant of the chart. Ultimately we want to be able to build applications that plots real-time data like this;</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image7.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb7.png?w=400&#038;h=298" width="400" height="298" /></a></p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image8.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb8.png?w=400&#038;h=298" width="400" height="298" /></a></p>
+<p>Now that you know what we are building, lets work out how the Rx code is going to work. Hold on to your hat!</p>
+<h1> </h1>
+<h1>Generate</h1>
+<p>First up, we’re going to need a stream of observable prices to play with. I’d like my price stream to start at $5. Then every 10th of a second, I’d like to apply a random adjustment to the price.</p>
+<pre><code>var rand = new Random();
+
+var prices = Observable.Generate(
+    5d,
+    i => i > 0, 
+    i => i + rand.NextDouble() - 0.5,
+    i => i,
+    i => TimeSpan.FromSeconds(0.1)
+);</code></pre>
+<p>Woah! Lets go through this slowly.</p>
+<ul>
+<li>The first parameter <strong>(5d)</strong> is the initial seed or starting price for our observable sequence. </li>
+<li>Then we have a break condition <strong>(i &gt; 0)</strong>. We are effectively saying, keep generating prices while the price is greater than zero. If the price drops to zero we can assume that the company is bankrupt. </li>
+<li>Then we define <strong>(i + rand.NextDouble() – 0.5)</strong> how we’d like the price to be incremented, by a random value between –0.5 &amp; 0.5. </li>
+<li>You can then optionally transform the notification, we are not using this feature <strong>(i =&gt; i)</strong>. </li>
+<li>Finally we can supply a time interval <strong>TimeSpan.FromSeconds(0.1),</strong> telling Generate when we’d like to yield the next iteration in our observable sequence. We could randomize this as well, I’m just going to generate a new price every 0.1 seconds. </li>
+</ul>
+<p>Essentially <a href="http://msdn.microsoft.com/en-us/library/hh212066(v=VS.103).aspx">Generate</a> is a parameterised factory method that allows you to “<a href="http://en.wikipedia.org/wiki/Corecursion">corecursively</a>” define an observable sequence. The function parameters passed into the method define the behaviour (the single next step) of the observable sequence, much like a <a href="http://en.wikipedia.org/wiki/Series_(mathematics)">mathematical series</a>. In functional programming this concept is known as <a href="http://en.wikipedia.org/wiki/Anamorphism">“anamorphism” or “unfold”</a>. Generate is anamorphism for observables sequences!</p>
+<p>If you drop the code in <a href="http://linqpad.net/">LINQPad</a>, you should see an output like this.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image9.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb9.png?w=400&#038;h=627" width="400" height="627" /></a></p>
+<p>If you don’t have <a href="http://linqpad.net/">LINQPad</a>, you could write a small console application to test this out.</p>
+<h1> </h1>
+<h1>Buffer</h1>
+<p>So now that we have some test data to work with lets look at how we can calculate the Open, High, Low &amp; Close (OHLC) prices. <a href="http://enumeratethis.com/2010/08/29/open-high-low-close-ohlc-time-frame-candles-in-rx/">Last August</a> I did this using Rx’s Buffer operator. Reactive Extensions has evolved significantly since then. Here is a quote from my old post.</p>
+<p>“Rx handles this type of problem <strong>perfectly</strong> via the “Buffer” operator.”</p>
+<p>We had some code similar to this;</p>
+<pre><code>from buffer in prices.Buffer(TimeSpan.FromSeconds(1))
+select new
+{
+    Open = buffer.First(),
+    High = buffer.Max(),
+    Low = buffer.Min(),
+    Close = buffer.Last()
+}</code></pre>
+<p>You can drop this in <a href="http://linqpad.net/">LINQPad</a> with our test data.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image10.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb10.png?w=400&#038;h=282" width="400" height="282" /></a></p>
+<p>This works, however in retrospect, <strong>“perfectly”</strong> was a little far from the truth. Lets take a close look at how buffer works…</p>
+<p>As we subscribe to the query, the buffer operator will create a list. All notifications from the underlying source will be placed into this list until the timer elapses. At this point, the observer will be given the list containing all the notifications. We can then <em><strong>interact</strong></em> with this list, in this example, to calculate our OHLC values. This might help you understand how the buffer operator works. I’d recommend pasting this code into <a href="http://linqpad.net/">LINQPad</a> and having a play around with it.</p>
+<p><strong>Code</strong></p>
+<pre><code>var source = new Subject<char>();
+var timer = Observable.Interval(TimeSpan.FromSeconds(1));
+var buffer = source.Buffer(() => timer);
+buffer.Subscribe(Console.WriteLine);
+
+source.OnNext('a');
+source.OnNext('b');
+source.OnNext('c');
+
+Thread.Sleep(1100);
+
+source.OnNext('d');
+source.OnNext('e');
+source.OnNext('f');
+source.OnCompleted();</code></pre>
+<p><strong>Pictures</strong></p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image101.png"><img loading="lazy" title="Marble Diagram: Buffer" border="0" alt="Marble Diagram: Buffer" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image10_thumb.png?w=400&#038;h=253" width="400" height="253" /></a></p>
+<p>This approach is fine when we have three notifications per 1 second interval, but what will happen if we have a volatile price and say maybe a 1 minute interval? Our buffer is completely unbounded. This could lead to our short lived notifications being elevated into the generation 2 heap. If the buffer gets big enough, this could even result in a large object heap allocation. </p>
+<p>Buffer has its uses but in this case, our open, high, low &amp; close computation, doesn’t need all the values at once. We could perform the same calculation by stashing the first and last values (open &amp; close) and tracking the min &amp; max (high and low) values over the specified interval. What we need is an operator that allows us to <strong><em>react</em></strong> to the values over a window of time.</p>
+<h1> </h1>
+<h1>Window</h1>
+<p>Last December the Rx Team gave us a Christmas present focused around “Programming Streams of Coincidence”. There are some pretty powerful tools in there. If you are interested <a href="http://leecampbell.blogspot.com/2011/03/rx-part-9join-window-buffer-and-group.html">Lee Campbell has a post covering this family of operators</a>. For this problem, we are interested in Window, which <em><strong>really is perfect</strong></em> for calculating OHLC over an observable stream of prices. Buffer &amp; Window have a few different overloads, but these are the two we are talking about here;</p>
+<pre><code>IObservable<IList<T>> Buffer<T>(this IObservable<T> source, TimeSpan timeSpan)
+IObservable<IObservable<T>> Window<T>(this IObservable<T> source, TimeSpan timeSpan)</code></pre>
+<p>So how do these two operators differ? Buffer creates a list at each window opening and passes it to the observer when the window closes. In contrast the Window operator creates a subject at each window opening and passes it to the observer immediately. The subject acts as a conduit, allowing the operator to pipe each notification to the observer until the window closes. Here is the Buffer marble diagram again, this time along side Window;</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image11.png"><img loading="lazy" title="Marble Diagram: Buffer VS. Window" border="0" alt="Marble Diagram: Buffer VS. Window" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb11.png?w=400&#038;h=640" width="400" height="640" /></a></p>
+<p>Window is more powerful than Buffer as the observer can decide how to process the notifications within the context of the window. This can be achieved by applying SelectMany to the Window operator.</p>
+<p><strong>Query Comprehension Syntax</strong></p>
+<pre><code>from window in source.Window(timeSpan)
+from ? in window.?
+select ?</code></pre>
+<p><strong>Lambda Syntax</strong></p>
+<pre><code>source.Window(timeSpan).SelectMany(window => ?, (x, ?) => ?)</code></pre>
+<p><strong>Pictures</strong></p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image31.png"><img loading="lazy" title="Marble Diagram: Window and SelectMany" border="0" alt="Marble Diagram: Window and SelectMany" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image31_thumb.png?w=400&#038;h=340" width="400" height="340" /></a></p>
+<p>Interestingly the Buffer overload we’ve been discussing, is actually implemented using this technique. Lets use this as an example;</p>
+<p><strong>Query Comprehension Syntax</strong></p>
+<pre><code>// Implement Buffer using Window
+public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, TimeSpan timeSpan)
+{
+    // Transform IObservable<IObservable<T>> -> IObservable<IList<T>>
+    return 
+        from window in source.Window(timeSpan)
+        from buffer in window.ToList()
+        select buffer;
+}</code></pre>
+<p><strong>Lambda Syntax</strong></p>
+<pre><code>source.Window(timeSpan).SelectMany(window => window.ToList())</code></pre>
+<p><strong>Pictures</strong></p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image43.png"><img loading="lazy" title="Marble Diagram: Buffer Implemented Using Window" border="0" alt="Marble Diagram: Buffer Implemented Using Window" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image43_thumb.png?w=400&#038;h=382" width="400" height="382" /></a></p>
+<p> </p>
+<p>You can write any query you want over the window observable. Maybe the observer is only interested in the last value, this is semantically equivalent to Sample;</p>
+<p><strong>Query Comprehension Syntax</strong></p>
+<pre><code>// Implement Sample using Window
+public static IObservable<T> MySample<T>(this IObservable<T> source, TimeSpan timeSpan)
+{
+    return
+        from window in source.Window(timeSpan)
+        from last in window.TakeLast(1)
+        select last;
+}</code></pre>
+<p><strong>Lambda Syntax</strong></p>
+<pre><code>source.Window(timeSpan).SelectMany(window => window.TakeLast(1))</code></pre>
+<p><strong>Pictures</strong></p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image37.png"><img loading="lazy" title="Marble Diagram: Sample Implemented Using Window" border="0" alt="Marble Diagram: Sample Implemented Using Window" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image37_thumb.png?w=400&#038;h=378" width="400" height="378" /></a></p>
+<h1> </h1>
+<h1>Aggregate</h1>
+<p>OK so we have a mechanism that effectively divides a stream of events into smaller streams of events based on windows of time. All we need is a query that we can run over each observable window. Remember Buffer was implemented using ToList? Well ToList is actually implemented using Aggregate!</p>
+<p>In fact all sorts of things can be implemented using Aggregate. Remember the Generate (anamorphism) method we used to create our test data? Well it’s actually the dual to Aggregate! While Generate takes a seed and applies some functions to produce a series of notifications, Aggregate takes a series of notifications and recursively applies an accumulator function, until it reaches the end of the sequence, at which point it yields a result. Aggregate is “<a href="http://en.wikipedia.org/wiki/Catamorphism">catamorphism or fold</a>” for observable sequences!</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image12.png"><img loading="lazy" title="Mathmatical Duals: Aggregate, Generate, Catamorphism, Anamorphism, Fold, Unfold" border="0" alt="Mathmatical Duals: Aggregate, Generate, Catamorphism, Anamorphism, Fold, Unfold" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb12.png?w=400&#038;h=210" width="400" height="210" /></a></p>
+<p> </p>
+<p>We are going to use Aggregate to compute the OHLC values for each Window of prices. Before we do that lets just make sure everyone is comfortable.</p>
+<p><strong>Aggregate Method Signature</strong></p>
+<pre><code>IObservable<TAccumulate> Aggregate<TSource, TAccumulate>(
+    this IObservable<TSource> source,
+    TAccumulate seed,
+    Func<TAccumulate, TSource, TAccumulate> accumulator)</code></pre>
+<p><strong>Marble Diagram</strong></p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image13.png"><img loading="lazy" title="Marble Diagram: Aggregate" border="0" alt="Marble Diagram: Aggregate" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb13.png?w=400&#038;h=183" width="400" height="183" /></a></p>
+<p>Confused? Scared? Don’t be… </p>
+<p>Lets look at an example. Here is Sum implemented using Aggregate.</p>
+<p><strong>Sum</strong></p>
+<pre><code>Observable.Range(1,3).Aggregate(0, (sum, value) => sum + value)</code></pre>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image14.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb14.png?w=400&#038;h=188" width="400" height="188" /></a></p>
+<p>As I mentioned earlier, ToList is also implemented using Aggregate.</p>
+<p><strong>ToList</strong></p>
+<pre><code>Observable.Range(1,3).Aggregate(new List<int>(), (list, value) =>
+{
+    list.Add(value);
+    return list;
+})</code></pre>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image15.png"><img loading="lazy" title="Marble Diagram: ToList" border="0" alt="Marble Diagram: ToList" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb15.png?w=400&#038;h=192" width="400" height="192" /></a></p>
+<p>If you’ve not grokked it, try implementing some other basic operators like Min &amp; Max.</p>
+<h1> </h1>
+<h1>OHLC (Window + SelectMany + Aggregate)</h1>
+<p>So can we use Aggregate for our OHLC calculations? Lets start with the easy stuff by defining the fields we’ll need to keep track of these four values.</p>
+<pre><code>class OHLC
+{
+    public double? Open;
+    public double? High;
+    public double? Low;
+    public double Close;
+}</code></pre>
+<p>Now we just need a function that takes the current values &amp; a prices and produces the new values.</p>
+<pre><code>// (TAccumulate, TSource) -> TAccumulate
+static OHLC Accumulate(OHLC state, double price)
+{
+    // Take the current values & apply the price update.    
+    state.Open = state.Open ?? price;
+    state.High = state.High.HasValue ? state.High > price ? state.High : price : price;
+    state.Low = state.Low.HasValue ? state.Low < price ? state.Low : price : price;
+    state.Close = price;
+    return state;
+}</code></pre>
+<p>If we bring this together with Window, SelectMany &amp; Aggregate, we’ve now got a query that takes a stream of prices, splits it into windows and calculates OHLC values.</p>
+<pre><code>from window in prices.Window(TimeSpan.FromSeconds(1))
+from result in window.Aggregate(new OHLC(), Accumulate)
+select result</code></pre>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image16.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb16.png?w=400&#038;h=277" width="400" height="277" /></a></p>
+<p><strong></strong> </p>
+<p>For readers who are not using LINQPad, I’ve written a console application. You can download it <a href="http://www.amnet.net.au/~jamesmiles/Ohlc%20Console%20Application.zip">here</a>;</p>
+<p><strong>Console Application Code</strong></p>
+<pre><code>using System;
+
+namespace ConsoleApplication124
+{
+    using System.Reactive.Linq;
+
+    class Program
+    {
+        static void Main()
+        {
+            var rand = new Random();
+            var prices = Observable.Generate(
+                5d, i => i > 0, i => i + rand.NextDouble() - 0.5, i => i, i => TimeSpan.FromSeconds(0.1));
+
+            var query = from window in prices.Window(TimeSpan.FromSeconds(1))
+                        from result in window.Aggregate(new Ohlc(), Accumulate)
+                        select result;
+            query.Subscribe(Console.WriteLine);
+            Console.ReadLine();
+        }
+
+        class Ohlc
+        {
+            public double? Open;
+            public double? High;
+            public double? Low;
+            public double Close;
+
+            public override string ToString()
+            {
+                return (new { Open, High, Low, Close }).ToString();
+            }
+        }
+
+        static Ohlc Accumulate(Ohlc current, double price)
+        {
+            current.Open = current.Open ?? price;
+            current.High = current.High.HasValue ? current.High > price ? current.High : price : price;
+            current.Low = current.Low.HasValue ? current.Low < price ? current.Low : price : price;
+            current.Close = price;
+            return current;
+        }
+    }
+}</code></pre>
+<h2></h2>
+<h1>Plotting The Results</h1>
+<p>Finally, we’re going to plot these results using the charting controls that come with .NET 4.0. Unfortunately/Strangely these controls are only available for Windows Forms developers. It appears that they will be available in a future version of WPF, <a href="http://wpf.codeplex.com/">there is a preview release available here</a>. Alternatively there are lots of 3rd party charting packages that offer similar functionality. I’ll try these out in a future post. For now I’m going to use the Windows Forms controls, conceptually there shouldn’t be much of a difference.</p>
+<p>First lets prepare the project.</p>
+<p>1. Create a new Windows Forms project.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image17.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb17.png?w=400&#038;h=277" width="400" height="277" /></a></p>
+<p>4. Add references to Reactive Extensions.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image18.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb18.png?w=400&#038;h=338" width="400" height="338" /></a></p>
+<p>Your references should now look something like this;</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image19.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb19.png?w=223&#038;h=240" width="223" height="240" /></a></p>
+<p>3. Drop a Chart control onto the form.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image20.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb20.png?w=400&#038;h=240" width="400" height="240" /></a></p>
+<p>4. I’m going to get rid of the Legend.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image21.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb21.png?w=240&#038;h=185" width="240" height="185" /></a></p>
+<p>Click remove.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image22.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb22.png?w=400&#038;h=287" width="400" height="287" /></a></p>
+<h1> </h1>
+<h1>The Code</h1>
+<p>In the introduction I talked about two different chart types. Both are supported by this control library.</p>
+<pre><code>series.ChartType = SeriesChartType.Candlestick;
+series.ChartType = SeriesChartType.Stock;</code></pre>
+<p>For testing purposes, I’m going to set the resolution of the time axis so that it will work with 1 second intervals. A window that small isn’t useful in the real world, the smallest I’ve seen is 1 minute, but we want to see some results straight away.</p>
+<pre><code>series.XValueType = ChartValueType.Time;
+var area = chart1.ChartAreas[0];
+area.Axes[0].Title = "Time";
+area.AxisX.LabelStyle.IntervalType = DateTimeIntervalType.Seconds;
+area.AxisX.LabelStyle.Format = "T";</code></pre>
+<p>Finally we need to subscribe to our query &amp; test data and populate the chart. </p>
+<pre><code>query.ObserveOn(this).Subscribe(x => series.Points.AddXY(DateTime.Now, x.High, x.Low, x.Open, x.Close));</code></pre>
+<p>If you put all this code in the form’s constructor and run the project, you should have something like this;</p>
+<pre><code>using System;
+using System.Windows.Forms;
+using System.Reactive.Linq;
+using System.Windows.Forms.DataVisualization.Charting;
+
+namespace Chart
+{
+    public partial class Form1 : Form
+    {
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            // Configure the chart
+            var series = chart1.Series[0];
+            series.ChartType = SeriesChartType.Candlestick;
+            series.XValueType = ChartValueType.Time;
+            var area = chart1.ChartAreas[0];
+            area.Axes[0].Title = "Time";
+            area.AxisX.LabelStyle.IntervalType = DateTimeIntervalType.Seconds;
+            area.AxisX.LabelStyle.Format = "T";
+
+            
+            // Test prices
+            var rand = new Random();
+            var prices = Observable.Generate(5d, i => i > 0, i => i + rand.NextDouble() - 0.5, i => i, i => TimeSpan.FromSeconds(0.1));
+
+            // OHLC query
+            var query =
+                from window in prices.Window(TimeSpan.FromSeconds(1))
+                from ohlc in window.Aggregate(new OHLC(), Accumulate)
+                select ohlc;
+
+            // Subscribe & display results
+            query.ObserveOn(this).Subscribe(x => series.Points.AddXY(DateTime.Now, x.High, x.Low, x.Open, x.Close));
+
+        }
+
+        class OHLC
+        {
+            public double? Open;
+            public double? High;
+            public double? Low;
+            public double Close;
+        }
+
+        static OHLC Accumulate(OHLC current, double price)
+        {
+            current.Open = current.Open ?? price;
+            current.High = current.High.HasValue ? current.High > price ? current.High : price : price;
+            current.Low = current.Low.HasValue ? current.Low < price ? current.Low : price : price;
+            current.Close = price;
+            return current;
+        }
+    }
+}</code></pre>
+<p>Run the application;</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image23.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb23.png?w=400&#038;h=350" width="400" height="350" /></a></p>
+<p> </p>
+<p>Additionally we can apply a suitable colour scheme to the chart;</p>
+<pre><code>// Colours
+chart1.BackColor = Color.Black;
+chart1.ChartAreas[0].Axes[0].LineColor = Color.LimeGreen;
+chart1.ChartAreas[0].Axes[0].TitleForeColor = Color.LimeGreen;
+chart1.ChartAreas[0].AxisX.MajorTickMark.LineColor = Color.LimeGreen;
+chart1.ChartAreas[0].AxisX.LabelStyle.ForeColor = Color.LimeGreen;
+chart1.ChartAreas[0].Axes[1].LineColor = Color.LimeGreen;
+chart1.ChartAreas[0].Axes[1].TitleForeColor = Color.LimeGreen;
+chart1.ChartAreas[0].AxisY.MajorTickMark.LineColor = Color.LimeGreen;
+chart1.ChartAreas[0].AxisY.LabelStyle.ForeColor = Color.LimeGreen;
+chart1.ChartAreas[0].BackColor = Color.Black;
+series["PriceDownColor"] = "Red";</code></pre>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image24.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/07/image_thumb24.png?w=400&#038;h=280" width="400" height="280" /></a></p>
+<h1> </h1>
+<h1>Download</h1>
+<p>You can get a working demo application <a href="http://www.amnet.net.au/~jamesmiles/OHLC%20Chart.zip">here</a>. As discussed I will provide a WPF based solution soon.</p>
+<p>I’ve tried to make this article useful for both readers that know Rx but nothing about finance, or know finance but are not familiar with Rx. I’m not sure if it really works so I’m interested to hear feedback from both camps.</p>
+<p>More soon.</p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

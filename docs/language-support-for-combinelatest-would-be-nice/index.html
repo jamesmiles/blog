@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language support for CombineLatest would be nice — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="CombineLatest is very useful for orchestrating parallel asynchronous/observable requests. For example;">
+  <meta name="article:date" content="2010-04-17">
+  <meta property="og:title" content="Language support for CombineLatest would be nice">
+  <meta property="og:description" content="CombineLatest is very useful for orchestrating parallel asynchronous/observable requests. For example;">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Language support for CombineLatest would be nice</h1>
+      <div class="article-meta">
+        <time datetime="2010-04-17">April 17, 2010</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>CombineLatest is very useful for orchestrating parallel asynchronous/observable requests. For example;</p>
+<pre><code>Observable.Return("James")
+.CombineLatest(Observable.Return(28), (name, age) =&gt; new { name, age })
+.CombineLatest(Observable.Return("My Street"), (_, address) =&gt; new { _.name, _.age, address })
+.CombineLatest(Observable.Return("6076"), (_, postcode) =&gt; new { _.name, _.age, _.address, postcode });</code></pre>
+<p>As you can see however as the number of observables in the query grow, there is a fair bit of monkeying around required to map each anonymous type to the next. One solution would be to extend query comprehension syntax to support this extension method.</p>
+<pre><code>from name in Observable.Return("James")
+latest age in Observable.Return(28)
+latest address in Observable.Return("My Street")
+latest postcode in Observable.Return("6076")
+select new{ name, age, address, postcode }</code></pre>
+<p>If you agree, throw your support in <a href="http://social.msdn.microsoft.com/Forums/en/rx/thread/f8e008cd-6189-4e99-ba64-c9bef0a7a5a1" target="_blank">by clicking on this LINQ <img src="https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/72x72/1f609.png" alt="&#x1f609;" class="wp-smiley" /></a>. In the meantime, if you can't get your head around the code above, you can use tuples as an alternative.</p>
+<p>(Some new extension methods)</p>
+<pre><code>static class Ex
+{
+    public static IObservable&lt;Tuple&lt;T1, T2&gt;&gt; CombineLatestWithTuple&lt;T1, T2&gt;(this IObservable&lt;T1&gt; source, IObservable&lt;T2&gt; source2)
+    {
+        return source.CombineLatest(source2, (t1, t2) =&gt; new Tuple&lt;T1, T2&gt; { Value1 = t1, Value2 = t2 });
+    }
+
+    public static IObservable&lt;Tuple&lt;T1, T2, T3&gt;&gt; CombineLatestWithTuple&lt;T1, T2, T3&gt;(this IObservable&lt;Tuple&lt;T1, T2&gt;&gt; source, IObservable&lt;T3&gt; source2)
+    {
+        return source.CombineLatest(source2, (t, t3) =&gt; new Tuple&lt;T1, T2, T3&gt; { Value1 = t.Value1, Value2 = t.Value2, Value3 = t3 });
+    }
+
+    public static IObservable&lt;Tuple&lt;T1, T2, T3, T4&gt;&gt; CombineLatestWithTuple&lt;T1, T2, T3, T4&gt;(this IObservable&lt;Tuple&lt;T1, T2, T3&gt;&gt; source, IObservable&lt;T4&gt; source2)
+    {
+        return source.CombineLatest(source2, (t, t4) =&gt; new Tuple&lt;T1, T2, T3, T4&gt; { Value1 = t.Value1, Value2 = t.Value2, Value3 = t.Value3, Value4 = t4 });
+    }
+}</code></pre>
+<p>This allows you to write the query like this;</p>
+<pre><code>Observable.Return("James")
+.CombineLatestWithTuple(Observable.Return(29))
+.CombineLatestWithTuple(Observable.Return("My Street"))
+.CombineLatestWithTuple(Observable.Return("6076"))
+.Select(t =&gt; new
+{
+    Name = t.Value1,
+    Age = t.Value2,
+    Address = t.Value3,
+    Postcode = t.Value4
+});</code></pre>
+<p>I personally don't mind the original syntax but its here if you want it.</p>
+<p>Cheers,<br />
+James</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latch design pattern in Rx – more…. — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="My original example isn't quite true to the pattern. Here is an updated version.">
+  <meta name="article:date" content="2010-08-27">
+  <meta property="og:title" content="Latch design pattern in Rx – more….">
+  <meta property="og:description" content="My original example isn't quite true to the pattern. Here is an updated version.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Latch design pattern in Rx – more….</h1>
+      <div class="article-meta">
+        <time datetime="2010-08-27">August 27, 2010</time>
+        <span class="tag">reactive-extensions</span>
+        <span class="tag">design-patterns</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>My original example isn't quite true to the pattern. Here is an updated version.</p>
+<pre><code>var latch = new BehaviorSubject&lt;bool&gt;(false);
+
+var unlatchedEvents =
+from args in someEvent
+from isLatched in latch.Take(1)
+where !isLatched
+select args;</code></pre>
+<p>Enjoy...</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

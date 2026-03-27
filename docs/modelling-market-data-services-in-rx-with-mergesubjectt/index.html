@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelling Market Data Services in Rx with MergeSubject&lt;T&gt; — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="Many banking middleware solutions allow a consumer (either another service in the bank or perhaps an external 3rd party) to subscribe to information about a financial instrument. There are numerous...">
+  <meta name="article:date" content="2011-03-26">
+  <meta property="og:title" content="Modelling Market Data Services in Rx with MergeSubject&lt;T&gt;">
+  <meta property="og:description" content="Many banking middleware solutions allow a consumer (either another service in the bank or perhaps an external 3rd party) to subscribe to information about a financial instrument. There are numerous...">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Modelling Market Data Services in Rx with MergeSubject&lt;T&gt;</h1>
+      <div class="article-meta">
+        <time datetime="2011-03-26">March 26, 2011</time>
+        <span class="tag">reactive-extensions</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <h3>Back to basics: The Publish/Subscribe Model</h3>
+<p>Many banking middleware solutions allow a consumer (either another service in the bank or perhaps an external 3rd party) to subscribe to information about a financial instrument. There are numerous ways of facilitating this, however in my experience this form of the <a href="http://en.wikipedia.org/wiki/Publish/subscribe">Publish/Subscribe</a> pattern is quite common.</p>
+<p>1. Client sends a subscription request to the market data services, containing the “topic” that they are interested in. </p>
+<p>2. The market data service, which is responsible for publishing this data, initially returns an “initial image” or “snapshot” of the instruments state.</p>
+<p>3. The market data service publishes updates to the client.</p>
+<p>If the systems involved were people, the conversation would go something like this.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image3.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image_thumb3.png?w=688&#038;h=278" width="688" height="278" /></a> </p>
+<p>From a technical point of view the communication goes like this.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image4.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image_thumb4.png?w=603&#038;h=163" width="603" height="163" /></a></p>
+<p>Note that different middleware solutions might represent this in different ways. Using <a href="http://blog.my-channels.com/">Nirvana</a> I’ve used a Queue to model the request stream and a Channel with “Delta Delivery” for the snapshot and updates, I will cover the details of this in a future blog post, however for the time being check out <a href="http://odeheurles.com/2010/10/nirvana-part-i-channels/">Olivier Deheurles Nirvana Series</a>. When implementing this pattern, I think it is important that the initial image is guaranteed to arrive before any updates. For this reason it is quite common to model the snapshot &amp; updates using the same channel or queue.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image5.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image_thumb5.png?w=604&#038;h=161" width="604" height="161" /></a> </p>
+<p>This pattern is a pseudo industry standard and in systems like Reuters Market Data Service (RMDS) or Wombat MAMA, this pattern is supported out of the box. In short, what we have is an asynchronous messaging pattern that is a perfect use case for Reactive Extensions.</p>
+<h3>The Messages in Detail</h3>
+<p>Lets look at the snapshot &amp; update messages in more detail. It is very common for these services to only publish <em>what has changed</em> since the previous event.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image6.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image_thumb6.png?w=462&#038;h=465" width="462" height="465" /></a> </p>
+<p>This has two main advantages. Firstly is uses less bandwidth. Secondly it actually makes it easier for the consumer to decide how to process the message. If the entire message was republished each time, the service might have to hold onto the previous message and perform a comparison when the new message arrives. It could all become rather ugly.</p>
+<h3>Inside The Consuming Process</h3>
+<p>Lets say we are calculating the price of the Foo index, and one of its main constituents is IBM.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image7.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image_thumb7.png?w=600&#038;h=158" width="600" height="158" /></a> </p>
+<p>Now lets say the client requests a price for the Bar index, which also contains the IBM stock. We can multicast the notifications to both index calculations, sharing the same underlying subscription.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image8.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image_thumb8.png?w=816&#038;h=381" width="816" height="381" /></a> </p>
+<p>We have a problem. The Bar index will never receive the existing state of the world, as the snapshot was already sent when the Foo index calculation subscribed. What we require is a multicast subject that retains some state. In Rx we have a ReplaySubject&lt;T&gt;, however that would only really be useful for recording a sequence of messages. We just want to track the state of the world and notify the observer when it subscribes, with a single notification. In reality we want to mirror the underlying Publish/Subscribe model in our own process.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image9.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image_thumb9.png?w=670&#038;h=340" width="670" height="340" /></a> </p>
+<h3>MergeSubject&lt;T&gt;</h3>
+<p>To facilitate this, I’ve created a custom subject and an extension method to provide easy access. The subject’s constructor will require an Accumulator function that will fold each update into the original snapshot maintaining a the internal state of the world.</p>
+<p>Extension method;</p>
+<pre><code>    public static class ObservableEx
+    {
+        public static IObservable<T> Publish<T>(this IObservable<T> source, Func<T,T,T> accumulator)
+        {
+            return source.Multicast(new MergeSubject<T>(accumulator));
+        }
+    }</code></pre>
+<p>Subject;</p>
+<pre><code>    public class MergeSubject<T> : ISubject<T>
+    {
+        private readonly List<IObserver<T>> observers = new List<IObserver<T>>();
+        private readonly Func<T, T, T> accumulator;
+        
+        private Exception exception;
+        private bool isStopped;
+        private T value;
+        private bool hasValue;
+
+        public MergeSubject(Func<T, T, T> accumulator)
+        {
+            this.accumulator = accumulator;
+        }
+
+        public void OnCompleted()
+        {
+            var observerArray = default(IObserver<T>[]);
+            lock (observers)
+            {
+                if (!isStopped)
+                {
+                    observerArray = observers.ToArray();
+                    observers.Clear();
+                    isStopped = true;
+                }
+            }
+            if (observerArray != null)
+            {
+                foreach (var observer in observerArray)
+                {
+                    observer.OnCompleted();
+                }
+            }
+        }
+
+        public void OnError(Exception exception)
+        {
+            if (exception == null)
+            {
+                throw new ArgumentNullException("exception");
+            }
+            var observerArray = default(IObserver<T>[]);
+            lock (observers)
+            {
+                if (!isStopped)
+                {
+                    observerArray = observers.ToArray();
+                    observers.Clear();
+                    isStopped = true;
+                    this.exception = exception;
+                }
+            }
+            if (observerArray != null)
+            {
+                foreach (var observer in observerArray)
+                {
+                    observer.OnError(exception);
+                }
+            }
+        }
+
+        public void OnNext(T value)
+        {
+            var observerArray = default(IObserver<T>[]);
+            lock (observers)
+            {
+                if (!isStopped)
+                {
+                    if(hasValue)
+                    {
+                        this.value = accumulator(this.value, value);
+                    }
+                    else
+                    {
+                        this.value = value;
+                        hasValue = true;
+                    }
+                    observerArray = observers.ToArray();
+                }
+            }
+            if (observerArray != null)
+            {
+                foreach (var observer in observerArray)
+                {
+                    observer.OnNext(value);
+                }
+            }
+        }
+
+        public IDisposable Subscribe(IObserver<T> observer)
+        {
+            if (observer == null)
+            {
+                throw new ArgumentNullException("observer");
+            }
+            lock (observers)
+            {
+                if (!isStopped)
+                {
+                    observers.Add(observer);
+                    if (hasValue)
+                    {
+                        observer.OnNext(value);
+                    }
+                    return new Subscription(this, observer);
+                }
+            }
+            if (exception != null)
+            {
+                observer.OnError(exception);
+            }
+            else
+            {
+                observer.OnCompleted();
+            }
+            return Disposable.Empty;
+        }
+
+        private class Subscription : IDisposable
+        {
+            private IObserver<T> observer;
+            private readonly MergeSubject<T> subject;
+
+            public Subscription(MergeSubject<T> subject, IObserver<T> observer)
+            {
+                this.subject = subject;
+                this.observer = observer;
+            }
+
+            public void Dispose()
+            {
+                if (observer != null)
+                {
+                    lock (subject.observers)
+                    {
+                        if (observer != null)
+                        {
+                            subject.observers.Remove(observer);
+                            observer = null;
+                        }
+                    }
+                }
+            }
+        }
+    }</code></pre>
+<p>I’ve created a program demonstrates how the Foo &amp; Bar index can now safely share the same underlying stream of updates. As an exercise for the reader, consider building a more advanced subject MergeSubject&lt;TSource, TResult&gt;(Func&lt;TResult, TSource, TResult&gt; accumulator).</p>
+<p>Our stock tick object is fairly straight forward.</p>
+<pre><code>    class StockTick
+    {
+        public string Symbol { get; set; }
+
+        public decimal? Bid { get; set; }
+        public decimal? Ask { get; set; }
+        public decimal? Last { get; set; }
+
+        public long? BidSize { get; set; }
+        public long? AskSize { get; set; }
+        public long? LastSize { get; set; }
+        public long? Volume { get; set; }
+
+        public DateTime? QuoteTime { get; set; }
+        public DateTime? TradeTime { get; set; }
+
+        public override string ToString()
+        {
+            return new { Symbol, Bid, Ask, Last, BidSize, AskSize, LastSize, Volume, QuoteTime, TradeTime }.ToString();
+        }
+    }</code></pre>
+<p>We will also need a static method to merge two stock ticks together.</p>
+<pre><code>        public static StockTick Merge(StockTick a, StockTick b)
+        {
+            return new StockTick
+            {
+                Bid = b.Bid ?? a.Bid,
+                Ask = b.Ask ?? a.Ask,
+                Last = b.Last ?? a.Last,
+                BidSize = b.BidSize ?? a.BidSize,
+                AskSize = b.AskSize ?? a.AskSize,
+                LastSize = b.LastSize ?? a.LastSize,
+                Volume = b.Volume ?? a.Volume,
+                QuoteTime = b.QuoteTime ?? a.QuoteTime,
+                TradeTime = b.TradeTime ?? a.TradeTime,
+            };
+        }</code></pre>
+<p>Here is the test program.</p>
+<pre><code>        static void Main()
+        {
+            // underlying source
+            var ibm = new Subject<StockTick>();
+
+            // multicast via MergeSubject
+            var published = ibm.Publish(Merge);
+            published.Connect();
+
+            // start Foo
+            published.Subscribe(x => Console.WriteLine("FOO: {0}\n", x));
+
+            // publish initial state of the world 
+            ibm.OnNext(new StockTick
+                            {
+                                Symbol = "IBM",
+                                Bid = 89.02m,
+                                Ask = 89.08m,
+                                Last = 89.06m,
+                                BidSize = 300,
+                                AskSize = 1000,
+                                LastSize = 200,
+                                Volume = 7808,
+                                QuoteTime = DateTime.Now,
+                                TradeTime = DateTime.Now,
+                            });
+
+            // and then publish a single update
+            ibm.OnNext(new StockTick { Symbol = "IBM", BidSize = 400 });
+
+            // start Bar (will receive state of the world automatically
+            published.Subscribe(x => Console.WriteLine("BAR: {0}\n", x));
+
+            // publish some more updates
+            ibm.OnNext(new StockTick { Symbol = "IBM", Bid = 89.00m, Ask = 89.06m, BidSize = 500, AskSize = 600 });
+            ibm.OnNext(new StockTick { Symbol = "IBM", AskSize = 400 });
+        }</code></pre>
+<p><u>OUTPUT</u></p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image10.png"><img loading="lazy" title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/03/image_thumb10.png?w=856&#038;h=355" width="856" height="355" /></a> </p>
+<p>As you can see when Bar subscribes it receives an up to date snapshot of the stock, and subsequently receives update deltas.</p>
+<h3>Conclusion</h3>
+<p>Rx is a already a very useful technology in the world of investment banking. So many system in banks rely on asynchronous messaging protocols like the Publish/Subscribe model. MergeSubject&lt;T&gt; is an elegant way of representing this in process. I hope you like the kaki green diagrams (perhaps the Visio product team are communists).</p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

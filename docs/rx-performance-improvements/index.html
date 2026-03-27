@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rx Performance Improvements — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="I think being a technology that enables us to easily write multithreaded, concurrent applications, a question often asked is;">
+  <meta name="article:date" content="2011-06-29">
+  <meta property="og:title" content="Rx Performance Improvements">
+  <meta property="og:description" content="I think being a technology that enables us to easily write multithreaded, concurrent applications, a question often asked is;">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Rx Performance Improvements</h1>
+      <div class="article-meta">
+        <time datetime="2011-06-29">June 29, 2011</time>
+        <span class="tag">reactive-extensions</span>
+        <span class="tag">performance</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>I think being a technology that enables us to easily write multithreaded, concurrent applications, a question often asked is;</p>
+<p>“how fast is this stuff?”</p>
+<p>As Rx completes its metamorphosis from “labs project” to “official product”, it seems the team has started focusing on performance. This is probably quite normal as the project shifts from designing the perfect API to supporting a stable product.</p>
+<p>I thought I’d share some benchmarks on where some of these improvements have been made.</p>
+<h1> </h1>
+<h1>Subjects</h1>
+<p>Subjects are used everywhere in Rx, so its a good candidate for optimisation, giving us across the board performance gains. I’m testing the throughput by publishing 1 million notifications.</p>
+<pre><code>// Subject thoughput performance test
+var subject = new Subject<int>();
+subject.Subscribe(_ => { });
+var sw = Stopwatch.StartNew();
+for (int i = 0; i < 1000000; i++)
+{
+    subject.OnNext(i);
+}
+Console.WriteLine(sw.Elapsed);</code></pre>
+<p><strong>Results</strong></p>
+<p>1.0.2698.104 - 2.38 seconds<br />
+1.0.2856.104 (FastSubject) - 0.12 seconds<br />
+1.0 Stable - 0.04 seconds</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/06/image.png"><img title="image" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/06/image_thumb.png?w=366&#038;h=220" width="366" height="220" /></a></p>
+<p>The performance increase is due to two factors. As Wes &amp; Bart explained in <a href="http://channel9.msdn.com/Blogs/Charles/Announcing-the-Official-Release-of-Rx">their latest video</a>, they have removed the responsibility of scheduling from the subject implementations. This accounts for the improvement between 2698 &amp; the 2856 FastSubject. The next improvement is due to the reduction in memory allocation. Subject’s used to make a copy of the observers array, before exiting the lock and publishing the notification to all the observers. This has been replaced with an immutable list that can be safely access outside of the lock. This immutable list is replaced wholesale when observers subscribe/unsubscribe. Throughput is more important than the subscribe &amp; unsubscribe operations. This make sense if you think about it, its really just how multicast delegate work. Hmmm, more improvements to come?</p>
+<h1></h1>
+<h1></h1>
+<h1> </h1>
+<h1>Schedulers</h1>
+<p>Also discussed <a href="http://channel9.msdn.com/Blogs/Charles/Announcing-the-Official-Release-of-Rx">in the video</a>, are the changes to the IScheduler interface. I’m testing the scenario where we want to adapt and enumerable into an observable using the NewThreadScheduler.</p>
+<pre><code>var sw = Stopwatch.StartNew();
+Enumerable.Range(1, 10000)
+    .ToObservable(Scheduler.NewThread)
+    .Count()
+    .Single();
+Console.WriteLine(sw.Elapsed);</code></pre>
+<p><strong>Results</strong></p>
+<p>1.0.2856.104 - 3.43 seconds<br />
+v1.0 Stable - 0.14 seconds</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/06/image1.png"><img title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/06/image_thumb1.png?w=366&#038;h=220" width="366" height="220" /></a></p>
+<p>The reason for this gain is pretty simple. The old scheduling API didn’t provide the action that was being executed any contextual information about the thread is was running on. This meant that for NewThreadScheduler to work properly, ToObservable would have had to been hard wired to create a dedicated event loop when the caller subscribes. But that would fly against the whole idea of parameterising concurrency. The IScheduler interface has been overhauled to accommodate scenarios like this.</p>
+<p><strong>Was</strong></p>
+<pre><code>public interface IScheduler
+{
+    IDisposable Schedule(Action action);
+    IDisposable Schedule(Action action, TimeSpan dueTime);
+    DateTimeOffset Now { get; }
+}</code></pre>
+<p><strong>Now</strong></p>
+<pre><code>public interface IScheduler
+{
+    IDisposable Schedule<TState>(TState state, Func<IScheduler, TState, IDisposable> action);
+    IDisposable Schedule<TState>(TState state, DateTimeOffset dueTime, Func<IScheduler, TState, IDisposable> action);
+    IDisposable Schedule<TState>(TState state, TimeSpan dueTime, Func<IScheduler, TState, IDisposable> action);
+    DateTimeOffset Now { get; }
+}</code></pre>
+<p>Don’t panic, you probably won’t ever need to implement this guy, and extension methods allow you to keep using the old API (which I really like!), for example;</p>
+<pre><code>Scheduler.NewThread.Scheduler(() => DoStuff());</code></pre>
+<h1> </h1>
+<h1>ObserveOn</h1>
+<p>This wasn’t discussed in the video but I thought it was worth mentioning. ObserverOn has been redesigned so that it makes use of the SchedulerObserver&lt;T&gt;. I always found it strange that this serialization code was duplicated. They’ve addressed that. Shame SchedulerObserver&lt;T&gt; has not been made public though. I think it would be a useful building block for people building their own operators. Anyway, the test code;</p>
+<pre><code>var sw = Stopwatch.StartNew();
+Observable.Range(1,10000)
+    .ObserveOn(Scheduler.ThreadPool)
+    .Count()
+    .Single();
+Console.WriteLine(sw.Elapsed);</code></pre>
+<p><strong>Results</strong></p>
+<p>1.0.2856.104 - 0.8 seconds<br />
+v1.0 Stable - 0.2 seconds</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2011/06/image2.png"><img title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2011/06/image_thumb2.png?w=366&#038;h=220" width="366" height="220" /></a></p>
+<p>I can’t help but feel that there is still more we can squeeze out of ObserveOn. I’ve been playing around with some alternate APIs for this. They will probably find their way into Rxx shortly. More on this soon.</p>
+<h1> </h1>
+<h1>Conclusion</h1>
+<p>The last few builds have <em>yielded</em> some great improvements, an I’m sure there are more to come. If you run into any performance issues I’d encourage you to hit to forums. More soon.</p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

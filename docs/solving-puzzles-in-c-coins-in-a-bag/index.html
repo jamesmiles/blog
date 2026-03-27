@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solving Puzzles with C#: Coins in a Bag — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="Solving a probability puzzle about biased coins using C# and LINQ in LINQPad.">
+  <meta name="article:date" content="2014-08-05">
+  <meta property="og:title" content="Solving Puzzles with C#: Coins in a Bag">
+  <meta property="og:description" content="Solving a probability puzzle about biased coins using C# and LINQ in LINQPad.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Solving Puzzles with C#: Coins in a Bag</h1>
+      <div class="article-meta">
+        <time datetime="2014-08-05">August 5, 2014</time>
+        <span class="tag">c#</span>
+        <span class="tag">linq</span>
+        <span class="tag">puzzles</span>
+        <span class="tag">linqpad</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>This is the first post in my new blog series focusing on solving puzzles in C# &amp; LINQPad!</p>
+      <p>In the team I work with, it has become common practice for people to taunt their fellow developers by proposing interesting and sometimes mind bending puzzles.</p>
+
+      <h2>Coins in a Bag</h2>
+      <p>(courtesy of Mitch Wheat)</p>
+      <p>"Two indistinguishable coins are placed in a black bag. One coin is biased towards heads -- it comes up heads with probability 0.6</p>
+      <p>The other coin is biased towards tails -- it comes up heads with probability 0.4. For both coins, the outcomes of successive flips are independent.</p>
+      <p>You select a coin at random from the bag and flip it 5 times. It comes up heads 3 times -- what is the probability that it was the coin that is biased towards tails?"</p>
+
+      <h2>LINQPad Solution</h2>
+      <p>Although it is likely that the author of the puzzle intended us to use real maths, this problem is remarkably easy to simulate with a program.</p>
+
+<pre><code>static Random r = new Random();
+
+// Flip the heads weighted coin
+public static string Heads()
+{
+    return r.Next(1000) &gt;= 400 ? "Heads" : "Tails";
+}
+
+// Flip the tails weighted coin
+public static string Tails()
+{
+    return r.Next(1000) &gt;= 400 ?  "Tails" : "Heads";
+}</code></pre>
+
+      <p>OK, now that we've modelled the two different coins, we can write a LINQ query that simulates the exact scenario outlined in the puzzle definition.</p>
+
+<pre><code>var query =
+    // run the test 1 million times
+    from e in Enumerable.Range(1,1000000)
+    // take a coin from the bag
+    let isHeads = r.Next() % 2 == 0
+    // flip the coin 5 times
+    let results = isHeads
+        // calling our weighted to heads function
+        ? Enumerable.Range(0,5).Select(_ =&gt; Heads()).ToArray()
+        // or call our weighted to tails function
+        : Enumerable.Range(0,5).Select(_ =&gt; Tails()).ToArray()
+    // we're only results where we managed to get 3x heads in a row
+    where results.Count(x =&gt; x == "Heads") == 3
+    select isHeads;</code></pre>
+
+      <p>If you'd like to play with this, I've uploaded the solution to <a href="http://share.linqpad.net/dpr7nt.linq">"LINQPad Instant Share"</a>.</p>
+      <p>Enjoy!</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

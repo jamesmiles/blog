@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Function as Enumerable — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="I’ve found that converting a function into an enumerable (or an observable) can be a neat trick at times. Consider the following.">
+  <meta name="article:date" content="2010-04-27">
+  <meta property="og:title" content="Function as Enumerable">
+  <meta property="og:description" content="I’ve found that converting a function into an enumerable (or an observable) can be a neat trick at times. Consider the following.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Function as Enumerable</h1>
+      <div class="article-meta">
+        <time datetime="2010-04-27">April 27, 2010</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>I've found that converting a function into an enumerable (or an observable) can be a neat trick at times. Consider the following.</p>
+<pre><code>public static IEnumerable&lt;T&gt; ToEnumerable&lt;T&gt;(this Func&lt;T&gt; f)
+{
+    yield return f();
+    yield break;
+}</code></pre>
+<p>Here is a small example concatenating two functions.</p>
+<pre><code>Func&lt;string&gt; a = () =&gt; "hello";
+Func&lt;string&gt; b = () =&gt; "world";
+
+var query = a.ToEnumerable().Concat(b.ToEnumerable());
+
+foreach (var i in query)
+    Console.WriteLine(i);</code></pre>
+<p><u>OUTPUT</u></p>
+<pre><code>hello
+world</code></pre>
+<p>Or we could do something a little more interesting like leverage merge to schedule each function call on its own thread &amp; then memoize the results in the order that they came in.</p>
+<pre><code>Func&lt;string&gt; a = () =&gt; { Thread.Sleep(5000); return "a"; };
+Func&lt;string&gt; b = () =&gt; { Thread.Sleep(1000); return "b"; };
+Func&lt;string&gt; c = () =&gt; { Thread.Sleep(2000); return "c"; };
+
+var race = EnumerableEx
+                .Merge(a.ToEnumerable(), b.ToEnumerable(), c.ToEnumerable())
+                .MemoizeAll();
+
+race.Run(Console.WriteLine);
+Console.WriteLine(DateTime.Now);
+// 2nd time will run instantly - it's memoized!
+race.Run(Console.WriteLine);
+Console.WriteLine(DateTime.Now);</code></pre>
+<p><u>OUTPUT</u> </p>
+<pre><code>b
+c
+a
+27/04/2010 23:59:19
+b
+c
+a
+27/04/2010 23:59:19</code></pre>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

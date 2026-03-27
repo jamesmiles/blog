@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reactive Extensions 2.0 Beta: Portable Libraries — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="Further to my last post about Rx 2.0 assemblies.">
+  <meta name="article:date" content="2012-03-08">
+  <meta property="og:title" content="Reactive Extensions 2.0 Beta: Portable Libraries">
+  <meta property="og:description" content="Further to my last post about Rx 2.0 assemblies.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Reactive Extensions 2.0 Beta: Portable Libraries</h1>
+      <div class="article-meta">
+        <time datetime="2012-03-08">March 8, 2012</time>
+        <span class="tag">reactive-extensions</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>Further to my <a href="http://enumeratethis.com/2012/03/07/reactive-extensions-2-0-beta-assembly-references/">last post about Rx 2.0 assemblies</a>.</p>
+<p>Have you ever worked on a project that required shared contracts between different Microsoft platforms? For example you might have the following architecture;</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2012/03/image6.png"><img title="image" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2012/03/image_thumb6.png?w=400&#038;h=250" width="400" height="250" /></a></p>
+<p>Speaking from experience, this can become quite painful as you need a “multi-targeted compilation strategy”. Good news! .NET 4.5 allows you to create “<a href="http://msdn.microsoft.com/en-us/library/gg597391(v=vs.110).aspx">portable class libraries</a>” that work on multiple .NET Framework platforms.</p>
+<p>The even better news is that this has not been neglected by the Rx team. This diagram shows you which Rx assemblies can be referenced by your own portable class libraries.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2012/03/image8.png"><img title="image" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2012/03/image_thumb8.png?w=400&#038;h=163" width="400" height="163" /></a></p>
+<p>Presumably this means you can create libraries of Rx operators and share them between metro, desktop, phone &amp; xbox applications. That’s awesome!</p>
+<p>*UPDATE* I wonder if people would be interested in a portable version of <a href="http://rxx.codeplex.com/">Rxx</a>.</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linq2Azure – What is it? — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="">
+  <meta name="article:date" content="2013-06-07">
+  <meta property="og:title" content="Linq2Azure – What is it?">
+  <meta property="og:description" content="">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Linq2Azure – What is it?</h1>
+      <div class="article-meta">
+        <time datetime="2013-06-07">June 7, 2013</time>
+        <span class="tag">linq</span>
+        <span class="tag">azure</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2013/06/image.png"><img title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2013/06/image_thumb.png?w=320&#038;h=282" width="320" height="282" /></a> </p>
+<p><strong>Linq2Azure – Azure Management API</strong></p>
+<p>Thanks to everyone who made it to the <a href="http://perthdotnet.blogspot.com.au/2013/05/june-meeting-cash-converters-azure-1.html">presentation last night</a>.</p>
+<p>Linq2Azure is a “cloud management” API that gives .NET developers a familiar programming model for querying and managing their Windows Azure environment.</p>
+<p>Linq2Azure is statically typed and includes Code Contracts, meaning .NET developers can reliably automate the management of their cloud environments with maintainable programs.</p>
+<pre><code>// Simple Example: reboot all role instances in your environment!
+var query = 
+    from c in CloudServices.AsObservable()
+    from d in c.Deployments.AsObservable()
+    from i in d.RoleInstances.AsObservable()
+    select i;
+
+foreach(var instance in query) instance.Reboot();</code></pre>
+<p><strong>LINQPad Driver</strong></p>
+<p>In addition to this, fans of LINQPad will benefit as we are publishing the “Linq2Azure – Azure Management Driver” for LINQPad.</p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2013/06/image1.png"><img title="image" border="0" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2013/06/image_thumb1.png?w=631&#038;h=344" width="631" height="344" /></a> </p>
+<p>As discussed, our new API will be available to the general public <em><strong>very</strong> </em>soon.</p>
+<p>Stay tuned!</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

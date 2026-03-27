@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filtering by information in previous elements — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="I’ve been off work sick for the last 2 days so I thought I’d catch up on some blogging. It’s been a couple of weeks as I’ve been busy reading the Haskell language specification. There is obviously ...">
+  <meta name="article:date" content="2010-05-20">
+  <meta property="og:title" content="Filtering by information in previous elements">
+  <meta property="og:description" content="I’ve been off work sick for the last 2 days so I thought I’d catch up on some blogging. It’s been a couple of weeks as I’ve been busy reading the Haskell language specification. There is obviously ...">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Filtering by information in previous elements</h1>
+      <div class="article-meta">
+        <time datetime="2010-05-20">May 20, 2010</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>I've been off work sick for the last 2 days so I thought I'd catch up on some blogging. It's been a couple of weeks as I've been busy reading the Haskell language specification. There is obviously a close relationship between F# and Haskell, but its becoming increasing clear to me that many of the C# 2.0 &amp; 3.0 language features were inspired by Haskell (Erik Meijer's influence I suppose) &amp; its predecessors.</p>
+<p>I'll have some posts on what I'm learning shortly, but for now, back to LINQ!</p>
+<p>So we have a stream of notifications, some of which are related to each other.</p>
+<pre><code>new[]
+{
+    new { Id = 42, Parent = 0 },
+    new { Id = 100, Parent = 38 },
+    new { Id = 101, Parent = 42 },
+    new { Id = 102, Parent = 37 },
+    new { Id = 103, Parent = 101 },
+    new { Id = 104, Parent = 85 },
+    new { Id = 105, Parent = 95 },
+    new { Id = 106, Parent = 103 },
+}</code></pre>
+<p>The desired output is;</p>
+<pre><code>42
+101
+103
+106</code></pre>
+<p>I've found you can easily do this in Rx by combining Scan &amp; DistinctUntilChanged.</p>
+<pre><code>new[]
+{
+    new { Id = 42, Parent = 0 },
+    new { Id = 100, Parent = 38 },
+    new { Id = 101, Parent = 42 },
+    new { Id = 102, Parent = 37 },
+    new { Id = 103, Parent = 101 },
+    new { Id = 104, Parent = 85 },
+    new { Id = 105, Parent = 95 },
+    new { Id = 106, Parent = 103 },
+}
+.ToObservable()
+.Scan(0, (acc, item) =&gt; item.Parent == acc ? item.Id : acc)
+.DistinctUntilChanged()</code></pre>
+<p>Unfortunately the Enumerable extensions are missing DistinctUntilChanged. I'll ask if it can be added to the next release.</p>
+<p>Cheers,<br />
+James</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

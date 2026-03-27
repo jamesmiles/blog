@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bad Memories – Episode 1 — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="I’ve discussed memoization a few times. Here is the implementation I used last time.">
+  <meta name="article:date" content="2010-05-22">
+  <meta property="og:title" content="Bad Memories – Episode 1">
+  <meta property="og:description" content="I’ve discussed memoization a few times. Here is the implementation I used last time.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Bad Memories – Episode 1</h1>
+      <div class="article-meta">
+        <time datetime="2010-05-22">May 22, 2010</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>I've discussed memoization a few times. Here is the implementation I used last time.</p>
+<pre><code>public static Func&lt;T&gt; Memoize&lt;T&gt;(this Func&lt;T&gt; f)
+{
+    var gate = new object();
+    var set = false;
+    T result = default(T);
+    return () =&gt;
+    {
+        if (!set)
+        {
+            lock (gate)
+            {
+                if (!set)
+                {
+                    result = f();
+                    set = true;
+                }
+            }
+        }
+        return result;
+    };
+}</code></pre>
+<p>Strictly speaking though there is a bit of a problem. Consider the following;</p>
+<pre><code>Func&lt;int&gt; f = () =&gt;
+{
+    "I'm making side effects".Dump();
+    throw new Exception("42");
+};
+
+var memoizef = f.Memoize();
+try{ memoizef(); } catch{}
+try{ memoizef(); } catch{}</code></pre>
+<p><u>OUTPUT </u></p>
+<pre><code>I'm making side effects
+I'm making side effects</code></pre>
+<p>In the case of exceptions, we are reproducing the side effects of the underlying function. Here is a tweaked implementation that handles exceptions. There is however an interesting problem with it. Can you spot it?</p>
+<pre><code>public static Func&lt;T&gt; Memoize&lt;T&gt;(this Func&lt;T&gt; f)
+{
+    var gate = new object();
+    var set = false;
+    T result = default(T);
+    Exception error = null;
+    return () =&gt;
+    {
+        if (!set)
+        {
+            lock (gate)
+            {
+                if (!set)
+                {
+                    try
+                    {
+                        result = f();
+                    }
+                    catch(Exception ex)
+                    {
+                        error = ex;
+                    }
+                    set = true;
+                }
+            }
+        }
+        if(error != null) throw error;
+        return result;
+    };
+}</code></pre>
+<p>More soon,<br />
+James </p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lazy&lt;T&gt; verses Memoize() — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="When we have a long running operation, a common optimisation is to cache the result and reuse it in subsequent requests. Given the ongoing shift to multithreaded applications it is important that t...">
+  <meta name="article:date" content="2010-04-28">
+  <meta property="og:title" content="Lazy&lt;T&gt; verses Memoize()">
+  <meta property="og:description" content="When we have a long running operation, a common optimisation is to cache the result and reuse it in subsequent requests. Given the ongoing shift to multithreaded applications it is important that t...">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Lazy&lt;T&gt; verses Memoize()</h1>
+      <div class="article-meta">
+        <time datetime="2010-04-28">April 28, 2010</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>When we have a long running operation, a common optimisation is to cache the result and reuse it in subsequent requests. Given the ongoing shift to multithreaded applications it is important that these caching mechanisms are (at least optionally) thread safe. That is, you don't want two concurrent calls to your cache to result in the long running operation executing twice.</p>
+<p>Lazy&lt;T&gt; in the new System.Threading library is designed specifically for this purpose.</p>
+<pre><code>Func&lt;string&gt; f = () =&gt;
+{
+    Thread.Sleep(1000);
+    return "hello world";
+};
+
+var lazy = new Lazy&lt;string&gt;(f);
+
+var sw = Stopwatch.StartNew();
+Console.WriteLine("Is cached: " + lazy.IsValueCreated);
+Console.WriteLine("Value: " + lazy.Value);
+Console.WriteLine("Took: " + sw.Elapsed);
+Console.WriteLine();
+
+sw = Stopwatch.StartNew();
+Console.WriteLine("Is cached: " + lazy.IsValueCreated);
+Console.WriteLine("Value: " + lazy.Value);
+Console.WriteLine("Took: " + sw.Elapsed);</code></pre>
+<p><u>OUTPUT</u></p>
+<pre><code>Is cached: False
+Value: hello world
+Took: 00:00:01.0100048
+
+Is cached: True
+Value: hello world
+Took: 00:00:00.0003014 // second read uses the cached value</code></pre>
+<p>Of course function memoization can be achieved without Lazy&lt;T&gt;. Here is a a different implementation I've used in the past.</p>
+<pre><code>public static Func&lt;T&gt; Memoize&lt;T&gt;(this Func&lt;T&gt; f)
+{
+    var gate = new object();
+    var set = false;
+    T result = default(T);
+    return () =&gt;
+    {
+        if (!set)
+        {
+            lock (gate)
+            {
+                if (!set)
+                {
+                    result = f();
+                    set = true;
+                }
+            }
+        }
+        return result;
+    };
+}</code></pre>
+<p>Giving a nice fluent usage.</p>
+<pre><code>Func&lt;string&gt; f = () =&gt;
+{
+    Thread.Sleep(1000);
+    return "hello world";
+};
+
+var memoized = f.Memoize();
+
+var sw = Stopwatch.StartNew();
+Console.WriteLine("Value: " + memoized());
+Console.WriteLine("Took: " + sw.Elapsed);
+Console.WriteLine();
+
+sw = Stopwatch.StartNew();
+Console.WriteLine("Value: " + memoized());
+Console.WriteLine("Took: " + sw.Elapsed);</code></pre>
+<p><u>OUTPUT</u></p>
+<pre><code>Value: hello world
+Took: 00:00:01.0018696
+
+Value: hello world
+Took: 00:00:00.0001825</code></pre>
+<p>So how do you choose between the two approaches?</p>
+<p>Best thing about Lazy&lt;T&gt; is all the hard work has been done for you. Appropriate class name don't you think? Something it offers over a typical memoized function is the .IsValueCreated property that can be used to determine if the cache has been populated yet. On the other hand the simple .Memoize() implementation reads through approximately 30% quicker. I think they are both useful.</p>
+<pre><code>public static Func&lt;T&gt; Memoize&lt;T&gt;(this Func&lt;T&gt; f)
+public static Lazy&lt;T&gt; AsLazy&lt;T&gt;(this Func&lt;T&gt; f)</code></pre>
+<p>More soon!<br />
+James</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

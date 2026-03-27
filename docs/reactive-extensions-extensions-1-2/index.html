@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reactive Extensions Extensions 1.2 — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="Full Release Notes Here!">
+  <meta name="article:date" content="2011-11-15">
+  <meta property="og:title" content="Reactive Extensions Extensions 1.2">
+  <meta property="og:description" content="Full Release Notes Here!">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Reactive Extensions Extensions 1.2</h1>
+      <div class="article-meta">
+        <time datetime="2011-11-15">November 15, 2011</time>
+        <span class="tag">reactive-extensions</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <h6> </h6>
+<h6>What's New?</h6>
+<ul>
+<li>Internalized or removed all interactive extensions that were unnecessary or that shadowed Microsoft's Ix Experimental library. </li>
+<li>Added DependencyObjectExtensions.DependencyPropertyChanged and UIElementExtensions.RoutedEventRaised extension methods and a corresponding lab. </li>
+<li>Added CollectionNotification, CollectionModification, IListSubject, IDictionarySubject and concrete types. </li>
+<li>Added Collect extension methods to Observable2, ObservableDirectory, DirectoryInfoExtensions and FileSystemWatcherExtensions. </li>
+<li>Added ObservableDirectory lab. </li>
+<li>Moved various extension methods into new classes: SmtpClientExtensions, PingExtensions, HttpListenerExtensions, WebClientExtensions, WebRequestExtensions and SocketExtensions. </li>
+<li>Adjusted trace identity format. Also adjusted the default text for Ix tracing. </li>
+<li>Added ObservableSyndication for RSS 2.0 and Atom 1.0, with a corresponding UI lab that also uses DictionarySubject and the Collect extension method. </li>
+<li>Added ApplicationSettingsBase extensions for observing setting changes. </li>
+<li>Added ICommand extensions, CommandSubject, AnonymousCommand and a corresponding lab. </li>
+<li>Added the Subscription XAML markup extension for WPF, which is similar to Binding and supports observable data sources. Includes a corresponding lab. </li>
+<li>Added EventSubscription trigger, which supports event handler bindings from FrameworkElement to IObserver, delegate or ICommand properties. Includes a corresponding lab. </li>
+<li>Major performance and memory improvements for parsers; now avoids stack overflows due to recursion in quantifiers. </li>
+<li>Added ICursor&lt;T&gt; and IObservableCursor&lt;T&gt; types with concrete implementations, including CursorSubject&lt;T&gt; and ToCursor extension methods. </li>
+<li>Added full support for reactive XML parsers in WP7. Now there's complete parser parity across all platforms. </li>
+<li>Added view model support for all platforms, with corresponding UI labs. Includes optional IViewModel interface and optional Rxx.ViewModel base class. </li>
+<li>Added Exactly parser operator. </li>
+<li>Added non-greedy variants to some of the quantifying parser operators. </li>
+<li>Added an overload to the AtLeast parser operator that accepts a maximum parameter, with behavior similar to the {n,m} regex pattern. </li>
+<li>Added AndUnordered and AllUnordered parser operators, fixed the XML parsers so that attributes are matched in any order and reversed the order of the attributes in the XML schema labs. </li>
+<li>Added Consume extensions that generalize the producer/consumer pattern over observables. </li>
+<li>Added Stream, FileStream and TextReader extensions. </li>
+<li>Added ObservableFile class with a corresponding lab. </li>
+<li>Added n-ary Zip and CombineLatest combinators. </li>
+<li>Improved lab application.</li>
+</ul>
+<p><a href="http://rxx.codeplex.com/wikipage?title=Release%20Notes&amp;referringTitle=Documentation">Full Release Notes Here!</a></p>
+<p><a href="http://rxx.codeplex.com/releases/view/69545">Download here</a></p>
+<p><a href="http://nuget.org/List/Packages/Rxx">NuGet Packages are also available</a></p>
+
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

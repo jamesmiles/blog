@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>More ideas for enhanced language support — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="The Zip operator is useful for combining two or more lists of data, where by the elements are matched based on their index.">
+  <meta name="article:date" content="2010-04-22">
+  <meta property="og:title" content="More ideas for enhanced language support">
+  <meta property="og:description" content="The Zip operator is useful for combining two or more lists of data, where by the elements are matched based on their index.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">More ideas for enhanced language support</h1>
+      <div class="article-meta">
+        <time datetime="2010-04-22">April 22, 2010</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>The Zip operator is useful for combining two or more lists of data, where by the elements are matched based on their index.</p>
+<pre><code>new[] { 1, 2, 3 } .Zip(new[] { "a", "b", "c" }, (left, right) =&gt; new { left, right })</code></pre>
+<p><u>OUTPUT</u></p>
+<pre><code>{ left = 1, right = a }
+{ left = 2, right = b }
+{ left = 3, right = c }</code></pre>
+<p>In my previous post I discussed CombineLatest &amp; my desire for language support. Zip is another operator that would benefit from this treatment.</p>
+<pre><code>from a in columnA
+zip b in columnB
+zip c in columnC
+select new{a, b}</code></pre>
+<p>Could easily be translated into the appropriate lambda syntax;</p>
+<pre><code>columnA.Zip(columnB, (a, b) =&gt; new { a, b }).Zip(columnC, (_, c) =&gt; new { _.a, _.b, c })</code></pre>
+<p>Ideally you would be able to build more complex queries using all three!</p>
+<pre><code>from r1 in Request("something")
+latest r2 in Request("something else")
+zip e1 in r1.Events
+zip e2 in r2.Events
+select new{ e1, e2 }</code></pre>
+<p>Actually it would be really nice (and perhaps scary) if developers had the ability to extend query comprehension syntax.</p>
+<p>Maybe in C# 8.0 <img src="https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/72x72/1f609.png" alt="&#x1f609;" class="wp-smiley" /></p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

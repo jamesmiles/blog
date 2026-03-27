@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LightBlue: An alternative to the Azure Emulator — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="LightBlue is a development framework that abstracts our dependency on the Azure platform, providing a light-weight hosting mechanism for worker and web roles.">
+  <meta name="article:date" content="2014-08-21">
+  <meta property="og:title" content="LightBlue: An alternative to the Azure Emulator">
+  <meta property="og:description" content="LightBlue is a development framework that abstracts our dependency on the Azure platform.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">LightBlue: An alternative to the Azure Emulator</h1>
+      <div class="article-meta">
+        <time datetime="2014-08-21">August 21, 2014</time>
+        <span class="tag">azure</span>
+        <span class="tag">architecture</span>
+        <span class="tag">open-source</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>For certain projects, my team uses a componentized and distributed system architecture based on <a href="http://martinfowler.com/bliki/CQRS.html">CQRS</a> and <a href="http://martinfowler.com/eaaDev/EventSourcing.html">Event Sourcing</a>. We find that for complex domains that add significant business value, this sort of architecture is worth the extra investment as it helps ensure that:</p>
+      <ul>
+        <li>The system scales.</li>
+        <li>The system is easier to maintain.</li>
+        <li>If the business change their mind or introduce new requirements, it is easier to deal with.</li>
+        <li>When things do go wrong, the system degrades instead of going offline completely.</li>
+        <li>DR environments are <em>relatively</em> easy to build.</li>
+      </ul>
+      <p>We do all this using Microsoft's PaaS offering as we like to run each component on its own stack, and Windows Azure allows us to easily deploy, update &amp; maintain everything. However... for our team members to build &amp; test components in this environment, there needs to be a way for them to run the system locally. Given the architecture, this might involving running many roles and instances (processes) that are all communicating with each other via a messaging system built on top of Azure Blob Storage. Unfortunately we've found the Azure Storage Emulator has significant short comings in this type of environment. It doesn't scale very well, utilizes lots of system resources and suffers from a number of stability issues. This has ultimately been chewing up lots of developer man hours in maintenance and troubleshooting.</p>
+
+      <h3>Introducing LightBlue</h3>
+      <p>LightBlue is a development framework that abstracts our dependency on the Azure platform. It provides a light-weight hosting mechanism allowing both worker &amp; web roles to be deployed (without packaging) in a dedicated process. This approach has yielded the following advantages:</p>
+      <ul>
+        <li><strong>Faster build times.</strong> We found the packaging step required to deploy to the Azure Emulator is <em>very</em> slow. LightBlue does not require packaging.</li>
+        <li><strong>Much faster blob storage access.</strong> Under low/moderate load, we've found the Azure Storage Emulator consistently takes ~1 second and regularly takes up to 10 seconds to be retrieve a blob of less than 1 KB.</li>
+        <li><strong>Slow &amp; buggy compute emulator UI.</strong> It's just gone.</li>
+        <li><strong>No limits.</strong> The Azure emulator limits the number of roles, deployments you are running.</li>
+        <li><strong>Reduced Hard Drive usage.</strong> The Azure Emulator seems to use a lot of disk space.</li>
+        <li><strong>Reduced CPU usage.</strong> We found that the Azure Storage Emulator used a lot (or all) of the CPU resources available on our developers machines.</li>
+        <li><strong>More Stable.</strong> The Azure Storage Emulator regularly falls over under load.</li>
+      </ul>
+
+      <h3>*Warning*</h3>
+      <ul>
+        <li>We consider LightBlue to be in the "experimental quality band" (it has been in development for 9 days).</li>
+        <li>We do not advise moving your projects over to it at this stage, however we do encourage you to try it out and let us know what you think.</li>
+        <li>Do not expect future versions of the API and emulator to offer any level of compatibility with this early release.</li>
+        <li>LightBlue is currently dependent on Autofac (IoC Container), I'm advocating a different approach here.</li>
+        <li>Azure Queues / Topics are not yet supported (coming!).</li>
+        <li>The <a href="https://github.com/ColinScott/LightBlue/wiki/Getting-Started-with-Worker-Roles">"Getting Started" documentation</a> is a bit sparse, we're working on it!</li>
+      </ul>
+      <p>I'll keep you up to date as development progresses. Kudos to <a href="https://github.com/ColinScott">Colin Scott</a> for all his hard work and late nights on the project.</p>
+
+      <h3>LightBlue Resources</h3>
+      <ul>
+        <li><a href="https://github.com/ColinScott/LightBlue/wiki">Wiki</a></li>
+        <li><a href="https://github.com/ColinScott/LightBlue">Source Code</a></li>
+        <li><a href="http://www.nuget.org/packages/LightBlue/0.1.4-alpha">NuGet</a></li>
+        <li><a href="https://github.com/ColinScott/LightBlue/wiki/Getting-Started-with-Worker-Roles">Getting Started with Worker Roles</a></li>
+      </ul>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

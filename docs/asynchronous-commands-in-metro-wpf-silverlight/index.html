@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asynchronous Commands in Metro, WPF &amp; Silverlight — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="I've seen quite a few examples demonstrating the new async/await language features (C# 5 & VB next) with button click events;">
+  <meta name="article:date" content="2012-06-14">
+  <meta property="og:title" content="Asynchronous Commands in Metro, WPF &amp; Silverlight">
+  <meta property="og:description" content="I've seen quite a few examples demonstrating the new async/await language features (C# 5 & VB next) with button click events;">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Asynchronous Commands in Metro, WPF &amp; Silverlight</h1>
+      <div class="article-meta">
+        <time datetime="2012-06-14">June 14, 2012</time>
+        <span class="tag">general</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>I've seen quite a few examples demonstrating the new async/await language features (C# 5 &amp; VB next) with button click events;</p>
+<pre><code>private async void button1_Click(object sender, RoutedEventArgs e)
+{
+    string url = "http://reedcopsey.com";
+    string content = await new WebClient().DownloadStringTaskAsync(url);
+    this.textBox1.Text = string.Format("Page {0} supports XHTML 1.0: {1}",
+      url, content.Contains("XHTML 1.0"));
+}</code></pre>
+<p>If you are using an architectural pattern like MVVM it's unlikely that you're writing code like this. In WPF, Silverlight &amp; Metro you can <a href="http://msdn.microsoft.com/en-us/library/ms752308.aspx">bind buttons directly to an object implementing the ICommand interface</a>.</p>
+<pre><code>// WPF ICommand interface
+public interface ICommand
+{
+    /// <summary>
+    /// Defines the method to be called when the command is invoked.
+    /// </summary>
+    /// <param name="parameter">Data used by the command.
+    /// If the command does not require data to be passed, this object can be set to null.</param>
+    void Execute(object parameter);
+
+    /// <summary>
+    /// Defines the method that determines whether the command can execute in its current state.
+    /// </summary>
+    /// 
+    /// <returns>
+    /// true if this command can be executed; otherwise, false.
+    /// </returns>
+    /// <param name="parameter">Data used by the command.
+    /// If the command does not require data to be passed, this object can be set to null.</param>
+    bool CanExecute(object parameter);
+
+    /// <summary>
+    /// Occurs when changes occur that affect whether or not the command should execute.
+    /// </summary>
+    event EventHandler CanExecuteChanged;
+}</code></pre>
+<p>The nice thing about commands vs. a simple click event is that they encapsulate the logic informing the button wether or not it can be executed. This is particularly useful when we start talking about asynchronous operations as we might like to disable the button while the asynchronous request is in flight.</p>
+<p><strong>Example</strong></p>
+<pre><code>    public bool CanExecute(object parameter)
+    {
+        return !isExecuting;
+    }
+
+    public async void Execute(object parameter)
+    {
+        isExecuting = true;
+        OnCanExecuteChanged();
+        try
+        {
+            // await some asynchronous operation
+        }
+        finally
+        {
+            isExecuting = false;
+            OnCanExecuteChanged();
+        }
+    }</code></pre>
+<p><strong>What About Errors?</strong></p>
+<p>Note that commands are generally executed by the UI frameworks message loop, meaning that any unhandled exceptions will be posted onto the relevant synchronisation context.</p>
+<p><strong>AsyncCommand</strong></p>
+<p>This pattern is easily captured in a reusable object that we can use to build all our asynchronous commands.</p>
+<pre><code>    // a reusable asynchronous command
+    public class AsyncCommand : ICommand
+    {
+        private readonly Func<Task> execute;
+        private readonly Func<bool> canExecute;
+        private bool isExecuting;
+
+        public AsyncCommand(Func<Task> execute) : this(execute, () => true) { }
+
+        public AsyncCommand(Func<Task> execute, Func<bool> canExecute)
+        {
+            this.execute = execute;
+            this.canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            // if the command is not executing, execute the users' can execute logic
+            return !isExecuting && canExecute();
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public async void Execute(object parameter)
+        {
+            // tell the button that we're now executing...
+            isExecuting = true;
+            OnCanExecuteChanged();
+            try
+            {
+                // execute user code
+                await execute();
+            }
+            finally
+            {
+                // tell the button we're done
+                isExecuting = false;
+                OnCanExecuteChanged();
+            }
+        }
+
+        protected virtual void OnCanExecuteChanged()
+        {
+            if (CanExecuteChanged != null) CanExecuteChanged(this, new EventArgs());
+        }
+    }</code></pre>
+<p><strong>Usage</strong></p>
+<p>In your view model you can now create asynchronous commands like this;</p>
+<pre><code>// example command, simulate an operation that takes 2 seconds.
+new AsyncCommand(() => TaskEx.Delay(2000));
+
+// example command, with some custom can execute logic
+new AsyncCommand(() => TaskEx.Delay(2000), () => IsValidInput());</code></pre>
+<p> </p>
+<p><strong>Memory Leaks</strong></p>
+<p>A word of warning… If your command object’s lifetime extends beyond that of the UI element (Button) that is subscribing to the CanExecuted event you should implement a weak event pattern in here. I think that is outside the scope of this article. I’ll follow up shortly.</p>
+<p><strong>In Conclusion</strong></p>
+<p>This is a great example of why async void methods are required in C#. Commands are like a bridge between synchronous UI elements like buttons and your view models asynchronous operations like web requests. Enjoy!</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

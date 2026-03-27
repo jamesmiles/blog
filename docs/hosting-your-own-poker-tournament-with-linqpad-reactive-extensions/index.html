@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hosting your own poker tournament with LINQPad &amp; Reactive Extensions — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="Playing poker next Saturday night & want to impress your friends with your programming skills?">
+  <meta name="article:date" content="2012-03-24">
+  <meta property="og:title" content="Hosting your own poker tournament with LINQPad &amp; Reactive Extensions">
+  <meta property="og:description" content="Playing poker next Saturday night & want to impress your friends with your programming skills?">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Hosting your own poker tournament with LINQPad &amp; Reactive Extensions</h1>
+      <div class="article-meta">
+        <time datetime="2012-03-24">March 24, 2012</time>
+        <span class="tag">reactive-extensions</span>
+        <span class="tag">linqpad</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>Playing poker next Saturday night &amp; want to impress your friends with your programming skills?</p>
+<p>The following solution requires LINQPad Beta release; It uses the new DumpLive feature allowing you to render reactive streams of WPF UI Elements!</p>
+<p>Enjoy!</p>
+<pre><code>(from round in new[]
+{
+    new{Small = 5, Big = 10, Length = 16},
+    new{Small = 10, Big = 20, Length = 20},
+    new{Small = 20, Big = 40, Length = 20},
+    new{Small = 100, Big = 200, Length = 20},
+    new{Small = 300, Big = 600, Length = 20},
+    new{Small = 600, Big = 1200, Length = 20},
+    new{Small = 1000, Big = 2000, Length = 20},
+    new{Small = 5000, Big = 10000, Length = 20},
+    new{Small = 30000, Big = 60000, Length = 20},
+    new{Small = 100000, Big = 200000, Length = 20},
+}   
+let ts = TimeSpan.FromMinutes(round.Length)
+select from tick in Observable.Interval(TimeSpan.FromSeconds(1)).TakeUntil(Observable.Timer(ts))
+let remaining = ts.Subtract(TimeSpan.FromSeconds(tick))
+select new{
+    text = string.Format("Small: {0}\r\nBig: {1}\r\nRemaining: {2}", round.Small, round.Big, remaining),
+    colour = remaining < TimeSpan.FromMinutes(1) ? Brushes.Red : Brushes.Black
+})
+.Concat()
+.ObserveOnDispatcher()
+.Select(x => new TextBlock{Text = x.text, FontSize = 80, Foreground = x.colour})
+.DumpLive();</code></pre>
+<p><u>OUTPUT</u></p>
+<p><a href="https://jamesmiles.wordpress.com/wp-content/uploads/2012/03/image9.png"><img title="image" alt="image" src="https://jamesmiles.wordpress.com/wp-content/uploads/2012/03/image_thumb9.png?w=240&#038;h=120" width="240" height="120" /></a></p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
