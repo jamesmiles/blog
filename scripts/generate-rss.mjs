@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const docsDir = join(__dirname, '..', 'docs');
-const siteUrl = 'https://jamesmiles.github.io/blog';
+const siteUrl = 'https://enumeratethis.com';
 
 function extractMeta(html, name) {
   // Match both name="..." and property="..." attributes
