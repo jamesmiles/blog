@@ -489,16 +489,14 @@ ${indexArticles}
     <script>
       (function() {
         var bar = document.getElementById('sticky-article-bar');
-        var pageTitle = document.querySelector('.page-title');
-        bar.textContent = 'Latest Posts';
         var articles = document.querySelectorAll('.article-item');
 
         function setBar(title) {
           bar.textContent = 'Currently Reading: ' + title;
         }
         function updateBar() {
-          var headerBottom = pageTitle ? pageTitle.getBoundingClientRect().bottom : 0;
-          if (headerBottom > 0) {
+          // If the first article hasn't scrolled past the header, show "Latest Posts"
+          if (articles.length > 0 && articles[0].getBoundingClientRect().top > 60) {
             setBar('Latest Posts');
             return;
           }
