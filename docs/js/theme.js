@@ -55,6 +55,15 @@
   });
 })();
 
+// Close mobile nav when clicking outside
+document.addEventListener('click', function(e) {
+  var nav = document.querySelector('.mobile-nav');
+  var burger = document.querySelector('.burger-menu');
+  if (nav && nav.classList.contains('open') && !nav.contains(e.target) && e.target !== burger && !burger.contains(e.target)) {
+    nav.classList.remove('open');
+  }
+});
+
 // Close mobile nav when screen widens past breakpoint
 window.matchMedia('(min-width: 769px)').addEventListener('change', function(e) {
   if (e.matches) {
