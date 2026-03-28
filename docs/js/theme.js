@@ -63,21 +63,43 @@ window.matchMedia('(min-width: 769px)').addEventListener('change', function(e) {
   }
 });
 
-// Share — copy current page URL to clipboard
-function shareLink(btn) {
-  navigator.clipboard.writeText(window.location.href).then(function() {
-    btn.classList.add('copied');
-    // For mobile menu button, show "Copied!" text instead of closing
-    if (btn.classList.contains('mobile-share-btn')) {
-      var origText = btn.innerHTML;
-      var svgMatch = origText.match(/<svg[^]*?<\/svg>/);
-      btn.innerHTML = (svgMatch ? svgMatch[0] + ' ' : '') + 'Copied!';
-      setTimeout(function() {
-        btn.innerHTML = origText;
-        btn.classList.remove('copied');
-      }, 1500);
-    } else {
-      setTimeout(function() { btn.classList.remove('copied'); }, 1500);
-    }
-  });
+// Share dialog
+function shareLink() {
+  // Close mobile nav if open
+  var mobileNav = document.querySelector('.mobile-nav');
+  if (mobileNav) mobileNav.classList.remove('open');
+
+  // Create overlay if it doesn't exist
+  var overlay = document.getElementById('share-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'share-overlay';
+    overlay.className = 'share-overlay';
+    overlay.innerHTML = '<div class="share-dialog">' +
+      '<div class="share-dialog-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>' +
+      '<div class="share-dialog-title">Share this page</div>' +
+      '<div class="share-dialog-url"><input type="text" id="share-url" readonly />' +
+      '<button class="share-dialog-copy" id="share-copy">Copy</button></div>' +
+      '<button class="share-dialog-close" id="share-close">Close</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+    document.getElementById('share-close').addEventListener('click', function() {
+      overlay.classList.remove('open');
+    });
+    document.getElementById('share-copy').addEventListener('click', function() {
+      var input = document.getElementById('share-url');
+      navigator.clipboard.writeText(input.value).then(function() {
+        var btn = document.getElementById('share-copy');
+        btn.textContent = 'Copied!';
+        setTimeout(function() { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+  }
+
+  document.getElementById('share-url').value = window.location.href;
+  overlay.classList.add('open');
 }

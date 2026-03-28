@@ -602,16 +602,101 @@ img {
   height: 18px;
 }
 
-.share-btn.copied::after {
-  content: 'Copied!';
-  position: absolute;
-  bottom: -28px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: var(--font-size-xs);
+/* Share dialog */
+.share-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-overlay.open {
+  display: flex;
+}
+
+.share-dialog {
+  background: var(--color-surface-bg);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.share-dialog-icon {
   color: var(--color-brand-primary);
-  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-4);
+}
+
+.share-dialog-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.share-dialog-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-4);
+}
+
+.share-dialog-url {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.share-dialog-url input {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  background: var(--color-surface-sunken);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.share-dialog-url input:focus {
+  border-color: var(--color-brand-primary);
+}
+
+.share-dialog-copy {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background var(--transition-fast);
   white-space: nowrap;
+}
+
+.share-dialog-copy:hover {
+  background: var(--color-brand-primary-hover);
+}
+
+.share-dialog-close {
+  background: none;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-6);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.share-dialog-close:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
 }
 
 .mobile-share-btn {
