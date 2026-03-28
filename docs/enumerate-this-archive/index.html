@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From the Archives: Enumerate This! — James Miles' AI Coding Adventures</title>
+  <meta name="description" content="The articles below were migrated from Enumerate This!, my original C# and Reactive Extensions blog (2010-2016).">
+  <meta name="article:date" content="2026-03-26">
+  <meta property="og:title" content="From the Archives: Enumerate This!">
+  <meta property="og:description" content="Historical articles migrated from Enumerate This!, my original C# and Reactive Extensions blog.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">From the Archives: Enumerate This!</h1>
+      <div class="article-meta">
+        <time datetime="2026-03-26">March 27, 2026</time>
+        <span class="tag">meta</span>
+        <span class="tag">archive</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>The articles that follow have been migrated from <strong><a href="https://jamesmiles.wordpress.com/">Enumerate This!</a></strong>, my original coding blog which ran from 2010 to 2016.</p>
+
+      <p>That blog covered C#, Reactive Extensions (Rx), LINQ, LINQPad, Azure, and various programming puzzles and patterns. It was where I cut my teeth writing about software — exploring ideas in public, sharing code snippets, and occasionally getting into trouble with memoization and thread safety.</p>
+
+      <h2>How the migration worked</h2>
+
+      <p>The entire migration was performed by AI (Claude Code) in a single conversation. Here's what happened:</p>
+
+      <ol>
+        <li><strong>Discovery.</strong> The AI fetched the WordPress RSS feed and sitemap to build a complete inventory of all 66 articles spanning 2010–2016.</li>
+        <li><strong>Content extraction.</strong> Multiple agents ran in parallel, pulling full article HTML from paginated RSS feeds (7 pages deep). Articles were saved as intermediate JSON files with metadata (title, date, slug, content, image URLs).</li>
+        <li><strong>HTML generation.</strong> A Node.js migration script (<code>scripts/migrate-articles.mjs</code>) bulk-converted the JSON into static HTML pages, matching the blog's template structure — header, nav, theme toggle, utterances comments, and footer.</li>
+        <li><strong>Formatting cleanup.</strong> WordPress's markup was messy — inline <code>style</code> attributes, colour-coded <code>&lt;span&gt;</code> tags in code blocks, code in <code>&lt;p&gt;</code> tags with <code>&lt;br /&gt;</code> line breaks instead of proper <code>&lt;pre&gt;&lt;code&gt;</code> blocks. The migration script stripped the styling, and a follow-up audit fixed the remaining formatting issues across 18 articles.</li>
+        <li><strong>Index &amp; feed generation.</strong> The homepage, All Posts archive, and RSS feed were regenerated to include all 66 migrated articles alongside the new ones.</li>
+      </ol>
+
+      <p>No content was modified — just the formatting and structure. Some links to external resources may no longer work, and a few code samples reference APIs that have since evolved. They're preserved here as a record of the journey.</p>
+
+      <p>Everything above this point is new — written in the age of AI-assisted coding. Everything below is from a different era entirely.</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

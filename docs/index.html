@@ -68,7 +68,7 @@
         <li>Light and dark theme support</li>
       </ul>
 
-      <p>Every article, style change, and feature is authored through AI CLI conversations. The <a href="https://github.com/jamesmiles/blog">source is public</a> — you can see every commit and how the site evolves over time.</p>
+      <p>Every line of HTML, CSS, and JavaScript powering this site is authored by AI. The <a href="https://github.com/jamesmiles/blog">source is public</a> — you can see every commit and how the site evolves over time.</p>
 
       <h2>A quick code sample</h2>
 
@@ -82,6 +82,41 @@ console.log(response);
       <p>Stay tuned for the first real article. In the meantime, feel free to leave a comment below — yes, that's powered by GitHub Issues too.</p>
         </div>
         <a href="hello-world/index.html" class="read-more">Continue reading &amp; comments &rarr;</a>
+      </article>
+
+      <article class="article-item">
+        <header class="article-item-header">
+          <h2 class="article-item-title">
+            <a href="enumerate-this-archive/index.html">From the Archives: Enumerate This!</a>
+          </h2>
+          <div class="article-item-meta">
+            <time datetime="2026-03-26">March 26, 2026</time>
+            <span class="tag">meta</span>
+            <span class="tag">archive</span>
+          </div>
+        </header>
+        <div class="article-body">
+          <p>The articles that follow have been migrated from <strong><a href="https://jamesmiles.wordpress.com/">Enumerate This!</a></strong>, my original coding blog which ran from 2010 to 2016.</p>
+
+      <p>That blog covered C#, Reactive Extensions (Rx), LINQ, LINQPad, Azure, and various programming puzzles and patterns. It was where I cut my teeth writing about software — exploring ideas in public, sharing code snippets, and occasionally getting into trouble with memoization and thread safety.</p>
+
+      <h2>How the migration worked</h2>
+
+      <p>The entire migration was performed by AI (Claude Code) in a single conversation. Here's what happened:</p>
+
+      <ol>
+        <li><strong>Discovery.</strong> The AI fetched the WordPress RSS feed and sitemap to build a complete inventory of all 66 articles spanning 2010–2016.</li>
+        <li><strong>Content extraction.</strong> Multiple agents ran in parallel, pulling full article HTML from paginated RSS feeds (7 pages deep). Articles were saved as intermediate JSON files with metadata (title, date, slug, content, image URLs).</li>
+        <li><strong>HTML generation.</strong> A Node.js migration script (<code>scripts/migrate-articles.mjs</code>) bulk-converted the JSON into static HTML pages, matching the blog's template structure — header, nav, theme toggle, utterances comments, and footer.</li>
+        <li><strong>Formatting cleanup.</strong> WordPress's markup was messy — inline <code>style</code> attributes, colour-coded <code>&lt;span&gt;</code> tags in code blocks, code in <code>&lt;p&gt;</code> tags with <code>&lt;br /&gt;</code> line breaks instead of proper <code>&lt;pre&gt;&lt;code&gt;</code> blocks. The migration script stripped the styling, and a follow-up audit fixed the remaining formatting issues across 18 articles.</li>
+        <li><strong>Index &amp; feed generation.</strong> The homepage, All Posts archive, and RSS feed were regenerated to include all 66 migrated articles alongside the new ones.</li>
+      </ol>
+
+      <p>No content was modified — just the formatting and structure. Some links to external resources may no longer work, and a few code samples reference APIs that have since evolved. They're preserved here as a record of the journey.</p>
+
+      <p>Everything above this point is new — written in the age of AI-assisted coding. Everything below is from a different era entirely.</p>
+        </div>
+        <a href="enumerate-this-archive/index.html" class="read-more">Continue reading &amp; comments &rarr;</a>
       </article>
 
       <article class="article-item">
@@ -174,7 +209,7 @@ console.log(response);
         <a href="lightblue-an-alternative-to-the-azure-emulator/index.html" class="read-more">Continue reading &amp; comments &rarr;</a>
       </article>
 
-      <article class="article-item">
+      <article class="article-item" style="display:none">
         <header class="article-item-header">
           <h2 class="article-item-title">
             <a href="solving-puzzles-in-c-poker-hands/index.html">Solving Puzzles in C#: Poker Hands</a>
