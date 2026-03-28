@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>James Miles' AI Coding Adventures</title>
+    <title>James Miles' AI Engineering Adventures</title>
     <description>Exploring the frontier of AI-assisted coding — experiments, insights, and adventures in building with AI.</description>
     <link>https://jamesmiles.github.io/blog</link>
     <atom:link href="https://jamesmiles.github.io/blog/rss.xml" rel="self" type="application/rss+xml"/>
@@ -11,7 +11,7 @@
       <title>Hello, World!</title>
       <link>https://jamesmiles.github.io/blog/hello-world/</link>
       <guid>https://jamesmiles.github.io/blog/hello-world/</guid>
-      <description>Welcome to James Miles&apos; AI Coding Adventures — a blog about building software with AI assistants, one experiment at a time.</description>
+      <description>Welcome to James Miles&apos; AI Engineering Adventures — a blog about building software with AI assistants, one experiment at a time.</description>
       <pubDate>Fri, 27 Mar 2026 00:00:00 GMT</pubDate>
     </item>
     <item>

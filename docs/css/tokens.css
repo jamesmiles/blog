@@ -1,9 +1,9 @@
 :root {
   /* Brand */
-  --color-brand-primary: #55d6c2;
-  --color-brand-primary-hover: #44c4b0;
-  --color-brand-primary-subtle: rgba(85, 214, 194, 0.15);
-  --color-brand-alt: #a7a5c6;
+  --color-brand-primary: #7771e1;
+  --color-brand-primary-hover: #6560d0;
+  --color-brand-primary-subtle: rgba(119, 113, 225, 0.15);
+  --color-brand-alt: #55d6c2;
 
   /* Surfaces */
   --color-surface-bg: #ffffff;
@@ -76,6 +76,11 @@
 }
 
 [data-theme="dark"] {
+  /* Brand */
+  --color-brand-primary: #55d6c2;
+  --color-brand-primary-hover: #44c4b0;
+  --color-brand-primary-subtle: rgba(85, 214, 194, 0.15);
+
   /* Surfaces */
   --color-surface-bg: #12121e;
   --color-surface-raised: #1e1e30;

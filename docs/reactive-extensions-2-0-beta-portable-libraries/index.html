@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reactive Extensions 2.0 Beta: Portable Libraries — James Miles' AI Coding Adventures</title>
+  <title>Reactive Extensions 2.0 Beta: Portable Libraries — James Miles' AI Engineering Adventures</title>
   <meta name="description" content="Further to my last post about Rx 2.0 assemblies.">
   <meta name="article:date" content="2012-03-08">
   <meta property="og:title" content="Reactive Extensions 2.0 Beta: Portable Libraries">
   <meta property="og:description" content="Further to my last post about Rx 2.0 assemblies.">
   <meta property="og:type" content="article">
-  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Engineering Adventures RSS" href="../rss.xml">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/styles.css">
   <script src="../js/theme.js"></script>
@@ -17,13 +17,21 @@
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <a href="../index.html" class="site-title">James Miles' AI Engineering Adventures</a>
       <nav class="header-nav">
         <a href="../all-posts.html">All Posts</a>
         <a href="../rss.xml">RSS</a>
         <button class="theme-toggle" aria-label="Toggle theme"></button>
       </nav>
+      <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
     </div>
+    <nav class="mobile-nav">
+      <a href="../all-posts.html">All Posts</a>
+      <a href="../rss.xml">RSS</a>
+      <button class="theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"></button>
+    </nav>
   </header>
 
   <main class="main-content">
@@ -62,7 +70,7 @@
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <span>&copy; 2026 James Miles' AI Engineering Adventures</span>
       <div class="footer-links">
         <a href="../rss.xml">RSS</a>
         <a href="https://github.com/jamesmiles/blog">GitHub</a>

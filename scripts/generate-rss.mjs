@@ -23,8 +23,8 @@ function extractMeta(html, name) {
 function extractTitle(html) {
   const match = html.match(/<title>([^<]*)<\/title>/i);
   if (!match) return null;
-  // Remove " — James Miles' AI Coding Adventures" suffix
-  return match[1].replace(/\s*[—–-]\s*James Miles' AI Coding Adventures$/, '').trim();
+  // Remove " — James Miles' AI Engineering Adventures" suffix
+  return match[1].replace(/\s*[—–-]\s*James Miles' AI Engineering Adventures$/, '').trim();
 }
 
 function getArticles() {
@@ -85,7 +85,7 @@ function generateRss(articles) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>James Miles' AI Coding Adventures</title>
+    <title>James Miles' AI Engineering Adventures</title>
     <description>Exploring the frontier of AI-assisted coding — experiments, insights, and adventures in building with AI.</description>
     <link>${siteUrl}</link>
     <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>

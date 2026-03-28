@@ -119,13 +119,13 @@ function generateArticlePage(article) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${escapeHtml(article.title)} — James Miles' AI Coding Adventures</title>
+  <title>${escapeHtml(article.title)} — James Miles' AI Engineering Adventures</title>
   <meta name="description" content="${desc}">
   <meta name="article:date" content="${date}">
   <meta property="og:title" content="${escapeHtml(article.title)}">
   <meta property="og:description" content="${desc}">
   <meta property="og:type" content="article">
-  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="../rss.xml">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Engineering Adventures RSS" href="../rss.xml">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/styles.css">
   <script src="../js/theme.js"></script>
@@ -133,13 +133,21 @@ function generateArticlePage(article) {
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a href="../index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <a href="../index.html" class="site-title">James Miles' AI Engineering Adventures</a>
       <nav class="header-nav">
         <a href="../all-posts.html">All Posts</a>
         <a href="../rss.xml">RSS</a>
         <button class="theme-toggle" aria-label="Toggle theme"></button>
       </nav>
+      <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
     </div>
+    <nav class="mobile-nav">
+      <a href="../all-posts.html">All Posts</a>
+      <a href="../rss.xml">RSS</a>
+      <button class="theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"></button>
+    </nav>
   </header>
 
   <main class="main-content">
@@ -171,7 +179,7 @@ function generateArticlePage(article) {
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <span>&copy; 2026 James Miles' AI Engineering Adventures</span>
       <div class="footer-links">
         <a href="../rss.xml">RSS</a>
         <a href="https://github.com/jamesmiles/blog">GitHub</a>
@@ -314,9 +322,9 @@ const allPostsHtml = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Posts — James Miles' AI Coding Adventures</title>
-  <meta name="description" content="Archive of all posts on James Miles' AI Coding Adventures.">
-  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="rss.xml">
+  <title>All Posts — James Miles' AI Engineering Adventures</title>
+  <meta name="description" content="Archive of all posts on James Miles' AI Engineering Adventures.">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Engineering Adventures RSS" href="rss.xml">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/styles.css">
   <script src="js/theme.js"></script>
@@ -324,13 +332,21 @@ const allPostsHtml = `<!DOCTYPE html>
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a href="index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <a href="index.html" class="site-title">James Miles' AI Engineering Adventures</a>
       <nav class="header-nav">
         <a href="all-posts.html">All Posts</a>
         <a href="rss.xml">RSS</a>
         <button class="theme-toggle" aria-label="Toggle theme"></button>
       </nav>
+      <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
     </div>
+    <nav class="mobile-nav">
+      <a href="all-posts.html">All Posts</a>
+      <a href="rss.xml">RSS</a>
+      <button class="theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"></button>
+    </nav>
   </header>
 
   <main class="main-content">
@@ -341,7 +357,7 @@ ${archiveSections}
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <span>&copy; 2026 James Miles' AI Engineering Adventures</span>
       <div class="footer-links">
         <a href="rss.xml">RSS</a>
         <a href="https://github.com/jamesmiles/blog">GitHub</a>
@@ -392,12 +408,12 @@ const indexHtml = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>James Miles' AI Coding Adventures</title>
+  <title>James Miles' AI Engineering Adventures</title>
   <meta name="description" content="Exploring the frontier of AI-assisted coding — experiments, insights, and adventures in building with AI.">
-  <meta property="og:title" content="James Miles' AI Coding Adventures">
+  <meta property="og:title" content="James Miles' AI Engineering Adventures">
   <meta property="og:description" content="Exploring the frontier of AI-assisted coding.">
   <meta property="og:type" content="website">
-  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Coding Adventures RSS" href="rss.xml">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Engineering Adventures RSS" href="rss.xml">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/styles.css">
   <script src="js/theme.js"></script>
@@ -405,12 +421,23 @@ const indexHtml = `<!DOCTYPE html>
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a href="index.html" class="site-title">James Miles' AI Coding Adventures</a>
+      <a href="index.html" class="site-title">James Miles' AI Engineering Adventures</a>
       <nav class="header-nav">
         <a href="all-posts.html">All Posts</a>
         <a href="rss.xml">RSS</a>
         <button class="theme-toggle" aria-label="Toggle theme"></button>
       </nav>
+      <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+    </div>
+    <nav class="mobile-nav">
+      <a href="all-posts.html">All Posts</a>
+      <a href="rss.xml">RSS</a>
+      <button class="theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"></button>
+    </nav>
+    <div class="sticky-article-bar-wrapper">
+      <div class="sticky-article-bar" id="sticky-article-bar"></div>
     </div>
   </header>
 
@@ -440,11 +467,43 @@ ${indexArticles}
         });
       })();
     </script>
+    <script>
+      (function() {
+        var bar = document.getElementById('sticky-article-bar');
+        var pageTitle = document.querySelector('.page-title');
+        bar.textContent = 'Latest Posts';
+        var articles = document.querySelectorAll('.article-item');
+
+        function setBar(title) {
+          bar.textContent = 'Currently Reading: ' + title;
+        }
+        function updateBar() {
+          var headerBottom = pageTitle ? pageTitle.getBoundingClientRect().bottom : 0;
+          if (headerBottom > 0) {
+            setBar('Latest Posts');
+            return;
+          }
+          for (var i = articles.length - 1; i >= 0; i--) {
+            if (articles[i].style.display === 'none') continue;
+            var rect = articles[i].getBoundingClientRect();
+            if (rect.top < 120) {
+              var titleEl = articles[i].querySelector('.article-item-title a');
+              if (titleEl) setBar(titleEl.textContent);
+              return;
+            }
+          }
+          setBar('Latest Posts');
+        }
+
+        window.addEventListener('scroll', updateBar, { passive: true });
+        updateBar();
+      })();
+    </script>
   </main>
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <span>&copy; 2026 James Miles' AI Coding Adventures</span>
+      <span>&copy; 2026 James Miles' AI Engineering Adventures</span>
       <div class="footer-links">
         <a href="rss.xml">RSS</a>
         <a href="https://github.com/jamesmiles/blog">GitHub</a>
