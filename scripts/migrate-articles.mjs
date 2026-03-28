@@ -391,7 +391,8 @@ const indexArticles = allPagesData.map((a, i) => {
 
   // Extract article body content
   const bodyMatch = html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<section/);
-  const body = bodyMatch ? bodyMatch[1].trim() : '';
+  // Fix relative paths for embedding in index (../images/ -> images/)
+  const body = bodyMatch ? bodyMatch[1].trim().replace(/\.\.\/images\//g, 'images/') : '';
 
   // Extract tags
   const tagMatches = [...html.matchAll(/<span class="tag">([^<]*)<\/span>/g)];
