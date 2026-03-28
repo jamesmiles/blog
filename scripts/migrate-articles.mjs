@@ -133,7 +133,7 @@ function generateArticlePage(article) {
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a href="../index.html" class="site-title">James Miles' AI Engineering Adventures</a>
+      <a href="../index.html" class="site-title">AI Engineering Adventures <span class="site-title-sub">by James Miles</span></a>
       <nav class="header-nav">
         <a href="../all-posts.html">All Posts</a>
         <a href="../rss.xml">RSS</a>
@@ -339,7 +339,7 @@ const allPostsHtml = `<!DOCTYPE html>
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a href="index.html" class="site-title">James Miles' AI Engineering Adventures</a>
+      <a href="index.html" class="site-title">AI Engineering Adventures <span class="site-title-sub">by James Miles</span></a>
       <nav class="header-nav">
         <a href="all-posts.html">All Posts</a>
         <a href="rss.xml">RSS</a>
@@ -435,7 +435,7 @@ const indexHtml = `<!DOCTYPE html>
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a href="index.html" class="site-title">James Miles' AI Engineering Adventures</a>
+      <a href="index.html" class="site-title">AI Engineering Adventures <span class="site-title-sub">by James Miles</span></a>
       <nav class="header-nav">
         <a href="all-posts.html">All Posts</a>
         <a href="rss.xml">RSS</a>
