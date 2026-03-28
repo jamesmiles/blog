@@ -146,7 +146,7 @@ function generateArticlePage(article) {
     <nav class="mobile-nav">
       <a href="../all-posts.html">All Posts</a>
       <a href="../rss.xml">RSS</a>
-      <button class="theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"></button>
+      <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
     </nav>
   </header>
 
@@ -345,7 +345,7 @@ const allPostsHtml = `<!DOCTYPE html>
     <nav class="mobile-nav">
       <a href="all-posts.html">All Posts</a>
       <a href="rss.xml">RSS</a>
-      <button class="theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"></button>
+      <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
     </nav>
   </header>
 
@@ -434,7 +434,7 @@ const indexHtml = `<!DOCTYPE html>
     <nav class="mobile-nav">
       <a href="all-posts.html">All Posts</a>
       <a href="rss.xml">RSS</a>
-      <button class="theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"></button>
+      <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
     </nav>
     <div class="sticky-article-bar-wrapper">
       <div class="sticky-article-bar" id="sticky-article-bar"></div>

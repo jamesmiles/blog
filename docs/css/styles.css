@@ -526,6 +526,7 @@ img {
 .mobile-nav {
   display: none;
   flex-direction: column;
+  align-items: flex-end;
   gap: var(--space-1);
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid var(--color-border-default);
@@ -537,21 +538,32 @@ img {
 }
 
 .mobile-nav a,
-.mobile-nav button {
+.mobile-nav .mobile-theme-toggle {
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
-  text-align: left;
+  text-align: right;
   transition: all var(--transition-fast);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .mobile-nav a:hover,
-.mobile-nav button:hover {
+.mobile-nav .mobile-theme-toggle:hover {
   color: var(--color-text-primary);
   background-color: var(--color-surface-raised);
   text-decoration: none;
+}
+
+.mobile-theme-toggle svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* Responsive: small screens */

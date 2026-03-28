@@ -29,9 +29,14 @@
   }
 
   function updateToggleIcons(theme) {
-    const icon = theme === 'dark' ? sunIcon : moonIcon;
+    var icon = theme === 'dark' ? sunIcon : moonIcon;
     document.querySelectorAll('.theme-toggle').forEach(function(btn) {
       btn.innerHTML = icon;
+    });
+    // Mobile toggle with label
+    document.querySelectorAll('.mobile-theme-toggle').forEach(function(btn) {
+      var label = theme === 'dark' ? 'Light mode' : 'Dark mode';
+      btn.innerHTML = icon + ' ' + label;
     });
   }
 
@@ -41,9 +46,9 @@
   // Set up toggle buttons once DOM is ready
   document.addEventListener('DOMContentLoaded', function () {
     updateToggleIcons(getPreferred());
-    document.querySelectorAll('.theme-toggle').forEach(function(btn) {
+    document.querySelectorAll('.theme-toggle, .mobile-theme-toggle').forEach(function(btn) {
       btn.addEventListener('click', function () {
-        const current = document.documentElement.getAttribute('data-theme');
+        var current = document.documentElement.getAttribute('data-theme');
         apply(current === 'dark' ? 'light' : 'dark');
       });
     });
