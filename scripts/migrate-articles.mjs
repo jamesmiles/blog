@@ -138,6 +138,9 @@ function generateArticlePage(article) {
         <a href="../all-posts.html">All Posts</a>
         <a href="../rss.xml">RSS</a>
         <button class="theme-toggle" aria-label="Toggle theme"></button>
+        <button class="share-btn" aria-label="Share" onclick="shareLink(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        </button>
       </nav>
       <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
@@ -147,6 +150,10 @@ function generateArticlePage(article) {
       <a href="../all-posts.html">All Posts</a>
       <a href="../rss.xml">RSS</a>
       <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
+      <button class="mobile-share-btn" onclick="shareLink(this); document.querySelector('.mobile-nav').classList.remove('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Share
+      </button>
     </nav>
   </header>
 
@@ -337,6 +344,9 @@ const allPostsHtml = `<!DOCTYPE html>
         <a href="all-posts.html">All Posts</a>
         <a href="rss.xml">RSS</a>
         <button class="theme-toggle" aria-label="Toggle theme"></button>
+        <button class="share-btn" aria-label="Share" onclick="shareLink(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        </button>
       </nav>
       <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
@@ -346,6 +356,10 @@ const allPostsHtml = `<!DOCTYPE html>
       <a href="all-posts.html">All Posts</a>
       <a href="rss.xml">RSS</a>
       <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
+      <button class="mobile-share-btn" onclick="shareLink(this); document.querySelector('.mobile-nav').classList.remove('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Share
+      </button>
     </nav>
   </header>
 
@@ -426,6 +440,9 @@ const indexHtml = `<!DOCTYPE html>
         <a href="all-posts.html">All Posts</a>
         <a href="rss.xml">RSS</a>
         <button class="theme-toggle" aria-label="Toggle theme"></button>
+        <button class="share-btn" aria-label="Share" onclick="shareLink(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        </button>
       </nav>
       <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
@@ -435,6 +452,10 @@ const indexHtml = `<!DOCTYPE html>
       <a href="all-posts.html">All Posts</a>
       <a href="rss.xml">RSS</a>
       <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
+      <button class="mobile-share-btn" onclick="shareLink(this); document.querySelector('.mobile-nav').classList.remove('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Share
+      </button>
     </nav>
     <div class="sticky-article-bar-wrapper">
       <div class="sticky-article-bar" id="sticky-article-bar"></div>

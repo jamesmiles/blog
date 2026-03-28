@@ -54,3 +54,11 @@
     });
   });
 })();
+
+// Share — copy current page URL to clipboard
+function shareLink(btn) {
+  navigator.clipboard.writeText(window.location.href).then(function() {
+    btn.classList.add('copied');
+    setTimeout(function() { btn.classList.remove('copied'); }, 1500);
+  });
+}

@@ -566,6 +566,58 @@ img {
   height: 16px;
 }
 
+/* Share button */
+.share-btn {
+  background: none;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.share-btn:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+  background-color: var(--color-surface-raised);
+}
+
+.share-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.share-btn.copied::after {
+  content: 'Copied!';
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--font-size-xs);
+  color: var(--color-brand-primary);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.mobile-share-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.mobile-share-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 /* Responsive: small screens */
 @media (max-width: 768px) {
   .header-nav {
