@@ -80,6 +80,7 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
+  position: relative;
 }
 
 .site-title {
@@ -535,9 +536,16 @@ img {
   flex-direction: column;
   align-items: flex-end;
   gap: var(--space-1);
-  padding: var(--space-2) var(--space-4);
-  border-top: 1px solid var(--color-border-default);
+  padding: var(--space-3);
+  position: absolute;
+  top: 100%;
+  right: var(--space-4);
   background-color: var(--color-surface-bg);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 101;
+  min-width: 160px;
 }
 
 .mobile-nav.open {

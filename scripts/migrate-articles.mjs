@@ -145,8 +145,7 @@ function generateArticlePage(article) {
       <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
       </button>
-    </div>
-    <nav class="mobile-nav">
+      <nav class="mobile-nav">
       <a href="../all-posts.html">All Posts</a>
       <a href="../rss.xml">RSS</a>
       <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
@@ -154,7 +153,7 @@ function generateArticlePage(article) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         Share
       </button>
-    </nav>
+      </nav>
   </header>
 
   <main class="main-content">
@@ -351,8 +350,7 @@ const allPostsHtml = `<!DOCTYPE html>
       <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
       </button>
-    </div>
-    <nav class="mobile-nav">
+      <nav class="mobile-nav">
       <a href="all-posts.html">All Posts</a>
       <a href="rss.xml">RSS</a>
       <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
@@ -360,7 +358,7 @@ const allPostsHtml = `<!DOCTYPE html>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         Share
       </button>
-    </nav>
+      </nav>
   </header>
 
   <main class="main-content">
@@ -447,8 +445,7 @@ const indexHtml = `<!DOCTYPE html>
       <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
       </button>
-    </div>
-    <nav class="mobile-nav">
+      <nav class="mobile-nav">
       <a href="all-posts.html">All Posts</a>
       <a href="rss.xml">RSS</a>
       <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
@@ -456,7 +453,7 @@ const indexHtml = `<!DOCTYPE html>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         Share
       </button>
-    </nav>
+      </nav>
     <div class="sticky-article-bar-wrapper">
       <div class="sticky-article-bar" id="sticky-article-bar"></div>
     </div>
