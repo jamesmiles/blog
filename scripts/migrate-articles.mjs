@@ -463,8 +463,6 @@ const indexHtml = `<!DOCTYPE html>
   </header>
 
   <main class="main-content">
-    <h1 class="page-title">Latest Posts</h1>
-
     <div class="article-list">
 ${indexArticles}
     </div>
