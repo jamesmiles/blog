@@ -89,6 +89,10 @@ img {
   color: var(--color-text-primary);
   text-decoration: none;
   line-height: var(--line-height-tight);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .site-title:hover {
@@ -744,8 +748,6 @@ img {
 
   .site-title {
     font-size: var(--font-size-lg);
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .footer-inner {

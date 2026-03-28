@@ -454,6 +454,7 @@ const indexHtml = `<!DOCTYPE html>
         Share
       </button>
       </nav>
+    </div>
     <div class="sticky-article-bar-wrapper">
       <div class="sticky-article-bar" id="sticky-article-bar"></div>
     </div>
