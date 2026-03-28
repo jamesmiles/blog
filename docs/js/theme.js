@@ -55,6 +55,14 @@
   });
 })();
 
+// Close mobile nav when screen widens past breakpoint
+window.matchMedia('(min-width: 769px)').addEventListener('change', function(e) {
+  if (e.matches) {
+    var nav = document.querySelector('.mobile-nav');
+    if (nav) nav.classList.remove('open');
+  }
+});
+
 // Share — copy current page URL to clipboard
 function shareLink(btn) {
   navigator.clipboard.writeText(window.location.href).then(function() {
