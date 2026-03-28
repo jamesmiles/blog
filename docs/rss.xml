@@ -3,483 +3,483 @@
   <channel>
     <title>James Miles' AI Coding Adventures</title>
     <description>Exploring the frontier of AI-assisted coding — experiments, insights, and adventures in building with AI.</description>
-    <link>https://enumeratethis.com</link>
-    <atom:link href="https://enumeratethis.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <link>https://jamesmiles.github.io/blog</link>
+    <atom:link href="https://jamesmiles.github.io/blog/rss.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 28 Mar 2026 01:26:47 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 28 Mar 2026 02:12:46 GMT</lastBuildDate>
     <item>
       <title>Hello, World!</title>
-      <link>https://enumeratethis.com/hello-world/</link>
-      <guid>https://enumeratethis.com/hello-world/</guid>
+      <link>https://jamesmiles.github.io/blog/hello-world/</link>
+      <guid>https://jamesmiles.github.io/blog/hello-world/</guid>
       <description>Welcome to James Miles&apos; AI Coding Adventures — a blog about building software with AI assistants, one experiment at a time.</description>
       <pubDate>Fri, 27 Mar 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>From the Archives: Enumerate This!</title>
-      <link>https://enumeratethis.com/enumerate-this-archive/</link>
-      <guid>https://enumeratethis.com/enumerate-this-archive/</guid>
+      <link>https://jamesmiles.github.io/blog/enumerate-this-archive/</link>
+      <guid>https://jamesmiles.github.io/blog/enumerate-this-archive/</guid>
       <description>The articles below were migrated from Enumerate This!, my original C# and Reactive Extensions blog (2010-2016).</description>
       <pubDate>Thu, 26 Mar 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>New Linq2Azure Release</title>
-      <link>https://enumeratethis.com/new-linq2azure-release/</link>
-      <guid>https://enumeratethis.com/new-linq2azure-release/</guid>
+      <link>https://jamesmiles.github.io/blog/new-linq2azure-release/</link>
+      <guid>https://jamesmiles.github.io/blog/new-linq2azure-release/</guid>
       <description>We released a new version of Linq2Azure this week, allowing management of SQL Database Geo-Replicas.</description>
       <pubDate>Wed, 20 Apr 2016 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>YOW! West 2015</title>
-      <link>https://enumeratethis.com/yow-west-2015/</link>
-      <guid>https://enumeratethis.com/yow-west-2015/</guid>
+      <link>https://jamesmiles.github.io/blog/yow-west-2015/</link>
+      <guid>https://jamesmiles.github.io/blog/yow-west-2015/</guid>
       <description>If anyone is interested in presenting at YOW! West this year, the submission page is now online.</description>
       <pubDate>Thu, 22 Jan 2015 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>LightBlue: An alternative to the Azure Emulator</title>
-      <link>https://enumeratethis.com/lightblue-an-alternative-to-the-azure-emulator/</link>
-      <guid>https://enumeratethis.com/lightblue-an-alternative-to-the-azure-emulator/</guid>
+      <link>https://jamesmiles.github.io/blog/lightblue-an-alternative-to-the-azure-emulator/</link>
+      <guid>https://jamesmiles.github.io/blog/lightblue-an-alternative-to-the-azure-emulator/</guid>
       <description>LightBlue is a development framework that abstracts our dependency on the Azure platform, providing a light-weight hosting mechanism for worker and web roles.</description>
       <pubDate>Thu, 21 Aug 2014 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Solving Puzzles in C#: Poker Hands</title>
-      <link>https://enumeratethis.com/solving-puzzles-in-c-poker-hands/</link>
-      <guid>https://enumeratethis.com/solving-puzzles-in-c-poker-hands/</guid>
+      <link>https://jamesmiles.github.io/blog/solving-puzzles-in-c-poker-hands/</link>
+      <guid>https://jamesmiles.github.io/blog/solving-puzzles-in-c-poker-hands/</guid>
       <description>A brute force C# and LINQ solution to computing poker hands from a standard 52-card deck.</description>
       <pubDate>Wed, 13 Aug 2014 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Record Types &amp;amp; Pattern-Matching Coming in C# 6?</title>
-      <link>https://enumeratethis.com/record-types-pattern-matching-coming-in-c-6/</link>
-      <guid>https://enumeratethis.com/record-types-pattern-matching-coming-in-c-6/</guid>
+      <link>https://jamesmiles.github.io/blog/record-types-pattern-matching-coming-in-c-6/</link>
+      <guid>https://jamesmiles.github.io/blog/record-types-pattern-matching-coming-in-c-6/</guid>
       <description>A look at the draft specification for Records and Pattern-Matching in C#, borrowed from F# and Haskell.</description>
       <pubDate>Mon, 11 Aug 2014 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Solving Puzzles with C#: Coins in a Bag</title>
-      <link>https://enumeratethis.com/solving-puzzles-in-c-coins-in-a-bag/</link>
-      <guid>https://enumeratethis.com/solving-puzzles-in-c-coins-in-a-bag/</guid>
+      <link>https://jamesmiles.github.io/blog/solving-puzzles-in-c-coins-in-a-bag/</link>
+      <guid>https://jamesmiles.github.io/blog/solving-puzzles-in-c-coins-in-a-bag/</guid>
       <description>Solving a probability puzzle about biased coins using C# and LINQ in LINQPad.</description>
       <pubDate>Tue, 05 Aug 2014 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Linq2Azure 1.1.0.0 released!</title>
-      <link>https://enumeratethis.com/linq2azure-1-1-0-0-released/</link>
-      <guid>https://enumeratethis.com/linq2azure-1-1-0-0-released/</guid>
+      <link>https://jamesmiles.github.io/blog/linq2azure-1-1-0-0-released/</link>
+      <guid>https://jamesmiles.github.io/blog/linq2azure-1-1-0-0-released/</guid>
       <description>Linq2Azure 1.1.0.0 has been released.</description>
       <pubDate>Mon, 28 Jul 2014 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Linq2Azure 1.0.0.7 released!</title>
-      <link>https://enumeratethis.com/linq2azure-1-0-0-7-released/</link>
-      <guid>https://enumeratethis.com/linq2azure-1-0-0-7-released/</guid>
+      <link>https://jamesmiles.github.io/blog/linq2azure-1-0-0-7-released/</link>
+      <guid>https://jamesmiles.github.io/blog/linq2azure-1-0-0-7-released/</guid>
       <description>Linq2Azure 1.0.0.7 has been released.</description>
       <pubDate>Thu, 18 Jul 2013 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Linq2Azure 1.0.0.1 – LINQPad driver update!</title>
-      <link>https://enumeratethis.com/linq2azure-1-0-0-1-linqpad-driver-update/</link>
-      <guid>https://enumeratethis.com/linq2azure-1-0-0-1-linqpad-driver-update/</guid>
+      <link>https://jamesmiles.github.io/blog/linq2azure-1-0-0-1-linqpad-driver-update/</link>
+      <guid>https://jamesmiles.github.io/blog/linq2azure-1-0-0-1-linqpad-driver-update/</guid>
       <description>This update contains a bug fix for configuration serialization in the Linq2Azure LINQPad driver.</description>
       <pubDate>Wed, 12 Jun 2013 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Linq2Azure – NuGet Package Released!</title>
-      <link>https://enumeratethis.com/linq2azure-nuget-package-released/</link>
-      <guid>https://enumeratethis.com/linq2azure-nuget-package-released/</guid>
+      <link>https://jamesmiles.github.io/blog/linq2azure-nuget-package-released/</link>
+      <guid>https://jamesmiles.github.io/blog/linq2azure-nuget-package-released/</guid>
       <description>We&apos;ve just released the Linq2Azure API to the NuGet Gallery for automation in applications and deployment scripts.</description>
       <pubDate>Wed, 12 Jun 2013 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Linq2Azure 1.0.0.0 – LINQPad driver released!</title>
-      <link>https://enumeratethis.com/linq2azure-1-0-0-0-linqpad-driver-released/</link>
-      <guid>https://enumeratethis.com/linq2azure-1-0-0-0-linqpad-driver-released/</guid>
+      <link>https://jamesmiles.github.io/blog/linq2azure-1-0-0-0-linqpad-driver-released/</link>
+      <guid>https://jamesmiles.github.io/blog/linq2azure-1-0-0-0-linqpad-driver-released/</guid>
       <description></description>
       <pubDate>Tue, 11 Jun 2013 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Linq2Azure – What is it?</title>
-      <link>https://enumeratethis.com/linq2azure-what-is-it/</link>
-      <guid>https://enumeratethis.com/linq2azure-what-is-it/</guid>
+      <link>https://jamesmiles.github.io/blog/linq2azure-what-is-it/</link>
+      <guid>https://jamesmiles.github.io/blog/linq2azure-what-is-it/</guid>
       <description></description>
       <pubDate>Fri, 07 Jun 2013 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Asynchronous Commands in Metro, WPF &amp;amp; Silverlight</title>
-      <link>https://enumeratethis.com/asynchronous-commands-in-metro-wpf-silverlight/</link>
-      <guid>https://enumeratethis.com/asynchronous-commands-in-metro-wpf-silverlight/</guid>
+      <link>https://jamesmiles.github.io/blog/asynchronous-commands-in-metro-wpf-silverlight/</link>
+      <guid>https://jamesmiles.github.io/blog/asynchronous-commands-in-metro-wpf-silverlight/</guid>
       <description>I&apos;ve seen quite a few examples demonstrating the new async/await language features (C# 5 &amp; VB next) with button click events;</description>
       <pubDate>Thu, 14 Jun 2012 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Hosting your own poker tournament with LINQPad &amp;amp; Reactive Extensions</title>
-      <link>https://enumeratethis.com/hosting-your-own-poker-tournament-with-linqpad-reactive-extensions/</link>
-      <guid>https://enumeratethis.com/hosting-your-own-poker-tournament-with-linqpad-reactive-extensions/</guid>
+      <link>https://jamesmiles.github.io/blog/hosting-your-own-poker-tournament-with-linqpad-reactive-extensions/</link>
+      <guid>https://jamesmiles.github.io/blog/hosting-your-own-poker-tournament-with-linqpad-reactive-extensions/</guid>
       <description>Playing poker next Saturday night &amp; want to impress your friends with your programming skills?</description>
       <pubDate>Sat, 24 Mar 2012 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Rxx 1.3 Released (Rx Contribution Project)</title>
-      <link>https://enumeratethis.com/rxx-1-3-released-rx-contribution-project/</link>
-      <guid>https://enumeratethis.com/rxx-1-3-released-rx-contribution-project/</guid>
+      <link>https://jamesmiles.github.io/blog/rxx-1-3-released-rx-contribution-project/</link>
+      <guid>https://jamesmiles.github.io/blog/rxx-1-3-released-rx-contribution-project/</guid>
       <description>See; http://rxx.codeplex.com/</description>
       <pubDate>Sat, 10 Mar 2012 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Reactive Extensions 2.0 Beta: Portable Libraries</title>
-      <link>https://enumeratethis.com/reactive-extensions-2-0-beta-portable-libraries/</link>
-      <guid>https://enumeratethis.com/reactive-extensions-2-0-beta-portable-libraries/</guid>
+      <link>https://jamesmiles.github.io/blog/reactive-extensions-2-0-beta-portable-libraries/</link>
+      <guid>https://jamesmiles.github.io/blog/reactive-extensions-2-0-beta-portable-libraries/</guid>
       <description>Further to my last post about Rx 2.0 assemblies.</description>
       <pubDate>Thu, 08 Mar 2012 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Reactive Extensions 2.0 Beta</title>
-      <link>https://enumeratethis.com/reactive-extensions-2-0-beta/</link>
-      <guid>https://enumeratethis.com/reactive-extensions-2-0-beta/</guid>
+      <link>https://jamesmiles.github.io/blog/reactive-extensions-2-0-beta/</link>
+      <guid>https://jamesmiles.github.io/blog/reactive-extensions-2-0-beta/</guid>
       <description>Rx 2.0 is coming!</description>
       <pubDate>Wed, 07 Mar 2012 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Reactive Extensions 2.0 Beta: Assembly References</title>
-      <link>https://enumeratethis.com/reactive-extensions-2-0-beta-assembly-references/</link>
-      <guid>https://enumeratethis.com/reactive-extensions-2-0-beta-assembly-references/</guid>
+      <link>https://jamesmiles.github.io/blog/reactive-extensions-2-0-beta-assembly-references/</link>
+      <guid>https://jamesmiles.github.io/blog/reactive-extensions-2-0-beta-assembly-references/</guid>
       <description>Before you jump into Rx 2.0 Beta you should know about some of the changes to the hierarchy of assemblies.</description>
       <pubDate>Wed, 07 Mar 2012 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Rx – Awaiting events &amp;amp; observables in C# 5</title>
-      <link>https://enumeratethis.com/rx-awaiting-events-observables-in-c-5/</link>
-      <guid>https://enumeratethis.com/rx-awaiting-events-observables-in-c-5/</guid>
+      <link>https://jamesmiles.github.io/blog/rx-awaiting-events-observables-in-c-5/</link>
+      <guid>https://jamesmiles.github.io/blog/rx-awaiting-events-observables-in-c-5/</guid>
       <description>So everyone is now using C# 5 to write asynchronous methods to await tasks right 😉</description>
       <pubDate>Fri, 17 Feb 2012 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Pop Quiz: Asynchronous Methods &amp;amp; Contract Errors</title>
-      <link>https://enumeratethis.com/pop-quiz-asynchronous-methods-contract-errors/</link>
-      <guid>https://enumeratethis.com/pop-quiz-asynchronous-methods-contract-errors/</guid>
+      <link>https://jamesmiles.github.io/blog/pop-quiz-asynchronous-methods-contract-errors/</link>
+      <guid>https://jamesmiles.github.io/blog/pop-quiz-asynchronous-methods-contract-errors/</guid>
       <description>This is for people wanting to expand their asynchronous brains!</description>
       <pubDate>Mon, 13 Feb 2012 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Reactive Extensions utilizing 64 cores</title>
-      <link>https://enumeratethis.com/reactive-extensions-utilizing-64-cores/</link>
-      <guid>https://enumeratethis.com/reactive-extensions-utilizing-64-cores/</guid>
+      <link>https://jamesmiles.github.io/blog/reactive-extensions-utilizing-64-cores/</link>
+      <guid>https://jamesmiles.github.io/blog/reactive-extensions-utilizing-64-cores/</guid>
       <description>Saw this on Facebook… welcome to the future;</description>
       <pubDate>Tue, 07 Feb 2012 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Hostile to friendly type names</title>
-      <link>https://enumeratethis.com/hostile-to-friendly-type-names/</link>
-      <guid>https://enumeratethis.com/hostile-to-friendly-type-names/</guid>
+      <link>https://jamesmiles.github.io/blog/hostile-to-friendly-type-names/</link>
+      <guid>https://jamesmiles.github.io/blog/hostile-to-friendly-type-names/</guid>
       <description>Have you ever written some code that dumps type names using reflection and run into annoyances like this?</description>
       <pubDate>Tue, 10 Jan 2012 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Structs that implement IEnumerator</title>
-      <link>https://enumeratethis.com/structs-that-implement-ienumerator/</link>
-      <guid>https://enumeratethis.com/structs-that-implement-ienumerator/</guid>
+      <link>https://jamesmiles.github.io/blog/structs-that-implement-ienumerator/</link>
+      <guid>https://jamesmiles.github.io/blog/structs-that-implement-ienumerator/</guid>
       <description>OK. Lets just revise the query we had in the previous post. I’m going to change it so that is finds enumerators that are also value types;</description>
       <pubDate>Wed, 30 Nov 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Structs that implement IDisposable</title>
-      <link>https://enumeratethis.com/structs-that-implement-idisposable/</link>
-      <guid>https://enumeratethis.com/structs-that-implement-idisposable/</guid>
+      <link>https://jamesmiles.github.io/blog/structs-that-implement-idisposable/</link>
+      <guid>https://jamesmiles.github.io/blog/structs-that-implement-idisposable/</guid>
       <description>A few weeks ago some friends and I were at the pub discussing value types that implement IDisposable. Consider the IObservable interface.</description>
       <pubDate>Tue, 22 Nov 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>More Reactive Extensions Performance Improvements</title>
-      <link>https://enumeratethis.com/more-reactive-extensions-performance-improvements/</link>
-      <guid>https://enumeratethis.com/more-reactive-extensions-performance-improvements/</guid>
+      <link>https://jamesmiles.github.io/blog/more-reactive-extensions-performance-improvements/</link>
+      <guid>https://jamesmiles.github.io/blog/more-reactive-extensions-performance-improvements/</guid>
       <description>I blogged about performance when Rx was officially released a few months ago.</description>
       <pubDate>Mon, 21 Nov 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Reactive Extensions Extensions 1.2</title>
-      <link>https://enumeratethis.com/reactive-extensions-extensions-1-2/</link>
-      <guid>https://enumeratethis.com/reactive-extensions-extensions-1-2/</guid>
+      <link>https://jamesmiles.github.io/blog/reactive-extensions-extensions-1-2/</link>
+      <guid>https://jamesmiles.github.io/blog/reactive-extensions-extensions-1-2/</guid>
       <description>Full Release Notes Here!</description>
       <pubDate>Tue, 15 Nov 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Observable.Generate Pop Quiz</title>
-      <link>https://enumeratethis.com/observable-generate-pop-quiz/</link>
-      <guid>https://enumeratethis.com/observable-generate-pop-quiz/</guid>
+      <link>https://jamesmiles.github.io/blog/observable-generate-pop-quiz/</link>
+      <guid>https://jamesmiles.github.io/blog/observable-generate-pop-quiz/</guid>
       <description>What would be the output of the following program;</description>
       <pubDate>Wed, 26 Oct 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Asus U36SD notebook running Windows 8 developer preview</title>
-      <link>https://enumeratethis.com/asus-u36sd-notebook-running-windows-8-developer-preview/</link>
-      <guid>https://enumeratethis.com/asus-u36sd-notebook-running-windows-8-developer-preview/</guid>
+      <link>https://jamesmiles.github.io/blog/asus-u36sd-notebook-running-windows-8-developer-preview/</link>
+      <guid>https://jamesmiles.github.io/blog/asus-u36sd-notebook-running-windows-8-developer-preview/</guid>
       <description>I’ve just setup a new laptop running Windows 8 &amp; Visual Studio 11 developer preview.</description>
       <pubDate>Sat, 22 Oct 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Financial Charts &amp;amp; Reactive Extensions</title>
-      <link>https://enumeratethis.com/financial-charts-reactive-extensions/</link>
-      <guid>https://enumeratethis.com/financial-charts-reactive-extensions/</guid>
+      <link>https://jamesmiles.github.io/blog/financial-charts-reactive-extensions/</link>
+      <guid>https://jamesmiles.github.io/blog/financial-charts-reactive-extensions/</guid>
       <description>The price of a financial instrument is not a fixed value. It is something that changes over time, driven by market forces. It’s quite common to view this as a chart that is updated as the price cha...</description>
       <pubDate>Tue, 26 Jul 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>New Rxx Release (It’s a big one!)</title>
-      <link>https://enumeratethis.com/new-rxx-release-its-a-big-one/</link>
-      <guid>https://enumeratethis.com/new-rxx-release-its-a-big-one/</guid>
+      <link>https://jamesmiles.github.io/blog/new-rxx-release-its-a-big-one/</link>
+      <guid>https://jamesmiles.github.io/blog/new-rxx-release-its-a-big-one/</guid>
       <description>We couldn’t let Rx go live without an Rxx refresh and boy is it a big one! Dave Sexton &amp; I are proud to announce Rxx 1.1. Firstly let me congratulate Dave. This is a major milestone for us and he h...</description>
       <pubDate>Thu, 30 Jun 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Nirvana 6 is out – now with Reactive Extensions</title>
-      <link>https://enumeratethis.com/nirvana-6-is-out-now-with-reactive-extensions/</link>
-      <guid>https://enumeratethis.com/nirvana-6-is-out-now-with-reactive-extensions/</guid>
+      <link>https://jamesmiles.github.io/blog/nirvana-6-is-out-now-with-reactive-extensions/</link>
+      <guid>https://jamesmiles.github.io/blog/nirvana-6-is-out-now-with-reactive-extensions/</guid>
       <description>my-Channels Nirvana 6 has just been released:</description>
       <pubDate>Wed, 29 Jun 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Reactive Extensions: It’s Official &amp;amp; Interactive Extensions Returns!</title>
-      <link>https://enumeratethis.com/reactive-extensions-its-official-interactive-extensions-returns/</link>
-      <guid>https://enumeratethis.com/reactive-extensions-its-official-interactive-extensions-returns/</guid>
+      <link>https://jamesmiles.github.io/blog/reactive-extensions-its-official-interactive-extensions-returns/</link>
+      <guid>https://jamesmiles.github.io/blog/reactive-extensions-its-official-interactive-extensions-returns/</guid>
       <description>Yay! Version 1.0 of Reactive Extensions has just been officially released!</description>
       <pubDate>Wed, 29 Jun 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Rx Official Release (more…)</title>
-      <link>https://enumeratethis.com/rx-official-release-more/</link>
-      <guid>https://enumeratethis.com/rx-official-release-more/</guid>
+      <link>https://jamesmiles.github.io/blog/rx-official-release-more/</link>
+      <guid>https://jamesmiles.github.io/blog/rx-official-release-more/</guid>
       <description>Bunch of new videos and workshops.</description>
       <pubDate>Wed, 29 Jun 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Rx Performance Improvements</title>
-      <link>https://enumeratethis.com/rx-performance-improvements/</link>
-      <guid>https://enumeratethis.com/rx-performance-improvements/</guid>
+      <link>https://jamesmiles.github.io/blog/rx-performance-improvements/</link>
+      <guid>https://jamesmiles.github.io/blog/rx-performance-improvements/</guid>
       <description>I think being a technology that enables us to easily write multithreaded, concurrent applications, a question often asked is;</description>
       <pubDate>Wed, 29 Jun 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Reactive Extensions – Extensions (Rxx)</title>
-      <link>https://enumeratethis.com/reactive-extensions-extensions-rxx/</link>
-      <guid>https://enumeratethis.com/reactive-extensions-extensions-rxx/</guid>
+      <link>https://jamesmiles.github.io/blog/reactive-extensions-extensions-rxx/</link>
+      <guid>https://jamesmiles.github.io/blog/reactive-extensions-extensions-rxx/</guid>
       <description></description>
       <pubDate>Sun, 29 May 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Finding a game of Doom with Rx</title>
-      <link>https://enumeratethis.com/finding-a-game-of-doom-with-rx/</link>
-      <guid>https://enumeratethis.com/finding-a-game-of-doom-with-rx/</guid>
+      <link>https://jamesmiles.github.io/blog/finding-a-game-of-doom-with-rx/</link>
+      <guid>https://jamesmiles.github.io/blog/finding-a-game-of-doom-with-rx/</guid>
       <description>Thanks to everyone for coming to our Rx presentation last night and thanks to Mitch for running the most isolated (in terms of distance) .NET community in the world! Towards the end of the presenta...</description>
       <pubDate>Fri, 13 May 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Rx Presentation – Perth Western Australia</title>
-      <link>https://enumeratethis.com/rx-presentation-perth-western-australia/</link>
-      <guid>https://enumeratethis.com/rx-presentation-perth-western-australia/</guid>
+      <link>https://jamesmiles.github.io/blog/rx-presentation-perth-western-australia/</link>
+      <guid>https://jamesmiles.github.io/blog/rx-presentation-perth-western-australia/</guid>
       <description>Sorry for the lack of blog action. Over the past few weeks I’ve left London behind, been working in Hong Kong, and I’m currently holidaying in Australia.</description>
       <pubDate>Mon, 09 May 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Marble Diagram for MergeSubject&amp;lt;T&amp;gt;</title>
-      <link>https://enumeratethis.com/marble-diagram-for-mergesubjectt/</link>
-      <guid>https://enumeratethis.com/marble-diagram-for-mergesubjectt/</guid>
+      <link>https://jamesmiles.github.io/blog/marble-diagram-for-mergesubjectt/</link>
+      <guid>https://jamesmiles.github.io/blog/marble-diagram-for-mergesubjectt/</guid>
       <description>Here is a marble diagram for my last post; Modelling Market Data Services in Rx with MergeSubject&lt;T&gt;</description>
       <pubDate>Sat, 26 Mar 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Modelling Market Data Services in Rx with MergeSubject&amp;lt;T&amp;gt;</title>
-      <link>https://enumeratethis.com/modelling-market-data-services-in-rx-with-mergesubjectt/</link>
-      <guid>https://enumeratethis.com/modelling-market-data-services-in-rx-with-mergesubjectt/</guid>
+      <link>https://jamesmiles.github.io/blog/modelling-market-data-services-in-rx-with-mergesubjectt/</link>
+      <guid>https://jamesmiles.github.io/blog/modelling-market-data-services-in-rx-with-mergesubjectt/</guid>
       <description>Many banking middleware solutions allow a consumer (either another service in the bank or perhaps an external 3rd party) to subscribe to information about a financial instrument. There are numerous...</description>
       <pubDate>Sat, 26 Mar 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Modelling Market Data Services in Rx with Scan + Replay</title>
-      <link>https://enumeratethis.com/modelling-market-data-services-in-rx-with-scan-replay/</link>
-      <guid>https://enumeratethis.com/modelling-market-data-services-in-rx-with-scan-replay/</guid>
+      <link>https://jamesmiles.github.io/blog/modelling-market-data-services-in-rx-with-scan-replay/</link>
+      <guid>https://jamesmiles.github.io/blog/modelling-market-data-services-in-rx-with-scan-replay/</guid>
       <description>In my last post I defined a new type of subject that is useful for modelling snapshot/update style Publish/Subscribe communications. An alternative to building your own subject is to create an enve...</description>
       <pubDate>Sat, 26 Mar 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>PEX 4 FUN</title>
-      <link>https://enumeratethis.com/pex-4-fun/</link>
-      <guid>https://enumeratethis.com/pex-4-fun/</guid>
+      <link>https://jamesmiles.github.io/blog/pex-4-fun/</link>
+      <guid>https://jamesmiles.github.io/blog/pex-4-fun/</guid>
       <description>Do you like coding &amp; games? Check out PEX4FUN</description>
       <pubDate>Thu, 17 Mar 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Creating web forms with LINQ</title>
-      <link>https://enumeratethis.com/creating-web-forms-with-linq/</link>
-      <guid>https://enumeratethis.com/creating-web-forms-with-linq/</guid>
+      <link>https://jamesmiles.github.io/blog/creating-web-forms-with-linq/</link>
+      <guid>https://jamesmiles.github.io/blog/creating-web-forms-with-linq/</guid>
       <description>http://tomasp.net/blog/formlets-in-linq.aspx – Love your work Tomas!</description>
       <pubDate>Mon, 14 Mar 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Nirvana .NET : Data Groups &amp;amp; Rx Clients</title>
-      <link>https://enumeratethis.com/nirvana-net-data-groups-rx-clients/</link>
-      <guid>https://enumeratethis.com/nirvana-net-data-groups-rx-clients/</guid>
+      <link>https://jamesmiles.github.io/blog/nirvana-net-data-groups-rx-clients/</link>
+      <guid>https://jamesmiles.github.io/blog/nirvana-net-data-groups-rx-clients/</guid>
       <description>See my latest post on the my-Channels blog – Nirvana .NET : Data Groups &amp; Rx Clients</description>
       <pubDate>Mon, 14 Mar 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Introducing MyChannels.Nirvana</title>
-      <link>https://enumeratethis.com/introducing-mychannels-nirvana/</link>
-      <guid>https://enumeratethis.com/introducing-mychannels-nirvana/</guid>
+      <link>https://jamesmiles.github.io/blog/introducing-mychannels-nirvana/</link>
+      <guid>https://jamesmiles.github.io/blog/introducing-mychannels-nirvana/</guid>
       <description>Over the past three Months I’ve been working closely with the guys at my-Channels on a new .NET API for Nirvana. There was a general consensus that, being a Java port, the existing API was not a fr...</description>
       <pubDate>Thu, 10 Mar 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Nirvana 6 now supports Reactive Extensions!</title>
-      <link>https://enumeratethis.com/nirvana-6-now-supports-reactive-extensions/</link>
-      <guid>https://enumeratethis.com/nirvana-6-now-supports-reactive-extensions/</guid>
+      <link>https://jamesmiles.github.io/blog/nirvana-6-now-supports-reactive-extensions/</link>
+      <guid>https://jamesmiles.github.io/blog/nirvana-6-now-supports-reactive-extensions/</guid>
       <description>my-Channels have just shipped an “early access release” of Nirvana 6.</description>
       <pubDate>Wed, 09 Mar 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Not bad… for a human</title>
-      <link>https://enumeratethis.com/not-bad-for-a-human/</link>
-      <guid>https://enumeratethis.com/not-bad-for-a-human/</guid>
+      <link>https://jamesmiles.github.io/blog/not-bad-for-a-human/</link>
+      <guid>https://jamesmiles.github.io/blog/not-bad-for-a-human/</guid>
       <description>Just replaced the HDD in my Alienware M15x with a 256 GB Crucial C300.</description>
       <pubDate>Sat, 19 Feb 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Rx Schedulers – Reverse Trampoline</title>
-      <link>https://enumeratethis.com/rx-schedulers-reverse-trampoline/</link>
-      <guid>https://enumeratethis.com/rx-schedulers-reverse-trampoline/</guid>
+      <link>https://jamesmiles.github.io/blog/rx-schedulers-reverse-trampoline/</link>
+      <guid>https://jamesmiles.github.io/blog/rx-schedulers-reverse-trampoline/</guid>
       <description>Recently I&apos;ve been playing around with some *crazy* IScheduler implementations. I&apos;m going to do a series of posts outlining some of my ideas. I&apos;ve not had time to test or meditate on some of these ...</description>
       <pubDate>Fri, 11 Feb 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Does my cluster have quorum</title>
-      <link>https://enumeratethis.com/does-my-cluster-have-quorum/</link>
-      <guid>https://enumeratethis.com/does-my-cluster-have-quorum/</guid>
+      <link>https://jamesmiles.github.io/blog/does-my-cluster-have-quorum/</link>
+      <guid>https://jamesmiles.github.io/blog/does-my-cluster-have-quorum/</guid>
       <description>I’m finally returning to my blog after a 2 month hiatus. In a previous series of posts, I was looking into various heart beating patterns in Rx. I generally don’t like “multi part blog series” as t...</description>
       <pubDate>Wed, 02 Feb 2011 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>C# 5.0 &amp;amp; Rx Schedulers</title>
-      <link>https://enumeratethis.com/c-5-0-rx-schedulers/</link>
-      <guid>https://enumeratethis.com/c-5-0-rx-schedulers/</guid>
+      <link>https://jamesmiles.github.io/blog/c-5-0-rx-schedulers/</link>
+      <guid>https://jamesmiles.github.io/blog/c-5-0-rx-schedulers/</guid>
       <description>It’s been a pretty exciting week in the C# world. I initially had mixed feelings.</description>
       <pubDate>Wed, 03 Nov 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Monitoring cluster nodes in Rx</title>
-      <link>https://enumeratethis.com/monitoring-cluster-nodes-in-rx/</link>
-      <guid>https://enumeratethis.com/monitoring-cluster-nodes-in-rx/</guid>
+      <link>https://jamesmiles.github.io/blog/monitoring-cluster-nodes-in-rx/</link>
+      <guid>https://jamesmiles.github.io/blog/monitoring-cluster-nodes-in-rx/</guid>
       <description>Ok. So we’ve now defined an observable query that tells us the connectivity of a heart beat / keep alive stream, based on some timeout interval.</description>
       <pubDate>Fri, 22 Oct 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Refining the heat beat timeout</title>
-      <link>https://enumeratethis.com/refining-the-heat-beat-timeout/</link>
-      <guid>https://enumeratethis.com/refining-the-heat-beat-timeout/</guid>
+      <link>https://jamesmiles.github.io/blog/refining-the-heat-beat-timeout/</link>
+      <guid>https://jamesmiles.github.io/blog/refining-the-heat-beat-timeout/</guid>
       <description>I’ve been playing around with different ways of expressing the timeout described in my last post. To refresh your memory, I originally defined it like this;</description>
       <pubDate>Thu, 21 Oct 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Heart beats, keep alives &amp;amp; Rx</title>
-      <link>https://enumeratethis.com/heart-beats-keep-alives-rx/</link>
-      <guid>https://enumeratethis.com/heart-beats-keep-alives-rx/</guid>
+      <link>https://jamesmiles.github.io/blog/heart-beats-keep-alives-rx/</link>
+      <guid>https://jamesmiles.github.io/blog/heart-beats-keep-alives-rx/</guid>
       <description>This one has come up 3 or 4 times this year, so I thought it was about time I blogged about it.</description>
       <pubDate>Tue, 19 Oct 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Qbservable Provider for WMI Events (LINQ to WQL)</title>
-      <link>https://enumeratethis.com/qbservable-provider-for-wmi-events-linq-to-wql/</link>
-      <guid>https://enumeratethis.com/qbservable-provider-for-wmi-events-linq-to-wql/</guid>
+      <link>https://jamesmiles.github.io/blog/qbservable-provider-for-wmi-events-linq-to-wql/</link>
+      <guid>https://jamesmiles.github.io/blog/qbservable-provider-for-wmi-events-linq-to-wql/</guid>
       <description>Bart De Smet has just released… check it out here</description>
       <pubDate>Wed, 15 Sep 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Observable Open-high-low-close (OHLC) time frame candles</title>
-      <link>https://enumeratethis.com/open-high-low-close-ohlc-time-frame-candles-in-rx/</link>
-      <guid>https://enumeratethis.com/open-high-low-close-ohlc-time-frame-candles-in-rx/</guid>
+      <link>https://jamesmiles.github.io/blog/open-high-low-close-ohlc-time-frame-candles-in-rx/</link>
+      <guid>https://jamesmiles.github.io/blog/open-high-low-close-ohlc-time-frame-candles-in-rx/</guid>
       <description>Wikipedia – &amp;#8220;An open-high-low-close chart (also OHLC chart, or simply bar chart) is a type of chart typically used to illustrate movements in the price of a financial instrument over time.&amp;#8...</description>
       <pubDate>Sun, 29 Aug 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Latch design pattern in Rx</title>
-      <link>https://enumeratethis.com/latch-design-pattern-in-rx/</link>
-      <guid>https://enumeratethis.com/latch-design-pattern-in-rx/</guid>
+      <link>https://jamesmiles.github.io/blog/latch-design-pattern-in-rx/</link>
+      <guid>https://jamesmiles.github.io/blog/latch-design-pattern-in-rx/</guid>
       <description>I just ran into some blog posts about the &amp;#8220;latch design pattern&amp;#8221;.</description>
       <pubDate>Fri, 27 Aug 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Latch design pattern in Rx – more….</title>
-      <link>https://enumeratethis.com/latch-design-pattern-in-rx-more/</link>
-      <guid>https://enumeratethis.com/latch-design-pattern-in-rx-more/</guid>
+      <link>https://jamesmiles.github.io/blog/latch-design-pattern-in-rx-more/</link>
+      <guid>https://jamesmiles.github.io/blog/latch-design-pattern-in-rx-more/</guid>
       <description>My original example isn&apos;t quite true to the pattern. Here is an updated version.</description>
       <pubDate>Fri, 27 Aug 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Empty try block in auto-generated iterator block state machines</title>
-      <link>https://enumeratethis.com/empty-try-block-in-auto-generated-iterator-block-state-machines/</link>
-      <guid>https://enumeratethis.com/empty-try-block-in-auto-generated-iterator-block-state-machines/</guid>
+      <link>https://jamesmiles.github.io/blog/empty-try-block-in-auto-generated-iterator-block-state-machines/</link>
+      <guid>https://jamesmiles.github.io/blog/empty-try-block-in-auto-generated-iterator-block-state-machines/</guid>
       <description>I’m sure this has already been pointed out, but I couldn’t find it anywhere.</description>
       <pubDate>Sun, 06 Jun 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>New domain name!</title>
-      <link>https://enumeratethis.com/new-domain-name/</link>
-      <guid>https://enumeratethis.com/new-domain-name/</guid>
+      <link>https://jamesmiles.github.io/blog/new-domain-name/</link>
+      <guid>https://jamesmiles.github.io/blog/new-domain-name/</guid>
       <description>This blog is now on http://enumeratethis.com/</description>
       <pubDate>Thu, 03 Jun 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Bad Memories – Episode 2 (exceptions with a vengeance)</title>
-      <link>https://enumeratethis.com/bad-memories-episode-2-exceptions-with-a-vengeance/</link>
-      <guid>https://enumeratethis.com/bad-memories-episode-2-exceptions-with-a-vengeance/</guid>
+      <link>https://jamesmiles.github.io/blog/bad-memories-episode-2-exceptions-with-a-vengeance/</link>
+      <guid>https://jamesmiles.github.io/blog/bad-memories-episode-2-exceptions-with-a-vengeance/</guid>
       <description>Refresher…</description>
       <pubDate>Wed, 26 May 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Bad Memories – Episode 1</title>
-      <link>https://enumeratethis.com/bad-memories-episode-1/</link>
-      <guid>https://enumeratethis.com/bad-memories-episode-1/</guid>
+      <link>https://jamesmiles.github.io/blog/bad-memories-episode-1/</link>
+      <guid>https://jamesmiles.github.io/blog/bad-memories-episode-1/</guid>
       <description>I’ve discussed memoization a few times. Here is the implementation I used last time.</description>
       <pubDate>Sat, 22 May 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Filtering by information in previous elements</title>
-      <link>https://enumeratethis.com/filtering-by-information-in-previous-elements/</link>
-      <guid>https://enumeratethis.com/filtering-by-information-in-previous-elements/</guid>
+      <link>https://jamesmiles.github.io/blog/filtering-by-information-in-previous-elements/</link>
+      <guid>https://jamesmiles.github.io/blog/filtering-by-information-in-previous-elements/</guid>
       <description>I’ve been off work sick for the last 2 days so I thought I’d catch up on some blogging. It’s been a couple of weeks as I’ve been busy reading the Haskell language specification. There is obviously ...</description>
       <pubDate>Thu, 20 May 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Lazy&amp;lt;T&amp;gt; verses Memoize()</title>
-      <link>https://enumeratethis.com/lazyt-verses-memoize/</link>
-      <guid>https://enumeratethis.com/lazyt-verses-memoize/</guid>
+      <link>https://jamesmiles.github.io/blog/lazyt-verses-memoize/</link>
+      <guid>https://jamesmiles.github.io/blog/lazyt-verses-memoize/</guid>
       <description>When we have a long running operation, a common optimisation is to cache the result and reuse it in subsequent requests. Given the ongoing shift to multithreaded applications it is important that t...</description>
       <pubDate>Wed, 28 Apr 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Function as Enumerable</title>
-      <link>https://enumeratethis.com/function-as-enumerable/</link>
-      <guid>https://enumeratethis.com/function-as-enumerable/</guid>
+      <link>https://jamesmiles.github.io/blog/function-as-enumerable/</link>
+      <guid>https://jamesmiles.github.io/blog/function-as-enumerable/</guid>
       <description>I’ve found that converting a function into an enumerable (or an observable) can be a neat trick at times. Consider the following.</description>
       <pubDate>Tue, 27 Apr 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>More ideas for enhanced language support</title>
-      <link>https://enumeratethis.com/more-ideas-for-enhanced-language-support/</link>
-      <guid>https://enumeratethis.com/more-ideas-for-enhanced-language-support/</guid>
+      <link>https://jamesmiles.github.io/blog/more-ideas-for-enhanced-language-support/</link>
+      <guid>https://jamesmiles.github.io/blog/more-ideas-for-enhanced-language-support/</guid>
       <description>The Zip operator is useful for combining two or more lists of data, where by the elements are matched based on their index.</description>
       <pubDate>Thu, 22 Apr 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>Language support for CombineLatest would be nice</title>
-      <link>https://enumeratethis.com/language-support-for-combinelatest-would-be-nice/</link>
-      <guid>https://enumeratethis.com/language-support-for-combinelatest-would-be-nice/</guid>
+      <link>https://jamesmiles.github.io/blog/language-support-for-combinelatest-would-be-nice/</link>
+      <guid>https://jamesmiles.github.io/blog/language-support-for-combinelatest-would-be-nice/</guid>
       <description>CombineLatest is very useful for orchestrating parallel asynchronous/observable requests. For example;</description>
       <pubDate>Sat, 17 Apr 2010 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>“Warm” observables with Publish().RefCount()</title>
-      <link>https://enumeratethis.com/warm-observables-with-publish-refcount/</link>
-      <guid>https://enumeratethis.com/warm-observables-with-publish-refcount/</guid>
+      <link>https://jamesmiles.github.io/blog/warm-observables-with-publish-refcount/</link>
+      <guid>https://jamesmiles.github.io/blog/warm-observables-with-publish-refcount/</guid>
       <description>So in the observable extensions class there is a nice little extension method that stands out from the rest. RefCount() is different from all the other kids in the class  in that it’s for IConnecta...</description>
       <pubDate>Sat, 17 Apr 2010 00:00:00 GMT</pubDate>
     </item>
