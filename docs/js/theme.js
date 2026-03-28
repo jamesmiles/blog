@@ -67,6 +67,17 @@ window.matchMedia('(min-width: 769px)').addEventListener('change', function(e) {
 function shareLink(btn) {
   navigator.clipboard.writeText(window.location.href).then(function() {
     btn.classList.add('copied');
-    setTimeout(function() { btn.classList.remove('copied'); }, 1500);
+    // For mobile menu button, show "Copied!" text instead of closing
+    if (btn.classList.contains('mobile-share-btn')) {
+      var origText = btn.innerHTML;
+      var svgMatch = origText.match(/<svg[^]*?<\/svg>/);
+      btn.innerHTML = (svgMatch ? svgMatch[0] + ' ' : '') + 'Copied!';
+      setTimeout(function() {
+        btn.innerHTML = origText;
+        btn.classList.remove('copied');
+      }, 1500);
+    } else {
+      setTimeout(function() { btn.classList.remove('copied'); }, 1500);
+    }
   });
 }
