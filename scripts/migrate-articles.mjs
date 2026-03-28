@@ -490,7 +490,7 @@ ${indexArticles}
         var articles = document.querySelectorAll('.article-item');
 
         function setBar(title) {
-          bar.textContent = 'Currently Reading: ' + title;
+          bar.textContent = title;
         }
         function updateBar() {
           // If the first article hasn't scrolled past the header, show "Latest Posts"
