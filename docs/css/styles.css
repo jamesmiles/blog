@@ -555,13 +555,19 @@ img {
 }
 
 /* Responsive: small screens */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .header-nav {
     display: none;
   }
 
   .burger-menu {
     display: flex;
+  }
+
+  .site-title {
+    font-size: var(--font-size-lg);
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .footer-inner {
