@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>An AI Wrote a C Compiler — AI Engineering Adventures</title>
+  <meta name="description" content="We've all read the news that an LLM autonomously wrote a C compiler. But is that impressive? How hard was it? I thought I'd find out.">
+  <meta name="article:date" content="2026-03-29">
+  <meta property="og:title" content="An AI Wrote a C Compiler">
+  <meta property="og:description" content="We've all read the news that an LLM autonomously wrote a C compiler. But is that impressive? How hard was it? I thought I'd find out.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Engineering Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">AI Engineering Adventures <span class="site-title-sub">by James Miles</span></a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+        <button class="share-btn" aria-label="Share" onclick="shareLink()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+      </nav>
+      <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <nav class="mobile-nav">
+      <a href="../all-posts.html">All Posts</a>
+      <a href="../rss.xml">RSS</a>
+      <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
+      <button class="mobile-share-btn" onclick="shareLink()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">An AI Wrote a C Compiler</h1>
+      <div class="article-meta">
+        <time datetime="2026-03-29">March 29, 2026</time>
+        <span class="tag">ai</span>
+        <span class="tag">compilers</span>
+        <span class="tag">experiment</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>We've all read the (old) news &mdash; an LLM autonomously wrote a C compiler!</p>
+
+      <p>Is that impressive? How hard was it? Who's actually tried?</p>
+
+      <p>Think about all the complex things a C compiler has to do for a minute.</p>
+
+      <p>On a scale of 1&ndash;10, how hard do you think this task is for an LLM?</p>
+
+      <p>Well, I thought I'd find out.</p>
+
+      <p>This is the prompt:</p>
+
+<pre><code>We're going to write a C compiler.
+
+1. You choose the language the compiler will be written in, however, choose
+   something that prioritises speed of feedback - we don't want to be wasting
+   time waiting for your compiler to compile each time you make a change
+2. Write a plan including
+    1. designing an execution harnesses for both 'freestanding' and 'hosted'
+       execution environments, these should allow you to execute and reliably
+       capture outputs, logs &amp; memory dumps of compiled programs safely
+       (e.g. without crashing the host)
+        1. Consider technologies like QEMU (freestanding emulation)
+        2. Docker for user mode (hosted) execution environment
+    2. acquiring the language standard, decompose it into a list of requirements
+    3. Creating a test strategy which includes:
+        1. creating programs that exercise aspects of the language standard
+            1. document the expected behaviour/output of each program inline
+            2. acquire known working compilers (plural) and verify that these
+               test programs compile
+            3. execute the compiled programs (using the execution harness!),
+               capture the 'execution output'
+            4. compare the actual output to the predicted output, if it differs,
+               either:
+                1. Your inline documentation / prediction was wrong: correct it
+                2. Your inline documentation / prediction was insufficiently
+                   specified: improve it
+                3. The sample compiler has a bug or undefined behaviour:
+                   document our compilers expected behaviour
+        2. acquiring &amp; integrating dedicated compiler test suites (like the
+           GCC C Torture Test Suite) which actually separate standard-compliant
+           C from GNU extensions
+    4. creating 'negative' test cases, programs that shouldn't compile, and
+       ensuring our compiler doesn't compile them
+    5. your overall 'reward signal' should be calculated as the total number
+       of passing tests / total number of tests
+    6. Finally you'll need to write the compiler (JMCC), design a process that
+       provides rapid feedback/reward signal, e.g.
+        1. Pick a feature from the standard
+        2. Write/modify compiler
+        3. Compile test programs
+        4. Execute test programs using test harnesses
+        5. Review output/logs/memory dumps of failing tests
+            1. note: memory dumps and logs are for diagnostic purposes,
+               not a reward signal
+        6. If all tests pass
+            1. Check CI from previous commits/ and address any issues
+            2. Push to main
+            3. Add more tests following our defined test strategy &amp; goto 3; or
+            4. Goto 1
+        7. Else (tests fail) goto 2
+    7. Tests should run on GitHub Actions (CI) &amp; locally
+    8. Don't stop until the compiler is complete
+    9. Don't cheat!
+3. Push the plan to main
+4. Start executing the plan and don't break my computer :)</code></pre>
+
+      <p>It's been running for 11 minutes and we've 65 passing tests so far.</p>
+
+      <p>You can follow along here: <a href="https://github.com/jamesmiles/jmcc">github.com/jamesmiles/jmcc</a></p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Engineering Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

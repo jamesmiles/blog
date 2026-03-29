@@ -6,7 +6,14 @@
     <link>https://jamesmiles.github.io/blog</link>
     <atom:link href="https://jamesmiles.github.io/blog/rss.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 28 Mar 2026 02:12:46 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 29 Mar 2026 02:38:27 GMT</lastBuildDate>
+    <item>
+      <title>An AI Wrote a C Compiler — AI Engineering Adventures</title>
+      <link>https://jamesmiles.github.io/blog/an-ai-wrote-a-c-compiler/</link>
+      <guid>https://jamesmiles.github.io/blog/an-ai-wrote-a-c-compiler/</guid>
+      <description>We&apos;ve all read the news that an LLM autonomously wrote a C compiler. But is that impressive? How hard was it? I thought I&apos;d find out.</description>
+      <pubDate>Sun, 29 Mar 2026 00:00:00 GMT</pubDate>
+    </item>
     <item>
       <title>Hello, World!</title>
       <link>https://jamesmiles.github.io/blog/hello-world/</link>
