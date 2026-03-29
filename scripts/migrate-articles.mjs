@@ -288,7 +288,7 @@ for (const slug of allSlugs) {
   const html = readFileSync(htmlPath, 'utf-8');
 
   const titleMatch = html.match(/<title>([^<]*)<\/title>/);
-  const title = titleMatch ? titleMatch[1].replace(/\s*[—–-]\s*James Miles.*$/, '').trim() : slug;
+  const title = titleMatch ? titleMatch[1].replace(/\s*[—–-]\s*(James Miles'?\s*)?AI Engineering Adventures$/, '').trim() : slug;
 
   const dateMatch = html.match(/<meta\s+name="article:date"\s+content="([^"]*)"/);
   const date = dateMatch ? dateMatch[1] : '2026-01-01';
