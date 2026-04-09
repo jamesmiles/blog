@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinite Owls — AI Engineering Adventures</title>
+  <meta name="description" content="LLM-based software testing using a computer-use loop. If we've automated software programming, how do we keep up with verifying that the software actually does what it's supposed to?">
+  <meta name="article:date" content="2026-03-30">
+  <meta property="og:title" content="Infinite Owls">
+  <meta property="og:description" content="LLM-based software testing using a computer-use loop.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Engineering Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">AI Engineering Adventures <span class="site-title-sub">by James Miles</span></a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+        <button class="share-btn" aria-label="Share" onclick="shareLink()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+      </nav>
+      <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <nav class="mobile-nav">
+      <a href="../all-posts.html">All Posts</a>
+      <a href="../rss.xml">RSS</a>
+      <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
+      <button class="mobile-share-btn" onclick="shareLink()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Infinite Owls</h1>
+      <div class="article-meta">
+        <time datetime="2026-03-30">March 30, 2026</time>
+        <span class="tag">ai</span>
+        <span class="tag">testing</span>
+        <span class="tag">computer-use</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <h2>LLM-based software testing using a computer-use loop (the "owl loop")</h2>
+
+      <img src="../images/infinite-owls-title.png" alt="An illustration of countless owls perched in a vast tree, each working at their own computer terminal">
+
+      <p>There's an old adage: if you had enough monkeys on typewriters for long enough, one of them would almost certainly produce the works of William Shakespeare. But there's a problem. With infinite content to review, how would you ever know?</p>
+
+      <p>This is analogous to what a lot of software engineering teams are now grappling with. They've automated software <em>programming</em>, but that's just exposed weakness elsewhere in the SDLC: how do we verify that the software actually does what it's supposed to?</p>
+
+      <p>Verification has always been a weakness in our industry. We even coined a term for our greatest failing &mdash; "bugs" &mdash; and they're in every piece of software ever shipped. With AI massively increasing the rate at which code is produced, we now run the risk of drowning in them.</p>
+
+      <p>Historically, teams have tried to scale quality with non-scalable solutions: code reviews, manual testing, brittle UI automation, and unit tests that are tightly coupled to the current system implementation rather than validating intent. None of these scale linearly with code volume, let alone exponentially.</p>
+
+      <p>If the number of pull requests is increasing and the team size stays the same (or gets smaller), something is going to give. What does that look like? Slipping deadlines? Lowering code quality? Skyrocketing bug reports? Unusable apps?</p>
+
+      <h2>Introducing the "computer-use loop"</h2>
+
+      <p>I've been experimenting with several approaches to scaling software QA, and one of the most promising is the <strong>computer-use loop</strong> &mdash; a simple, generic process for software testing built on four repeatable steps: <strong>act, observe, analyse, decide</strong>. These steps form the basis of larger quality control processes that can be performed by LLMs or humans alike.</p>
+
+      <img src="../images/owl-loop-diagram.png" alt="Flowchart showing the computer-use loop: Start Test → Act → Capture → Analyse → Decide → Report. The Decide step loops back to Act if another action is required.">
+
+      <p>So how does this work in practice? Let's imagine you're given the following test script to execute:</p>
+
+<pre><code>Step 1 - Open Calculator
+Step 2 - Press '2', then '1'
+Step 3 - Press 'multiply'
+Step 4 - Press '2'
+Step 5 - Press 'equals'
+Step 6 - Check result equals 42</code></pre>
+
+      <p>Each step can be broken down into four sub-steps. Step 1 becomes:</p>
+
+      <ul>
+        <li><strong>Act:</strong> open the calculator app</li>
+        <li><strong>Observe:</strong> look at the screen</li>
+        <li><strong>Analyse:</strong> is the calculator app open?</li>
+        <li><strong>Decide:</strong> either retry opening the app, or proceed to the next step</li>
+      </ul>
+
+      <p>In some ways this models how humans go about their daily lives: we do something, we get feedback, we process that information, and we make a decision &mdash; the outcome of millions of years of evolution.</p>
+
+      <p>One of the benefits of this process is that it's inherently dynamic. Consider what happens when we throw a spanner in the works:</p>
+
+      <p><strong>Loop 1</strong></p>
+      <ul>
+        <li><strong>Act:</strong> open the calculator</li>
+        <li><strong>Observe:</strong> look at the screen</li>
+        <li><strong>Analyse:</strong> the calculator is open, but the display already shows <code>1764</code> from a previous calculation</li>
+        <li><strong>Decide:</strong> I can't run the next step from a dirty state &mdash; press <code>c</code> to clear it first</li>
+      </ul>
+
+      <p><strong>Loop 2</strong></p>
+      <ul>
+        <li><strong>Act:</strong> press <code>c</code></li>
+        <li><strong>Observe:</strong> look at the screen</li>
+        <li><strong>Analyse:</strong> the display now shows <code>0</code></li>
+        <li><strong>Decide:</strong> the calculator is in a known good state &mdash; proceed to step 2</li>
+      </ul>
+
+      <p>To implement this as an integrated LLM agent, we need three ingredients:</p>
+
+      <ol>
+        <li>An LLM that can analyse and reason about images, and make decisions</li>
+        <li>A tool to capture images/screenshots</li>
+        <li>A tool to simulate user actions</li>
+      </ol>
+
+      <img src="../images/owl-loop-integrated-agent.png" alt="The computer-use loop annotated with the role an LLM and MCP tools play at each step: prompting the LLM, simulating input, capturing screenshots, feeding observations back to the LLM, and writing results.">
+
+      <h2>The computer-use loop in flight</h2>
+
+      <p>So we have a model for how the computer-use loop <em>might</em> work &mdash; but does it actually work?</p>
+
+      <p>Here's an example prompt you can try yourself. On macOS:</p>
+
+<pre><code>You are an automated QA agent running on macOS. You have access to the following tools:
+- cliclick - simulate mouse clicks, key presses, and input events (act)
+- screencapture - capture the current screen state as an image (observe)
+- calculator - system under test. If you need to clear the calculator, press 'c' when the app is in focus.
+
+For each step in the test script, you must follow the computer-use sub-process:
+- Act - perform the action using your available tools
+- Observe - capture the screen with screencapture and examine the result
+- Analyse - reason about what you see: did the action succeed, fail, or produce unexpected state?
+- Decide - either proceed to the next step, retry the current step, or halt and report a failure with details
+
+Do not proceed to the next step until the current step's Decide phase confirms success. If a step fails after 3 retries, halt and report.
+
+Test script: Calculator
+Step 1 — Open Calculator
+Step 2 — Press '2', then '1'
+Step 3 — Press 'multiply'
+Step 4 — Press '2'
+Step 5 — Press 'equals'
+Step 6 — Check result equals 42</code></pre>
+
+      <p><em>Dependencies: <a href="https://www.bluem.net/en/projects/cliclick/">cliclick</a> and the built-in <code>screencapture</code>.</em></p>
+
+      <p>And the equivalent on Windows:</p>
+
+<pre><code>You are an automated QA agent running on Windows.
+- pyautogui - you have a fully functional computer-use toolkit via pyautogui
+- app specific - if you need to clear the calculator, press the 'c' key while it's in focus
+
+For each step in the test script, you must follow the computer-use sub-process:
+- Act — perform the action using your available tools
+- Observe — capture the screen with screencapture and examine the result
+- Analyse — reason about what you see: did the action succeed, fail, or produce unexpected state?
+- Decide — either proceed to the next step, retry the current step, or halt and report a failure with details
+
+Do not proceed to the next step until the current step's Decide phase confirms success. If a step fails after 3 retries, halt and report.
+
+Test script: Calculator
+Step 1 — Open Calculator
+Step 2 — Press '2', then '1'
+Step 3 — Press 'multiply'
+Step 4 — Press '2'
+Step 5 — Press 'equals'
+Step 6 — Check result equals 42</code></pre>
+
+      <p><em>Dependencies: <a href="https://pyautogui.readthedocs.io/">pyautogui</a>.</em></p>
+
+      <p>Here is the example output on my MacBook:</p>
+
+      <img src="../images/owl-loop-example-output.png" alt="Example agent output showing a passing test result table for the calculator script: 21 × 2 = 42, with each step's expected and actual values matching.">
+
+      <h2>What about MCP?</h2>
+
+      <p>Instead of using platform-specific toolsets for screen capture and user input, there are a variety of computer-use MCP libraries. Below is a prompt that works against either <a href="https://github.com/domdomegg/computer-use-mcp">domdomegg/computer-use-mcp</a> (an open-source project) or <a href="https://code.claude.com/docs/en/computer-use">Anthropic's recently released integrated alternative</a>.</p>
+
+      <p>I've found Anthropic's solution to be particularly restrictive: as it currently stands, it won't work in a CI/CD sandbox or scripted environment because it requires manual human authorisation.</p>
+
+<pre><code>Use the 'computer-use' MCP to execute the following test script.
+Test specific: if you need to clear the calculator, press 'c' when the app is in focus.
+
+For each step in the test script, you must follow the computer-use sub-process:
+- Act - perform the action using your available tools
+- Observe - capture the screen with screencapture and examine the result
+- Analyse - reason about what you see: did the action succeed, fail, or produce unexpected state?
+- Decide - either proceed to the next step, retry the current step, or halt and report a failure with details
+
+Do not proceed to the next step until the current step's Decide phase confirms success. If a step fails after 3 retries, halt and report.
+
+Test script: Calculator
+Step 1 — Open Calculator
+Step 2 — Press '2', then '1'
+Step 3 — Press 'multiply'
+Step 4 — Press '2'
+Step 5 — Press 'equals'
+Step 6 — Check result equals 42</code></pre>
+
+      <h2>Demonstration project: the owl loop</h2>
+
+      <p>I've put together a demonstration project called the <strong>owl loop</strong> (<a href="https://github.com/jamesmiles/owl-loop">github.com/jamesmiles/owl-loop</a>), an attempt to implement structured, intent-based software testing using LLM-based computer-use. Each "owl" is a virtual test analyst that determines whether the software meets a specific design requirement or intent, and reports on a scale of 0&ndash;10.</p>
+
+      <p>The project is comprised of:</p>
+
+      <ul>
+        <li>A <strong>header</strong> &mdash; information about the system under test</li>
+        <li>A <strong>footer</strong> &mdash; how analysis should be reported</li>
+        <li><strong>N owls</strong> &mdash; each a definition of intent</li>
+        <li>A script to execute the tests with Claude Code</li>
+      </ul>
+
+      <img src="../images/owl-loop-project.png" alt="Owl loop project structure: an orchestrator script runs Claude (non-interactive) with an assembled prompt of header, owl definitions, and footer; Claude drives platform tools (cliclick or pyautogui) against the system under test.">
+
+      <h2>Current state of play</h2>
+
+      <p>This is all experimental, but the dream is to integrate the owl loop inside a CI/CD pipeline. Here's where things stand today:</p>
+
+      <ul>
+        <li>The example tests each use ~50k tokens</li>
+        <li>You don't necessarily need the most capable models to run tests &mdash; I've experimented with Haiku, Sonnet, and Opus, which is promising for containing execution costs</li>
+        <li>Tests are currently much slower to execute than traditional scripted tests, due to remote model latency. It's roughly comparable to how long a human would take to execute the script</li>
+        <li>There's no way to use Claude Code subscriptions inside CI/CD pipelines &mdash; a user is required to authenticate via a magic link, which means a Claude API key is required (significantly more expensive). Copilot CLI has similar authentication restrictions.</li>
+      </ul>
+
+      <h2>Local LLM testing</h2>
+
+      <p>As a next step, I'm interested in seeing whether tests could be executed against a self-hosted LLM. This might significantly reduce latency, and may also be feasible because executing tests doesn't necessarily require the most capable model.</p>
+
+      <h2>Why bother?</h2>
+
+      <p>Latency and token costs aside, why is any of this worth pursuing? Because intent-based, LLM-driven testing changes the fundamental economics of QA in three important ways:</p>
+
+      <ul>
+        <li><strong>Scalability.</strong> Traditional QA scales linearly with headcount: more features means more manual testers, more brittle UI scripts, more flaky CI runs. Owls don't get tired. If your test budget allows it, you can run a hundred owls in parallel and have them re-verify every flow on every commit.</li>
+        <li><strong>Decoupled from implementation.</strong> Conventional UI automation is tightly coupled to selectors, DOM structure, and pixel coordinates. Refactor a button and half your test suite turns red &mdash; not because the product broke, but because the tests did. An owl looks at the screen the way a user does. If the new button still says "Submit" and still submits the form, the test still passes.</li>
+        <li><strong>Intent-based, not script-based.</strong> Traditional tests verify <em>steps</em>; owls verify <em>intent</em>. Instead of asserting "click element <code>#btn-checkout</code>, expect URL to contain <code>/order/123</code>", you describe the outcome: "a customer should be able to complete a purchase and receive an order confirmation". The owl figures out how. When the implementation evolves, the intent doesn't.</li>
+      </ul>
+
+      <p>None of this replaces unit tests or property-based testing &mdash; those still have their place at the bottom of the testing pyramid. But for the messy, end-user-facing slice at the top, owls offer something the industry has needed for a long time: tests that scale with code volume rather than team size, and that survive refactoring because they were never coupled to the implementation in the first place.</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Engineering Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
