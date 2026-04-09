@@ -113,6 +113,8 @@ Step 6 - Check result equals 42</code></pre>
         <li><strong>Decide:</strong> the calculator is in a known good state &mdash; proceed to step 2</li>
       </ul>
 
+      <p>This is the real value of the loop: the test is <strong>completely decoupled from the software implementation</strong>. There's no hard-coded selector, no fixed click coordinate, no assumption about initial state. The agent observes what's actually in front of it and adapts &mdash; in this case, recovering from a leftover calculation that was never part of the script. A traditional scripted test would have either crashed (no step for "press <code>c</code>") or silently produced the wrong answer. The loop, by contrast, can absorb unscripted changes while still validating the original intent: "21 multiplied by 2 should equal 42".</p>
+
       <p>To implement this as an integrated LLM agent, we need three ingredients:</p>
 
       <ol>
