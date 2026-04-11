@@ -124,6 +124,7 @@ function generateArticlePage(article) {
   <meta name="article:date" content="${date}">
   <meta property="og:title" content="${escapeHtml(article.title)}">
   <meta property="og:description" content="${desc}">
+  <meta property="og:image" content="https://jamesmiles.github.io/blog/images/ai-engineering-adventures.png">
   <meta property="og:type" content="article">
   <link rel="alternate" type="application/rss+xml" title="James Miles' AI Engineering Adventures RSS" href="../rss.xml">
   <link rel="stylesheet" href="../css/tokens.css">
