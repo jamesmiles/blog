@@ -6,7 +6,14 @@
     <link>https://jamesmiles.github.io/blog</link>
     <atom:link href="https://jamesmiles.github.io/blog/rss.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 09 Apr 2026 05:23:07 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 11 Apr 2026 03:19:29 GMT</lastBuildDate>
+    <item>
+      <title>Can an LLM Drive a Car? — AI Engineering Adventures</title>
+      <link>https://jamesmiles.github.io/blog/can-an-llm-drive-a-car/</link>
+      <guid>https://jamesmiles.github.io/blog/can-an-llm-drive-a-car/</guid>
+      <description>I created a slalom driving simulator to find out whether an LLM can drive a car using a computer-use loop. The results were entertaining.</description>
+      <pubDate>Sat, 11 Apr 2026 00:00:00 GMT</pubDate>
+    </item>
     <item>
       <title>Infinite Owls — AI Engineering Adventures</title>
       <link>https://jamesmiles.github.io/blog/infinite-owls/</link>

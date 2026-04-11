@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Can an LLM Drive a Car? — AI Engineering Adventures</title>
+  <meta name="description" content="I created a slalom driving simulator to find out whether an LLM can drive a car using a computer-use loop. The results were entertaining.">
+  <meta name="article:date" content="2026-04-11">
+  <meta property="og:title" content="Can an LLM Drive a Car?">
+  <meta property="og:description" content="I created a slalom driving simulator to find out whether an LLM can drive a car using a computer-use loop.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Engineering Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">AI Engineering Adventures <span class="site-title-sub">by James Miles</span></a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+        <button class="share-btn" aria-label="Share" onclick="shareLink()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+      </nav>
+      <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <nav class="mobile-nav">
+      <a href="../all-posts.html">All Posts</a>
+      <a href="../rss.xml">RSS</a>
+      <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
+      <button class="mobile-share-btn" onclick="shareLink()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Can an LLM Drive a Car?</h1>
+      <div class="article-meta">
+        <time datetime="2026-04-11">April 11, 2026</time>
+        <span class="tag">ai</span>
+        <span class="tag">computer-use</span>
+        <span class="tag">experiment</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>I created a slalom driving simulator to find out.</p>
+
+      <img src="../images/driving-simulator.png" alt="A bird's-eye-view slalom driving simulator showing a green car on a road with red cone gates and a HUD displaying throttle, brake, steering, speed and score.">
+
+      <h2>Observations</h2>
+
+      <p>The obvious problem is latency. In theory, the model could work around this by taking small, incremental steps &mdash; adjusting controls, observing the result, analysing, then deciding &mdash; before committing to the next move. In practice:</p>
+
+      <ul>
+        <li><strong>Haiku 4.6 and GPT 5.4 mini</strong> started off by hitting the gas and running over all the cones.</li>
+        <li><strong>GPT 5.4</strong> was the most cautious. It correctly made lots of small throttle movements and positioning changes, before systematically running over a cone it thought it was safely turning around.</li>
+        <li><strong>Opus and Sonnet</strong> kept turning off the track and crashing.</li>
+      </ul>
+
+      <p>A few other things stood out:</p>
+
+      <ul>
+        <li>The models I tested struggle to correctly determine the direction the car is pointing. The HUD now includes a compass to help convey this information.</li>
+        <li>Claude does not handle the fact that time keeps passing while it's thinking. GPT 5.4 seemed to handle this aspect better, applying brakes before launching into long-winded analysis.</li>
+      </ul>
+
+      <p>You can try the simulator yourself here: <a href="https://jamesmiles.github.io/simple-driving-simulator/">jamesmiles.github.io/simple-driving-simulator</a></p>
+
+      <h2>The prompt</h2>
+
+<pre><code>You are an autonomous driving AI agent running on macOS. You have access to
+the following tools:
+  - screencapture — capture the current screen state as an image
+  - osascript — osascript with AppleScript to send the key code directly to
+    System Events
+
+You are playing a bird's-eye-view slalom driving simulator in the browser.
+
+Controls:
+  - Throttle up: '=' key (increments by 1, range 0–10)
+  - Throttle down: '-' key (decrements by 1, range 0–10)
+  - Brake up: 'a' key (increments by 1, range 0–5)
+  - Brake down: 'z' key (decrements by 1, range 0–5)
+  - Steer left: Left arrow key (decrements by 1, range -10 to 10)
+  - Steer right: Right arrow key (increments by 1, range -10 to 10)
+  - Restart: 'r' key
+
+Note on steering angle: left: -1 to -10, right: +1 to +10, centre = 0
+
+All controls are incremental — each keypress adjusts the value by one step.
+Steering angle persists until you change it.
+
+Scoring:
+  - +10 points for passing through a gate (between consecutive cones)
+  - -10 points for hitting a cone (also voids the next gate)
+  - Driving off the road = FAIL
+
+Objective: Navigate the course by weaving between the centre-line cones,
+collecting as many gates as possible, and reaching the chequered finish line.
+
+---
+
+For each decision cycle, follow the AOAD loop:
+  1. Act — press one or more keys to adjust throttle, brake, or steering
+  2. Observe — capture the screen and examine the car's position, heading,
+     upcoming cones &amp; HUD (including throttle, brake, steering settings)
+  3. Analyse — reason about:
+       - Where is the car relative to the road and the next gate?
+       - What steering angle &amp; throttle is required?
+       - What is the current steering angle, throttle, and brake?
+       - Is a course correction needed?
+       - Is the speed appropriate for the upcoming road section?
+  4. Decide — apply the next control inputs, or halt and report if stuck
+     or failed
+
+Driving strategy hints:
+1. Due to the latency of the AOAD loop, you should not leave the throttle
+   applied
+2. Each 'ACT' step should consist of a steering + throttle application for
+   n seconds before returning throttle to 0 and applying the brake.
+3. The throttle sets a target speed (each level = 15 px/s), and the vehicle
+   accelerates toward it based on power.
+4. The steering is not self-centring: if you press → → to introduce a +2
+   steering angle, to recentre to 0, you must press ← ←
+
+---
+
+Execution plan:
+
+Step 1 — Open Chrome and navigate to:
+         https://jamesmiles.github.io/simple-driving-simulator/
+Step 2 — Wait for the page to load, then take a screenshot to confirm the
+         game is visible
+Step 3 — Press 'Enter' to play the game
+Step 4 — Begin driving using the AOAD loop: observe the road, adjust
+         controls, and navigate through gates toward the finish line
+Step 5 — Continue until the course is complete or you fail
+Step 6 — If you fail and you think you can do better, try again</code></pre>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Engineering Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
