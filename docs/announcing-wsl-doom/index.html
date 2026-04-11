@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Announcing WSL Doom! — AI Engineering Adventures</title>
+  <meta name="description" content="Have you ever wanted to play Doom in the Windows Subsystem for Linux? Well now you can! WSL Doom is a direct fork of Linux Doom with 64-bit portability fixes and TrueColor X11 support.">
+  <meta name="article:date" content="2026-04-11">
+  <meta property="og:title" content="Announcing WSL Doom!">
+  <meta property="og:description" content="Have you ever wanted to play Doom in the Windows Subsystem for Linux? Well now you can!">
+  <meta property="og:image" content="https://jamesmiles.github.io/blog/images/doom-wsl-screenshot.png">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="James Miles' AI Engineering Adventures RSS" href="../rss.xml">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="site-title">AI Engineering Adventures <span class="site-title-sub">by James Miles</span></a>
+      <nav class="header-nav">
+        <a href="../all-posts.html">All Posts</a>
+        <a href="../rss.xml">RSS</a>
+        <button class="theme-toggle" aria-label="Toggle theme"></button>
+        <button class="share-btn" aria-label="Share" onclick="shareLink()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+      </nav>
+      <button class="burger-menu" aria-label="Menu" onclick="document.querySelector('.mobile-nav').classList.toggle('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <nav class="mobile-nav">
+      <a href="../all-posts.html">All Posts</a>
+      <a href="../rss.xml">RSS</a>
+      <button class="mobile-theme-toggle" aria-label="Toggle theme" onclick="document.querySelector('.mobile-nav').classList.remove('open')"><span class="mobile-theme-label"></span></button>
+      <button class="mobile-share-btn" onclick="shareLink()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="../index.html" class="back-link">&larr; Back to all articles</a>
+
+    <header class="article-header">
+      <h1 class="article-title">Announcing WSL Doom!</h1>
+      <div class="article-meta">
+        <time datetime="2026-04-11">April 11, 2026</time>
+        <span class="tag">doom</span>
+        <span class="tag">wsl</span>
+        <span class="tag">open-source</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <p>Have you ever wanted to play Doom in the Windows Subsystem for Linux? Well, now you can!</p>
+
+      <img src="../images/doom-wsl-screenshot.png" alt="Doom E1M1 running in WSL2 with TrueColor X11 rendering">
+
+      <p><strong>WSL Doom</strong> is a direct fork of <a href="https://github.com/id-Software/DOOM">id Software's linuxdoom-1.10</a> &mdash; the original Linux Doom source release. It includes 64-bit portability fixes and, critically, a TrueColor X11 port that allows the original source to be compiled and run on x86-64 Linux, including Windows Subsystem for Linux (WSL2) on Windows 11.</p>
+
+      <p>The port was developed as a real-world test case for <a href="https://github.com/jamesmiles/jmcc">JMCC</a> &mdash; an <a href="../an-ai-wrote-a-c-compiler/index.html">AI-developed C compiler</a>. If your compiler can compile Doom, that's a pretty good signal that it handles real C code.</p>
+
+      <h2>What needed fixing?</h2>
+
+      <p>The original source assumes two things that haven't been true for a long time:</p>
+
+      <ol>
+        <li><strong>32-bit pointers.</strong> The code is full of <code>(int)</code> casts on pointer values and hardcoded <code>*4</code> pointer arithmetic. On a 64-bit system, pointers are 8 bytes &mdash; these assumptions corrupt memory and crash immediately.</li>
+        <li><strong>8-bit PseudoColor X11 displays.</strong> Modern X servers only support TrueColor (24/32-bit). The original rendering pipeline writes 8-bit indexed colour values directly to the X11 framebuffer, which simply doesn't work anymore.</li>
+      </ol>
+
+      <p>The fix involved 10 targeted changes for 64-bit portability (pointer casts, array sizing, zone memory) and a replacement <code>i_video_truecolor.c</code> that converts the game's internal 8-bit palette-indexed framebuffer to 32-bit ARGB via a lookup table before blitting to X11.</p>
+
+      <h2>Source port family tree</h2>
+
+      <img src="../images/doom-source-tree.png" alt="Doom source port family tree showing the lineage from the original Doom through Linux Doom, WinDoom, and the many community ports including WSL Doom highlighted in green">
+      <p><em>Doom source port family tree (modified from <a href="https://en.wikipedia.org/wiki/List_of_Doom_ports">Wikipedia</a>)</em></p>
+
+      <p>WSL Doom sits directly under Linux Doom in the tree &mdash; it's not a modern source port like GZDoom or Chocolate Doom. The goal was to make the <em>original</em> source run on modern hardware with the minimum number of changes, not to add features.</p>
+
+      <h2>Try it</h2>
+
+      <p>The source code, build instructions, and WSL2 setup guide are all on GitHub: <a href="https://github.com/jamesmiles/doom-wsl">github.com/jamesmiles/doom-wsl</a></p>
+
+      <p>You'll need <code>gcc</code>, <code>libx11-dev</code>, <code>libxext-dev</code>, an X server on Windows (like <a href="https://sourceforge.net/projects/vcxsrv/">VcXsrv</a>), and a WAD file. The shareware <code>doom1.wad</code> works fine.</p>
+    </div>
+
+    <section class="comments-section">
+      <h2>Comments</h2>
+      <script src="https://utteranc.es/client.js"
+        repo="jamesmiles/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 James Miles' AI Engineering Adventures</span>
+      <div class="footer-links">
+        <a href="../rss.xml">RSS</a>
+        <a href="https://github.com/jamesmiles/blog">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
