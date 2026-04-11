@@ -62,6 +62,12 @@
 
       <img src="images/driving-simulator.png" alt="A bird's-eye-view slalom driving simulator showing a green car on a road with red cone gates and a HUD displaying throttle, brake, steering, speed and score.">
 
+      <h2>How does it work?</h2>
+
+      <p>The simulator is a simple 2D web game: a bird's-eye-view slalom course with cones to weave through and a finish line to reach. The car is controlled entirely via keyboard input &mdash; throttle, brake, and steering are all incremental key presses.</p>
+
+      <p>Claude and Copilot are given access to screenshot capture and keyboard input tools, and instructed to drive the car using an <a href="../infinite-owls/index.html">AOAD loop</a>: act (press keys), observe (take a screenshot), analyse (reason about position, heading, and upcoming gates), and decide (adjust controls or report failure). No special APIs, no game integration &mdash; they see exactly what you'd see on screen and press the same keys you would.</p>
+
       <h2>Observations</h2>
 
       <p>The obvious problem is latency. In theory, the model could work around this by taking small, incremental steps &mdash; adjusting controls, observing the result, analysing, then deciding &mdash; before committing to the next move. In practice:</p>
