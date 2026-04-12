@@ -66,9 +66,7 @@
 
       <p><strong>WSL Doom</strong> is a direct fork of <a href="https://github.com/id-Software/DOOM">id Software's linuxdoom-1.10</a> &mdash; the original Linux Doom source release. It includes 64-bit portability fixes and, critically, a TrueColor X11 port that allows the original source to be compiled and run on x86-64 Linux, including Windows Subsystem for Linux (WSL2) on Windows 11.</p>
 
-      <p>The port was originally developed as a real-world test case for <a href="https://github.com/jamesmiles/jmcc">JMCC</a> &mdash; an <a href="../an-ai-wrote-a-c-compiler/index.html">AI-developed C compiler</a>. It turns out that if your compiler can compile Doom, that's a pretty good signal it handles real C code &mdash; and if it <em>can't</em>, Doom will tell you exactly where your code generation is broken.</p>
-
-      <p>In total, compiling and running Doom helped identify <strong>37 codegen bugs</strong> in JMCC, spanning everything from pointer stride miscalculations and sign-extension errors to struct copy failures and incorrect <code>va_list</code> layout for the AMD64 ABI. Many of these were bugs that the compiler's own test suite &mdash; with its neatly isolated test cases &mdash; would never have caught. Real software exercises combinations of language features that synthetic tests simply don't.</p>
+      <p>The port was originally developed as a real-world test case for <a href="https://github.com/jamesmiles/jmcc">JMCC</a> &mdash; an <a href="../an-ai-wrote-a-c-compiler/index.html">AI-developed C compiler</a>. In total, compiling and running Doom helped identify <strong>37 codegen bugs</strong> in JMCC, spanning everything from pointer stride miscalculations and sign-extension errors to struct copy failures and incorrect <code>va_list</code> layout for the AMD64 ABI. Many of these were bugs that the compiler's own test suite &mdash; with its neatly isolated test cases &mdash; would never have caught. Real software exercises combinations of language features that synthetic tests simply don't.</p>
 
       <h2>What needed fixing?</h2>
 
