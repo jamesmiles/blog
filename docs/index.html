@@ -58,7 +58,7 @@
           </div>
         </header>
         <div class="article-body">
-          <p>Many of you have probably seen a visualisation like this recently, or something similar:</p>
+          <p>You may have seen a visualisation like the title chart recently, or something similar.</p>
 
       <img src="images/growth-decay-trajectories.png" alt="A chart showing the compounding growth vs compounding decay of value over time across different LLM generations">
 
@@ -92,7 +92,7 @@
 
       <p>The first two are relatively objective; with some effort, we could have an AI verify them. The third is entirely subjective. We might refine it to: <em>Does the webpage match a pre-agreed design system?</em></p>
 
-      <p>Now we have something measurable. The outcome space might look like this:</p>
+      <p>Now we have something measurable. The outcome space looks like this:</p>
 
       <img src="images/test-outcomes.png" alt="All possible outcomes matrix — showing pass/fail combinations for webpage loads, saved to database, and design match">
 
@@ -143,7 +143,7 @@
 
       <p>Crucially, if we just define our success metric as "the final inventory is zero," we are in trouble. An AI could write code that successfully drops the inventory to zero, but silently oversells the ticket to both users because it didn't handle the race condition. It might look like it works during standard, single-user testing, but fundamentally fails under real-world conditions.</p>
 
-      <p>We're back to the same problem: without a well-defined value-axis, we can't tell whether the system is genuinely improving or just appearing to work under limited conditions.</p>
+      <p>We're back to the same problem: without a well defined value axis, we can't tell whether the system is genuinely improving or just appearing to work under limited conditions.</p>
 
       <h2>A New Mental Model for Software Engineering</h2>
 
@@ -160,15 +160,15 @@
 
       <p>Does this mean human engineers will be relegated to coding complex tasks where the signal density is low? Not quite.</p>
 
-      <p>The flaw in this matrix is treating signal density as a static constraint of the problem. We actually control that dial directly through our measurement strategies, and with effort, we can shift from one quadrant to another &mdash; making a problem that didn't previously look automatable, automatable.</p>
+      <p>The flaw in this matrix is treating signal density as a static constraint of the problem. We actually control that dial directly through our measurement strategies, and with effort, we can shift from one quadrant to another, making a problem that wasn't suitable for autonomous development, into one that is.</p>
 
       <p>Let's revisit our earlier examples. For the C compiler, high signal density comes "for free" because we have language standards and objective outputs. For the webpage, our initial proxy was weak. But we could intentionally increase the signal density by redefining the value-axis to something that measures:</p>
 
       <ul>
-        <li>Automated intent-based testing results (see the <a href="../infinite-owls/index.html">Owl Loop</a>)</li>
-        <li>Automated visual comparison to reference designs</li>
-        <li>Automated accessibility audits (contrast ratios, ARIA compliance)</li>
-        <li>Automated performance testing results (e.g. page load speeds)</li>
+        <li>Intent based testing results (see the '<a href="../infinite-owls/index.html">Owl Loop</a>')</li>
+        <li>Visual comparison to reference designs.</li>
+        <li>Accessibility audits (contrast ratios, ARIA compliance).</li>
+        <li>Performance testing results (e.g. page load speeds)</li>
       </ul>
 
       <p>None of these individually capture "does it feel good," but together, they dramatically increase the feedback quality. We can take a sparse, subjective problem and make it measurable.</p>
@@ -197,7 +197,7 @@
 
       <h2>The Evolving Role of the Engineer &amp; a Vision for the Future</h2>
 
-      <p>Here is the important shift for software engineers: <strong>you are no longer just implementing the system; you are defining how the system's success is measured.</strong> That definition determines whether a problem is tractable for automation.</p>
+      <p>Here is the important shift for software engineers: You are no longer just implementing the system; you are defining how the system's success is measured. That definition determines whether a problem is tractable for automation.</p>
 
       <p>So, what does this actually look like in practice?</p>
 
@@ -209,15 +209,15 @@
         <li><strong>Test-Driven Agent Patterns:</strong> We will take Test-Driven Development (TDD) to its logical extreme, deploying agents that are dedicated to writing tests. In the <a href="../an-ai-wrote-a-c-compiler/index.html">jmcc project</a>, no codegen occurs until there is a failing test.</li>
         <li><strong>Intent-Based Automation (The "Owl Loop"):</strong> Instead of scripting brittle, step-by-step UI tests, teams will define high-level intent that will be continuously verified and reported.</li>
         <li><strong>Agentic CI/CD Pipelines:</strong> Your deployment pipeline won't just run static analysis or basic unit tests. It will host specialised, agentic reviewers that actively verify system design, conduct cybersecurity audits, and perform automated penetration testing.</li>
-        <li><strong>Continuous Full-Stack Regression:</strong> We'll rely much more heavily on simulated replicas of production environments.</li>
+        <li><strong>Continuous Full-Stack Regression:</strong> We'll rely much heavier on simulated replicas of production environments.</li>
         <li><strong>From "Red/Green" to Probabilistic Confidence:</strong> This might be the most profound philosophical shift. As system development becomes more autonomous, we will likely move away from the binary comfort of a "pass/fail" test suite. Instead, we'll rely on heuristic-based statistics that measure the probability that a system meets our intent across a massive matrix of simulated scenarios.</li>
       </ul>
 
-      <p>If we fail to build these verification ecosystems, AI-developed software is going to make our lives a lot worse. The cost of verification will simply be pushed downstream, our software testing processes will fail, and we will drown in bugs.</p>
+      <p>If we fail to build these verification ecosystems, AI developed software is going to make our lives a lot worse. The cost of verification will simply be pushed downstream, our software testing processes will fail and we will drown in bugs.</p>
 
-      <p>If your day-to-day entailed writing and reviewing code, you likely already sense this shift &mdash; but this is an incredible opportunity.</p>
+      <p>If your day-to-day entailed writing &amp; reviewing code, you likely already sense this shift, but this is an incredible opportunity.</p>
 
-      <p>It has always been true that strong software teams understand the value metrics behind what they build. Going forward, that understanding <em>will be the job itself</em>. The most successful engineers will be the ones who can define the value-axis with such precision that their systems can safely and systematically improve themselves. The role of the software engineer is shifting toward providing the rigorous specifications, simulations, and measurements that make autonomous development possible.</p>
+      <p>It has always been true that strong software teams understand the value metrics behind what they build. Going forward, that understanding will be the job itself. The most successful engineers will be the ones who can define the value-axis with such precision that their systems can safely and systematically improve themselves. The role of the software engineer is shifting toward providing the rigorous specifications, simulations, and measurements that make autonomous development possible.</p>
         </div>
         <a href="reward-signal-density/index.html" class="read-more">Continue reading &amp; comments &rarr;</a>
       </article>
