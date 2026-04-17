@@ -106,7 +106,7 @@
 
       <p>For the webpage, the objective is muddy. In reinforcement learning terms, a model needs a "reward signal" to know it did a good job. When we can instantly compile and verify an output, the reward signal is <strong>dense</strong>. In the web example, our synthetic measures leave a lot of context out (Is the UI intuitive? How does it make the user feel?), meaning the signal is <strong>sparse</strong> and subjective.</p>
 
-      <p>This is why a C compiler can be built autonomously by AI, while the conceptually simpler webpage ends up requiring a human to massage the output. In low-signal tasks, the user essentially becomes the reward function.</p>
+      <p>This is why <a href="../an-ai-wrote-a-c-compiler/index.html">a C compiler can be built autonomously by AI</a>, while the conceptually simpler webpage ends up requiring a human to massage the output. In low-signal tasks, the user essentially becomes the reward function.</p>
 
       <p>This introduces two major bottlenecks:</p>
 
@@ -207,7 +207,7 @@
 
       <ul>
         <li><strong>Test-Driven Agent Patterns:</strong> We will take Test-Driven Development (TDD) to its logical extreme, deploying agents that are dedicated to writing tests. In the <a href="../an-ai-wrote-a-c-compiler/index.html">jmcc project</a>, no codegen occurs until there is a failing test.</li>
-        <li><strong>Intent-Based Automation (The "Owl Loop"):</strong> Instead of scripting brittle, step-by-step UI tests, teams will define high-level intent that will be continuously verified and reported.</li>
+        <li><strong>Intent-Based Automation (<a href="../infinite-owls/index.html">The "Owl Loop"</a>):</strong> Instead of scripting brittle, step-by-step UI tests, teams will define high-level intent that will be continuously verified and reported.</li>
         <li><strong>Agentic CI/CD Pipelines:</strong> Your deployment pipeline won't just run static analysis or basic unit tests. It will host specialised, agentic reviewers that actively verify system design, conduct cybersecurity audits, and perform automated penetration testing.</li>
         <li><strong>Continuous Full-Stack Regression:</strong> We'll rely much heavier on simulated replicas of production environments.</li>
         <li><strong>From "Red/Green" to Probabilistic Confidence:</strong> This might be the most profound philosophical shift. As system development becomes more autonomous, we will likely move away from the binary comfort of a "pass/fail" test suite. Instead, we'll rely on heuristic-based statistics that measure the probability that a system meets our intent across a massive matrix of simulated scenarios.</li>
