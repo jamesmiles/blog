@@ -6,7 +6,14 @@
     <link>https://jamesmiles.github.io/blog</link>
     <atom:link href="https://jamesmiles.github.io/blog/rss.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 11 Apr 2026 07:44:49 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 17 Apr 2026 01:09:49 GMT</lastBuildDate>
+    <item>
+      <title>The Y-Axis &amp;amp; Why I Still Have a Job — AI Engineering Adventures</title>
+      <link>https://jamesmiles.github.io/blog/reward-signal-density/</link>
+      <guid>https://jamesmiles.github.io/blog/reward-signal-density/</guid>
+      <description>Unless there is another step-change in AI capability, the y-axis — how we measure value — will define the role of the software engineer going forward.</description>
+      <pubDate>Fri, 17 Apr 2026 00:00:00 GMT</pubDate>
+    </item>
     <item>
       <title>Announcing WSL Doom! — AI Engineering Adventures</title>
       <link>https://jamesmiles.github.io/blog/announcing-wsl-doom/</link>

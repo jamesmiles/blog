@@ -48,6 +48,183 @@
       <article class="article-item">
         <header class="article-item-header">
           <h2 class="article-item-title">
+            <a href="reward-signal-density/index.html">The Y-Axis &amp; Why I Still Have a Job</a>
+          </h2>
+          <div class="article-item-meta">
+            <time datetime="2026-04-17">April 17, 2026</time>
+            <span class="tag">ai</span>
+            <span class="tag">software-engineering</span>
+            <span class="tag">opinion</span>
+          </div>
+        </header>
+        <div class="article-body">
+          <p>Many of you have probably seen a visualisation like this recently, or something similar:</p>
+
+      <img src="images/growth-decay-trajectories.png" alt="A chart showing the compounding growth vs compounding decay of value over time across different LLM generations">
+
+      <p>The premise is that sometime recently, LLM tooling became capable of "autonomous development." Critically, when left to work on a problem, these tools began compounding correctness rather than compounding errors with each iteration or loop.</p>
+
+      <p>In truth, this is an oversimplification (and I'll have a lot more to say on that in a future post!). It depends heavily on the task, how it's specified, and how the model is prompted. But there is a hidden implication in this chart that I think is worth exploring. Unless there is another massive step-change in AI capability, this hidden factor will likely form the basis of our jobs as software engineers moving forward.</p>
+
+      <p>Let's take a closer look at the chart. The x-axis is a quantitative measure (time, tokens, or iterations) that is relatively well-defined: if we spend more resources on a task, the output evolves and will get better or worse over time.</p>
+
+      <p>But what exactly is the y-axis? "Value" is ambiguous, and measuring it depends entirely on the task at hand.</p>
+
+      <p>Let's consider a few examples.</p>
+
+      <h2>Task 1: Build a C Language Compiler</h2>
+
+      <p>In this scenario, the value-axis is easy to define: how many well-known C programs compile correctly and produce the right outputs? We can measure this empirically by comparing the outputs against known working compilers. To borrow a term from statistics, this is a <em>continuous quantitative variable</em>. We have a clear, objective, and highly granular measure of progress.</p>
+
+      <h2>Task 2: Build a Customer Survey Webpage</h2>
+
+      <p>Now, contrast the compiler with a much simpler task.</p>
+
+      <p>Here, the value-axis is far less obvious. This is a standard task for a junior developer, and LLMs are certainly capable of "vibing" out a solution. But what does "value" actually mean here?</p>
+
+      <p>Let's try to define it:</p>
+
+      <ul>
+        <li>Does the webpage load?</li>
+        <li>Are the collected fields saved to the database?</li>
+        <li>Does it look good?</li>
+      </ul>
+
+      <p>The first two are relatively objective; with some effort, we could have an AI verify them. The third is entirely subjective. We might refine it to: <em>Does the webpage match a pre-agreed design system?</em></p>
+
+      <p>Now we have something measurable. The outcome space might look like this:</p>
+
+      <img src="images/test-outcomes.png" alt="All possible outcomes matrix — showing pass/fail combinations for webpage loads, saved to database, and design match">
+
+      <p>Unlike the compiler, we've reduced the problem to a discrete, synthetic measure that approximates our intent &mdash; but only partially. And that leads us to the core issue.</p>
+
+      <h2>The Missing Link: Reward Signal Density</h2>
+
+      <p>To borrow a concept from machine learning, the <em>objective function</em> (or <em>loss function</em>) is what the AI is trying to optimise.</p>
+
+      <p>For the compiler task, the objective is crystal clear: does it compile, does it run, and does it match the expected output? The feedback loop is tight, objective, and rich in information.</p>
+
+      <p>For the webpage, the objective is muddy. In reinforcement learning terms, a model needs a "reward signal" to know it did a good job. When we can instantly compile and verify an output, the reward signal is <strong>dense</strong>. In the web example, our synthetic measures leave a lot of context out (Is the UI intuitive? How does it make the user feel?), meaning the signal is <strong>sparse</strong> and subjective.</p>
+
+      <p>This is why a C compiler can be built autonomously by AI, while the conceptually simpler webpage ends up requiring a human to massage the output. In low-signal tasks, the user essentially becomes the reward function.</p>
+
+      <p>This introduces two major bottlenecks:</p>
+
+      <ol>
+        <li>It doesn't scale.</li>
+        <li>The signal remains subjective.</li>
+      </ol>
+
+      <p>So far, the pattern seems clear: high-signal problems are tractable for AI, while low-signal ones require humans in the loop. But that's not the full story.</p>
+
+      <h2>Task 3: Build an Inventory Allocation System</h2>
+
+      <p>Consider a third task: building a backend service to handle inventory during a checkout process.</p>
+
+      <ul>
+        <li>When a user adds an item to their cart, reserve it.</li>
+        <li>When they pay, deduct it from the total inventory.</li>
+      </ul>
+
+      <p>At first glance, this looks entirely straightforward. It's pure logic and arithmetic &mdash; there's no "does it look good?" ambiguity here.</p>
+
+      <p>But what does correctness actually mean? How do we define the value-axis?</p>
+
+      <p>Suppose we have a highly anticipated product &mdash; let's say, the last available concert ticket &mdash; and two users hit "Confirm Purchase" at the exact same millisecond. What is the correct final state?</p>
+
+      <p>We immediately run into ambiguity. Depending on network latency and database transaction isolation, several things could happen:</p>
+
+      <ul>
+        <li>User A gets the ticket, User B gets an "out of stock" error.</li>
+        <li>User B gets the ticket, User A gets an "out of stock" error.</li>
+        <li>Both users get the ticket (an oversell bug).</li>
+        <li>Neither user gets the ticket (a database deadlock).</li>
+      </ul>
+
+      <p>Crucially, if we just define our success metric as "the final inventory is zero," we are in trouble. An AI could write code that successfully drops the inventory to zero, but silently oversells the ticket to both users because it didn't handle the race condition. It might look like it works during standard, single-user testing, but fundamentally fails under real-world conditions.</p>
+
+      <p>We're back to the same problem: without a well-defined value-axis, we can't tell whether the system is genuinely improving or just appearing to work under limited conditions.</p>
+
+      <h2>A New Mental Model for Software Engineering</h2>
+
+      <p>One way to think about this is by classifying tasks across two dimensions:</p>
+
+      <ol>
+        <li><strong>Complexity:</strong> How difficult is the logic? (How many <code>if</code> statements do we need?)</li>
+        <li><strong>Signal Density:</strong> How well do we understand and measure the value-axis?</li>
+      </ol>
+
+      <p>We can plot this on a 2&times;2 matrix:</p>
+
+      <img src="images/complexity-signal-density-matrix.png" alt="A 2x2 matrix with Complexity on the y-axis and Signal Density on the x-axis. High complexity / low signal density requires human software engineers; high complexity / high signal density is suitable for autonomous AI; low complexity / low signal density falls into vibe coding; low complexity / high signal density can be either vibe coding or autonomous AI.">
+
+      <p>Does this mean human engineers will be relegated to coding complex tasks where the signal density is low? Not quite.</p>
+
+      <p>The flaw in this matrix is treating signal density as a static constraint of the problem. We actually control that dial directly through our measurement strategies, and with effort, we can shift from one quadrant to another &mdash; making a problem that didn't previously look automatable, automatable.</p>
+
+      <p>Let's revisit our earlier examples. For the C compiler, high signal density comes "for free" because we have language standards and objective outputs. For the webpage, our initial proxy was weak. But we could intentionally increase the signal density by redefining the value-axis to something that measures:</p>
+
+      <ul>
+        <li>Automated intent-based testing results (see the <a href="../infinite-owls/index.html">Owl Loop</a>)</li>
+        <li>Automated visual comparison to reference designs</li>
+        <li>Automated accessibility audits (contrast ratios, ARIA compliance)</li>
+        <li>Automated performance testing results (e.g. page load speeds)</li>
+      </ul>
+
+      <p>None of these individually capture "does it feel good," but together, they dramatically increase the feedback quality. We can take a sparse, subjective problem and make it measurable.</p>
+
+      <h3>Revisiting the Inventory System</h3>
+
+      <p>At first glance, the checkout system looks like a low-signal problem because concurrent "correctness" is hard to measure with a simple pass/fail test. Our earlier attempt in checking the final inventory count was clearly insufficient. But again, that's a choice.</p>
+
+      <p>We could redefine the value-axis in terms of strict invariants and observable guarantees:</p>
+
+      <ul>
+        <li><strong>No Overselling:</strong> The inventory count must never drop below zero under any circumstances.</li>
+        <li><strong>Conservation of Items:</strong> The number of successful orders plus the remaining inventory must always equal the starting inventory.</li>
+        <li><strong>Idempotency:</strong> If a payment retry is triggered due to a network timeout, the inventory is never decremented twice for the same order.</li>
+      </ul>
+
+      <p>We can then build tests and instrumentation around these properties:</p>
+
+      <ul>
+        <li>Blast the endpoint with hundreds of concurrent purchase requests for a single item.</li>
+        <li>Inject simulated database lock timeouts.</li>
+        <li>Assert that our invariants hold true mathematically, rather than just checking if the final screen says "Success."</li>
+      </ul>
+
+      <p>Individually, these checks require effort. But collectively, they turn an ambiguous, race-condition-prone problem into one with a much denser and more reliable reward signal.</p>
+
+      <h2>The Evolving Role of the Engineer &amp; a Vision for the Future</h2>
+
+      <p>Here is the important shift for software engineers: <strong>you are no longer just implementing the system; you are defining how the system's success is measured.</strong> That definition determines whether a problem is tractable for automation.</p>
+
+      <p>So, what does this actually look like in practice?</p>
+
+      <p>It means our verification processes are about to get a serious overhaul, requiring a degree of automation far beyond what we've historically seen. The day-to-day work of an engineer will shift toward building the guardrails, environments, and reward signals that guide autonomous agents. Currently, the information available within typical product teams is woefully insufficient for enabling AI adoption at scale. We will need to radically upgrade the feedback loops within our SDLC. This means moving beyond basic stack traces to rich visual information, indexed system logs, and other near real-time operational feedback, ensuring we can measure our own success.</p>
+
+      <p>We are going to see a rapid evolution in how we build and verify, likely manifesting in a few key ways:</p>
+
+      <ul>
+        <li><strong>Test-Driven Agent Patterns:</strong> We will take Test-Driven Development (TDD) to its logical extreme, deploying agents that are dedicated to writing tests. In the <a href="../an-ai-wrote-a-c-compiler/index.html">jmcc project</a>, no codegen occurs until there is a failing test.</li>
+        <li><strong>Intent-Based Automation (The "Owl Loop"):</strong> Instead of scripting brittle, step-by-step UI tests, teams will define high-level intent that will be continuously verified and reported.</li>
+        <li><strong>Agentic CI/CD Pipelines:</strong> Your deployment pipeline won't just run static analysis or basic unit tests. It will host specialised, agentic reviewers that actively verify system design, conduct cybersecurity audits, and perform automated penetration testing.</li>
+        <li><strong>Continuous Full-Stack Regression:</strong> We'll rely much more heavily on simulated replicas of production environments.</li>
+        <li><strong>From "Red/Green" to Probabilistic Confidence:</strong> This might be the most profound philosophical shift. As system development becomes more autonomous, we will likely move away from the binary comfort of a "pass/fail" test suite. Instead, we'll rely on heuristic-based statistics that measure the probability that a system meets our intent across a massive matrix of simulated scenarios.</li>
+      </ul>
+
+      <p>If we fail to build these verification ecosystems, AI-developed software is going to make our lives a lot worse. The cost of verification will simply be pushed downstream, our software testing processes will fail, and we will drown in bugs.</p>
+
+      <p>If your day-to-day entailed writing and reviewing code, you likely already sense this shift &mdash; but this is an incredible opportunity.</p>
+
+      <p>It has always been true that strong software teams understand the value metrics behind what they build. Going forward, that understanding <em>will be the job itself</em>. The most successful engineers will be the ones who can define the value-axis with such precision that their systems can safely and systematically improve themselves. The role of the software engineer is shifting toward providing the rigorous specifications, simulations, and measurements that make autonomous development possible.</p>
+        </div>
+        <a href="reward-signal-density/index.html" class="read-more">Continue reading &amp; comments &rarr;</a>
+      </article>
+
+      <article class="article-item">
+        <header class="article-item-header">
+          <h2 class="article-item-title">
             <a href="announcing-wsl-doom/index.html">Announcing WSL Doom!</a>
           </h2>
           <div class="article-item-meta">
@@ -513,7 +690,7 @@ Step 6 — Check result equals 42</code></pre>
         <a href="an-ai-wrote-a-c-compiler/index.html" class="read-more">Continue reading &amp; comments &rarr;</a>
       </article>
 
-      <article class="article-item">
+      <article class="article-item" style="display:none">
         <header class="article-item-header">
           <h2 class="article-item-title">
             <a href="hello-world/index.html">Hello, World!</a>
