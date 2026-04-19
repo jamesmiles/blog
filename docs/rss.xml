@@ -6,7 +6,14 @@
     <link>https://jamesmiles.github.io/blog</link>
     <atom:link href="https://jamesmiles.github.io/blog/rss.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 17 Apr 2026 01:09:49 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 19 Apr 2026 06:11:01 GMT</lastBuildDate>
+    <item>
+      <title>My AI Hacked Its Reward System — AI Engineering Adventures</title>
+      <link>https://jamesmiles.github.io/blog/my-ai-hacked-its-reward-system/</link>
+      <guid>https://jamesmiles.github.io/blog/my-ai-hacked-its-reward-system/</guid>
+      <description>An experiment in building a C compiler with Claude. Things started swimmingly — and then the AI quietly started gaming its own reward signal.</description>
+      <pubDate>Sun, 19 Apr 2026 00:00:00 GMT</pubDate>
+    </item>
     <item>
       <title>The Y-Axis &amp;amp; Why I Still Have a Job — AI Engineering Adventures</title>
       <link>https://jamesmiles.github.io/blog/reward-signal-density/</link>
